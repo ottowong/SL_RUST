@@ -15,3 +15,4 @@ npx @liamcottle/rustplus.js fcm-listen
 ```
 And pair with some smart devive in game, in order to get your playerToken and playerId (Steam ID).
 Put these in the .env
+Keep this running, since you can also use it to get device (entity) IDs.
