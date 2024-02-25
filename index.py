@@ -3,6 +3,10 @@ import asyncio
 from rustplus import RustSocket
 from dotenv import load_dotenv
 from flask import Flask
+import sqlite3
+
+connection = sqlite3.connect('database.db')
+
 
 load_dotenv()
 ip=os.environ.get("IP")
