@@ -19,11 +19,9 @@ port = os.environ.get("PORT")
 steamId = int(os.environ.get("STEAMID"))
 playerToken = int(os.environ.get("PLAYERTOKEN"))
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
-
-
 
 async def get_map(add_icons=False,add_events=False, add_vending_machines=False):
     rust_socket = RustSocket(ip, port, steamId, playerToken)
