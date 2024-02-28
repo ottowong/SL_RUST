@@ -61,7 +61,8 @@ def add_device():
 @socketio.on('message')
 def handle_message(message):
     print('Received message: ' + message)
-    emit('response', 'Server received: ' + message)
+    devices = asyncio.run(get_devices())
+    emit('sent_devices', devices)
 
 @socketio.on('request_devices')
 def handle_request_devices():
