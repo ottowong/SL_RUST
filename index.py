@@ -38,11 +38,18 @@ async def get_time():
     await rust_socket.disconnect()
     return time
 
+async def get_server_info():
+    rust_socket = RustSocket(ip, port, steamId, playerToken)
+    await rust_socket.connect()
+    info = await rust_socket.get_info()
+    return info
+
 @app.route("/")
 def index():
     time = asyncio.run(get_time())
     devices = asyncio.run(get_devices())
-    return render_template("index.html", time=time, devices=devices, len=len(devices))
+    info = asyncio.run(get_server_info())
+    return render_template("index.html", time=time, devices=devices, len=len(devices), name=info.name)
 
 @app.route("/add_device", methods=["POST"])
 def add_device():
