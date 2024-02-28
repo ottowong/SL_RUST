@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 import sqlite3
+from PIL import Image
 
 conn = sqlite3.connect('database.db')
 cur = conn.cursor()
@@ -21,6 +22,17 @@ playerToken = int(os.environ.get("PLAYERTOKEN"))
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
+
+
+
+async def get_map(add_icons=False,add_events=False, add_vending_machines=False):
+    rust_socket = RustSocket(ip, port, steamId, playerToken)
+    await rust_socket.connect()
+    rust_map = await rust_socket.get_map(add_icons=add_icons, add_events=add_events, add_vending_machines=add_vending_machines)
+    return rust_map
+
+rust_map = asyncio.run(get_map())
+rust_map.save("static/map.png")
 
 async def get_devices():
     conn = sqlite3.connect('database.db')
