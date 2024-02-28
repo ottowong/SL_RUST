@@ -6,7 +6,6 @@
     <title>{{ name }}</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
-    <script src="{{ url_for('static', filename='socket_client.js') }}"></script>
 </head>
 <body><div id = "main">
     <h1>{{ name }}</h1>
@@ -22,7 +21,9 @@
         canvas.style.background = "#0b3a4a"
         var ctx = canvas.getContext('2d');
         var img = new Image();
+        var redx = new Image();
         img.src = "{{ url_for('static', filename='map.png') }}";
+        redx.src = "{{ url_for('static', filename='redx.png') }}";
 
         let cameraOffset = { x: window.innerWidth/2, y: window.innerHeight/2 }
         let cameraZoom = 1
@@ -35,15 +36,16 @@
             canvas.width = window.innerWidth
             canvas.height = window.innerHeight
             
-            // Translate to the canvas centre before zooming - so you'll always zoom on what you're looking directly at
             ctx.translate( window.innerWidth / 2, window.innerHeight / 2 )
             ctx.scale(cameraZoom, cameraZoom)
             ctx.translate( -window.innerWidth / 2 + cameraOffset.x, -window.innerHeight / 2 + cameraOffset.y )
             ctx.drawImage(img, 0,0);
+            ctx.drawImage(redx, 0,0);
+            ctx.drawImage(redx, 2000,2000);
+            ctx.beginPath();
             requestAnimationFrame( draw )
         }
 
-        // Gets the relevant location from a mouse or single touch event
         function getEventLocation(e)
         {
             if (e.touches && e.touches.length == 1)
@@ -105,7 +107,6 @@
             let touch1 = { x: e.touches[0].clientX, y: e.touches[0].clientY }
             let touch2 = { x: e.touches[1].clientX, y: e.touches[1].clientY }
             
-            // This is distance squared, but no need for an expensive sqrt as it's only used in ratio
             let currentDistance = (touch1.x - touch2.x)**2 + (touch1.y - touch2.y)**2
             
             if (initialPinchDistance == null)
@@ -147,8 +148,33 @@
         canvas.addEventListener('touchmove', (e) => handleTouch(e, onPointerMove))
         canvas.addEventListener( 'wheel', (e) => adjustZoom(e.deltaY*SCROLL_SENSITIVITY))
 
-        // Ready, set, go
         draw()
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var socket = io();
+            socket.on('connect', function() {
+                socket.send('Client connected!');
+            });
+            socket.on('sent_devices', function(devices) {
+                var ul = document.getElementById('device_list');
+                ul.innerHTML = '';
+                devices.forEach(device => {
+                    var li = document.createElement('li');
+                    li.textContent = device[1];
+                    li.setAttribute('data-id', device[0]);
+                    ul.appendChild(li);
+                });
+            });
+            socket.on('update_markers', function(markers) {
+                markers.forEach(marker => {
+                    ctx.drawImage(redx, marker[1],marker[2]);
+                    console.log(marker[0])
+                    ctx.beginPath();
+                    requestAnimationFrame( draw )
+                });
+                console.log("drawn markers")
+            });
+        });
 
     </script>
     <form action="/add_device" method="POST">
@@ -161,6 +187,10 @@
 </div>
 </body>
 </html>
+
+<script>
+    
+</script>
 
 <style>
     html, body { 

@@ -54,6 +54,12 @@ async def get_server_info():
     info = await rust_socket.get_info()
     return info
 
+async def get_markers():
+    rust_socket = RustSocket(ip, port, steamId, playerToken)
+    await rust_socket.connect()
+    markers = await rust_socket.get_markers()
+    return markers
+
 @app.route("/")
 def index():
     time = asyncio.run(get_time())
@@ -79,9 +85,16 @@ def add_device():
 def handle_message(message):
     print('Received message: ' + message)
     devices = asyncio.run(get_devices())
-    emit('sent_devices', devices)
+    initial_markers = asyncio.run(get_markers())
+    markers = []
+    for marker in initial_markers:
+        print(marker.x)
+        current_marker = [marker.type,marker.x,marker.y]
+        markers.append(current_marker)
+    emit('update_markers', markers)
+    # emit('sent_devices', devices)
 
-@socketio.on('request_devices')
+@socketio.on('request_devices') # unused
 def handle_request_devices():
     devices = asyncio.run(get_devices())
     emit('sent_devices', devices)
