@@ -22,6 +22,15 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
 
+async def get_devices():
+    conn = sqlite3.connect('database.db')
+    cur = conn.cursor()
+    cur.execute("SELECT id, name FROM tbl_devices")
+    devices = cur.fetchall()
+    cur.close()
+    conn.close()
+    return devices
+
 async def get_time():
     rust_socket = RustSocket(ip, port, steamId, playerToken)
     await rust_socket.connect()
@@ -32,14 +41,7 @@ async def get_time():
 @app.route("/")
 def index():
     time = asyncio.run(get_time())
-
-    conn = sqlite3.connect('database.db')
-    cur = conn.cursor()
-    cur.execute("SELECT id, name FROM tbl_devices")
-    devices = cur.fetchall()
-    cur.close()
-    conn.close()
-
+    devices = asyncio.run(get_devices())
     return render_template("index.html", time=time, devices=devices, len=len(devices))
 
 @app.route("/add_device", methods=["POST"])
@@ -63,12 +65,7 @@ def handle_message(message):
 
 @socketio.on('request_devices')
 def handle_request_devices():
-    conn = sqlite3.connect('database.db')
-    cur = conn.cursor()
-    cur.execute("SELECT id, name FROM tbl_devices")
-    devices = cur.fetchall()
-    cur.close()
-    conn.close()
+    devices = asyncio.run(get_devices())
     emit('sent_devices', devices)
 
 if __name__ == '__main__':
