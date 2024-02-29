@@ -1,0 +1,16 @@
+html, body { 
+    margin: 0;
+    pointer-events:none;
+}
+canvas {
+    pointer-events:all;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+input{
+    pointer-events:visible;
+}
+#main{
+}

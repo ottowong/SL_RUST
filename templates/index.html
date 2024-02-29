@@ -6,6 +6,7 @@
     <title>{{ name }}</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body><div id = "main">
     <h1>{{ name }}</h1>
@@ -241,26 +242,3 @@
 </div>
 </body>
 </html>
-
-<script>
-    
-</script>
-
-<style>
-    html, body { 
-        margin: 0;
-        pointer-events:none;
-    }
-    canvas {
-        pointer-events:all;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: -1;
-    }
-    input{
-        pointer-events:visible;
-    }
-    #main{
-    }
-</style>
