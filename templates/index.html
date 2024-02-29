@@ -21,15 +21,32 @@
         canvas.style.background = "#0b3a4a"
         var ctx = canvas.getContext('2d');
         var img = new Image();
+        var shop = new Image();
         var redx = new Image();
+        var explosion = new Image();
+        var ch47 = new Image();
+        var cargo = new Image();
+        var crate = new Image();
+        var genrad = new Image();
+        var patrol = new Image();
         img.src = "{{ url_for('static', filename='map.png') }}";
         redx.src = "{{ url_for('static', filename='redx.png') }}";
+        shop.src = "{{ url_for('static', filename='shop.png') }}";
+        explosion.src = "{{ url_for('static', filename='explosion.png') }}";
+        ch47.src = "{{ url_for('static', filename='ch47.png') }}";
+        cargo.src = "{{ url_for('static', filename='cargo.png') }}";
+        crate.src = "{{ url_for('static', filename='crate.png') }}";
+        genrad.src = "{{ url_for('static', filename='genrad.png') }}";
+        patrol.src = "{{ url_for('static', filename='patrol.png') }}";
+
+
 
         let cameraOffset = { x: window.innerWidth/2, y: window.innerHeight/2 }
         let cameraZoom = 1
         let MAX_ZOOM = 5
         let MIN_ZOOM = 0.1
         let SCROLL_SENSITIVITY = 0.001
+        let all_markers = []
 
         function draw()
         {
@@ -40,8 +57,46 @@
             ctx.scale(cameraZoom, cameraZoom)
             ctx.translate( -window.innerWidth / 2 + cameraOffset.x, -window.innerHeight / 2 + cameraOffset.y )
             ctx.drawImage(img, 0,0);
-            ctx.drawImage(redx, 0,0);
-            ctx.drawImage(redx, 2000,2000);
+            all_markers.forEach(marker => {
+                // let x=(marker[1]/4500*2000)-16
+                // let y=(2000-marker[2]/4500*2000)-16
+                let x = (marker[1] / 4500 * 2000) - 16;
+                let y = (2000 - marker[2] / 4500 * 2000) - 16;
+                let angleInRadians = (marker[3] * Math.PI / 180)*-1; // Convert degrees to radians
+                ctx.save(); // Save the current context state
+                ctx.translate(x, y); // Translate to the marker position
+                ctx.rotate(angleInRadians); // Rotate by the specified angle
+                switch (marker[0]) {
+                    case 1: // player
+                        // get player icon from steam id
+                        break;
+                    case 2: // explosion
+                        ctx.drawImage(explosion, -16, -16); // Draw at center
+                        break;
+                    case 3: // shop
+                        ctx.drawImage(shop, -16, -16); // Draw at center
+                        break;
+                    case 4: // CH47
+                        ctx.drawImage(ch47, -16, -16); // Draw at center
+                        break;
+                    case 5: // cargo ship
+                    // console.log(angleInRadians)
+                        ctx.drawImage(cargo, -16, -16); // Draw at center
+                        break;
+                    case 6: // crate
+                        ctx.drawImage(crate, -16, -16); // Draw at center
+                        break;
+                    case 7: // generic radius (whats that???)
+                        ctx.drawImage(genrad, -16, -16); // Draw at center
+                        break;
+                    case 8: // patrol helicopter
+                        ctx.drawImage(patrol, -16, -16); // Draw at center
+                        break;
+                    default:
+                        ctx.drawImage(redx, -16, -16); // Draw at center
+                }
+                ctx.restore();
+            });
             ctx.beginPath();
             requestAnimationFrame( draw )
         }
@@ -166,13 +221,7 @@
                 });
             });
             socket.on('update_markers', function(markers) {
-                markers.forEach(marker => {
-                    ctx.drawImage(redx, marker[1],marker[2]);
-                    console.log(marker[0])
-                    ctx.beginPath();
-                    requestAnimationFrame( draw )
-                });
-                console.log("drawn markers")
+                all_markers = markers // update global variable, probably a better way of doing this, but the pan/zoom code makes that harder.
             });
         });
 

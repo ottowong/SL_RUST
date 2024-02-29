@@ -161,3 +161,10 @@ cython_debug/
 database.db
 rustplus.config.json
 static/map.png
+static/cargo.png
+static/ch47.png
+static/crate.png
+static/explosion.png
+static/genrad.png
+static/patrol.png
+static/shop.png

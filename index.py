@@ -6,6 +6,8 @@ from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 import sqlite3
 from PIL import Image
+import threading
+import time
 
 conn = sqlite3.connect('database.db')
 cur = conn.cursor()
@@ -23,14 +25,42 @@ app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
 
+def emit_markers():
+    while True:
+        time.sleep(5)  # Wait for 5 seconds
+        # Get markers and emit them
+        try:
+            initial_markers = asyncio.run(get_markers())
+            markers = []
+            for marker in initial_markers: # implicitly converting the object to json wasnt working, so make a list instead
+                current_marker = [marker.type,marker.x,marker.y,marker.rotation]
+                markers.append(current_marker)
+            print("sending markers...")
+            socketio.emit('update_markers', markers)
+        except Exception as e:
+            print("failed to send markers :-(\n", e)
+
+marker_thread = threading.Thread(target=emit_markers)
+marker_thread.daemon = True  # Daemonize the thread so it terminates when the main thread terminates
+marker_thread.start()
+
 async def get_map(add_icons=False,add_events=False, add_vending_machines=False):
     rust_socket = RustSocket(ip, port, steamId, playerToken)
     await rust_socket.connect()
     rust_map = await rust_socket.get_map(add_icons=add_icons, add_events=add_events, add_vending_machines=add_vending_machines)
+    await rust_socket.disconnect()
     return rust_map
 
-rust_map = asyncio.run(get_map())
+# get a new map png when the program starts
+rust_map = asyncio.run(get_map()) 
 rust_map.save("static/map.png")
+
+async def get_time():
+    rust_socket = RustSocket(ip, port, steamId, playerToken)
+    await rust_socket.connect()
+    rust_time = await rust_socket.get_time()
+    await rust_socket.disconnect()
+    return rust_time
 
 async def get_devices():
     conn = sqlite3.connect('database.db')
@@ -52,13 +82,20 @@ async def get_server_info():
     rust_socket = RustSocket(ip, port, steamId, playerToken)
     await rust_socket.connect()
     info = await rust_socket.get_info()
+    await rust_socket.disconnect()
     return info
 
 async def get_markers():
     rust_socket = RustSocket(ip, port, steamId, playerToken)
-    await rust_socket.connect()
-    markers = await rust_socket.get_markers()
-    return markers
+    try:
+        await rust_socket.connect()
+        markers = await rust_socket.get_markers()
+        return markers
+    except Exception as e:
+        print(f"Error occurred while fetching markers: {e}")
+        return []  # Return an empty list in case of error
+    finally:
+        await rust_socket.disconnect()
 
 @app.route("/")
 def index():
@@ -87,11 +124,11 @@ def handle_message(message):
     devices = asyncio.run(get_devices())
     initial_markers = asyncio.run(get_markers())
     markers = []
-    for marker in initial_markers:
-        print(marker.x)
-        current_marker = [marker.type,marker.x,marker.y]
+    for marker in initial_markers: # implicitly converting the object to json wasnt working, so make a list instead
+        current_marker = [marker.type,marker.x,marker.y,marker.rotation]
+        print(marker.rotation)
         markers.append(current_marker)
-    emit('update_markers', markers)
+    # emit('update_markers', markers)
     # emit('sent_devices', devices)
 
 @socketio.on('request_devices') # unused
@@ -100,4 +137,4 @@ def handle_request_devices():
     emit('sent_devices', devices)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app, debug=True)
