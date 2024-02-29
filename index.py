@@ -25,23 +25,28 @@ app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
 
-def emit_markers():
+async def emit_markers():
+    rust_socket = RustSocket(ip, port, steamId, playerToken)
+    await rust_socket.connect()
     while True:
-        time.sleep(5)  # Wait for 5 seconds
-        # Get markers and emit them
+        await asyncio.sleep(1)  # Wait for 5 seconds
         try:
-            initial_markers = asyncio.run(get_markers())
+            initial_markers = await rust_socket.get_markers()  # This should be awaited
             markers = []
-            for marker in initial_markers: # implicitly converting the object to json wasnt working, so make a list instead
-                current_marker = [marker.type,marker.x,marker.y,marker.rotation]
+            for marker in initial_markers:
+                current_marker = [marker.type, marker.x, marker.y, marker.rotation]
                 markers.append(current_marker)
-            print("sending markers...")
             socketio.emit('update_markers', markers)
         except Exception as e:
             print("failed to send markers :-(\n", e)
 
-marker_thread = threading.Thread(target=emit_markers)
-marker_thread.daemon = True  # Daemonize the thread so it terminates when the main thread terminates
+def start_emit_markers():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(emit_markers())
+
+marker_thread = threading.Thread(target=start_emit_markers)
+marker_thread.daemon = True
 marker_thread.start()
 
 async def get_map(add_icons=False,add_events=False, add_vending_machines=False):
