@@ -29,6 +29,24 @@ app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
 
+def get_steam_profile_pic(steam_id):
+    if(steam_id in steam_pics):
+        return steam_pics[steam_id]
+    url = f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={SteamApiKey}&steamids={steam_id}'
+    try:
+        response = requests.get(url)
+        data = response.json()
+        print(data['response']['players'][0]['avatar'])
+        if len(data['response']['players']) > 0:
+            profile_pic = data['response']['players'][0]['avatar']
+            steam_pics[steam_id] = profile_pic
+            return profile_pic
+        else:
+            return None
+    except Exception as e:
+        print(f"An error occurred trying to get steam profile pic: {e}")
+        return None
+
 async def emit_markers():
     rust_socket = RustSocket(ip, port, steamId, playerToken)
     await rust_socket.connect()
@@ -66,25 +84,6 @@ async def get_map(add_icons=False,add_events=False, add_vending_machines=False):
 # get a new map png when the program starts
 rust_map = asyncio.run(get_map()) 
 rust_map.save("static/map.png")
-
-def get_steam_profile_pic(steam_id):
-    if(steam_id in steam_pics):
-        return steam_pics[steam_id]
-    url = f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={SteamApiKey}&steamids={steam_id}'
-    try:
-        response = requests.get(url)
-        data = response.json()
-        print(data['response']['players'][0]['avatar'])
-        if len(data['response']['players']) > 0:
-            profile_pic = data['response']['players'][0]['avatar']
-            steam_pics[steam_id] = profile_pic
-            return profile_pic
-        else:
-            return None
-    except Exception as e:
-        print(f"An error occurred trying to get steam profile pic: {e}")
-        return None
-
 
 async def get_time():
     rust_socket = RustSocket(ip, port, steamId, playerToken)
@@ -162,4 +161,4 @@ def handle_request_devices():
     emit('sent_devices', devices)
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, port=18057)
