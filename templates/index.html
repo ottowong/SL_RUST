@@ -45,8 +45,6 @@
         genrad.src = "{{ url_for('static', filename='genrad.png') }}";
         patrol.src = "{{ url_for('static', filename='patrol.png') }}";
 
-
-
         let cameraOffset = { x: window.innerWidth/2, y: window.innerHeight/2 }
         let cameraZoom = 1
         let MAX_ZOOM = 5
@@ -64,11 +62,9 @@
             ctx.translate( -window.innerWidth / 2 + cameraOffset.x, -window.innerHeight / 2 + cameraOffset.y )
             ctx.drawImage(img, 0,0);
             all_markers.forEach(marker => {
-                // let x=(marker[1]/4500*2000)-16
-                // let y=(2000-marker[2]/4500*2000)-16
                 let x = (marker[1] / 4500 * 2000) - 16;
                 let y = (2000 - marker[2] / 4500 * 2000) - 16;
-                let angleInRadians = (marker[3] * Math.PI / 180)*-1; // Convert degrees to radians
+                let angleInRadians = (marker[3] * Math.PI / 180) * -1; // Convert degrees to radians
                 ctx.save(); // Save the current context state
                 ctx.translate(x, y); // Translate to the marker position
                 ctx.rotate(angleInRadians); // Rotate by the specified angle
@@ -76,33 +72,33 @@
                     case 1: // player
                         if (marker[4]) {
                             var playerImage = createImage(marker[4]);
-                            ctx.drawImage(playerImage, -16, -16);
+                            ctx.drawImage(playerImage, 0, 0);
                         }
                         break;
                     case 2: // explosion
-                        ctx.drawImage(explosion, -16, -16); // Draw at center
+                        ctx.drawImage(explosion, 0, 0);
                         break;
                     case 3: // shop
-                        ctx.drawImage(shop, -16, -16); // Draw at center
+                        ctx.drawImage(shop, 0, 0);
                         break;
                     case 4: // CH47
-                        ctx.drawImage(ch47, -16, -16); // Draw at center
+                        ctx.drawImage(ch47, 0, 0);
                         break;
                     case 5: // cargo ship
                     // console.log(angleInRadians)
-                        ctx.drawImage(cargo, -16, -16); // Draw at center
+                        ctx.drawImage(cargo, 0, 0);
                         break;
                     case 6: // crate
-                        ctx.drawImage(crate, -16, -16); // Draw at center
+                        ctx.drawImage(crate, 0, 0);
                         break;
                     case 7: // generic radius (whats that???)
-                        ctx.drawImage(genrad, -16, -16); // Draw at center
+                        ctx.drawImage(genrad, 0, 0);
                         break;
                     case 8: // patrol helicopter
-                        ctx.drawImage(patrol, -16, -16); // Draw at center
+                        ctx.drawImage(patrol, 0, 0);
                         break;
                     default:
-                        ctx.drawImage(redx, -16, -16); // Draw at center
+                        ctx.drawImage(redx, 0, 0);
                 }
                 ctx.restore();
             });

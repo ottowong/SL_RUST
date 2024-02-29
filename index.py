@@ -47,7 +47,7 @@ def get_steam_profile_pic(steam_id):
         print(f"An error occurred trying to get steam profile pic: {e}")
         return None
 
-async def emit_markers():
+async def update_loop():
     rust_socket = RustSocket(ip, port, steamId, playerToken)
     await rust_socket.connect()
     while True:
@@ -65,14 +65,14 @@ async def emit_markers():
         except Exception as e:
             print("failed to send markers :-(\n", e)
 
-def start_emit_markers():
+def start_update_loop():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    loop.run_until_complete(emit_markers())
+    loop.run_until_complete(update_loop())
 
-marker_thread = threading.Thread(target=start_emit_markers)
-marker_thread.daemon = True
-marker_thread.start()
+update_thread = threading.Thread(target=start_update_loop)
+update_thread.daemon = True
+update_thread.start()
 
 async def get_map(add_icons=False,add_events=False, add_vending_machines=False):
     rust_socket = RustSocket(ip, port, steamId, playerToken)
