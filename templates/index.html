@@ -6,7 +6,6 @@
     <title>{{ name }}</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
-    <script src="{{ url_for('static', filename='socket_client.js') }}"></script>
 </head>
 <body><div id = "main">
     <h1>{{ name }}</h1>
@@ -18,32 +17,99 @@
     </ul>
     <canvas id="map_canvas"></canvas>
     <script>
+        function createImage(url) {
+            var img = new Image();
+            img.src = url;
+            return img;
+        }
+
         var canvas = document.getElementById('map_canvas');
         canvas.style.background = "#0b3a4a"
         var ctx = canvas.getContext('2d');
         var img = new Image();
+        var shop = new Image();
+        var redx = new Image();
+        var explosion = new Image();
+        var ch47 = new Image();
+        var cargo = new Image();
+        var crate = new Image();
+        var genrad = new Image();
+        var patrol = new Image();
         img.src = "{{ url_for('static', filename='map.png') }}";
+        redx.src = "{{ url_for('static', filename='redx.png') }}";
+        shop.src = "{{ url_for('static', filename='shop.png') }}";
+        explosion.src = "{{ url_for('static', filename='explosion.png') }}";
+        ch47.src = "{{ url_for('static', filename='ch47.png') }}";
+        cargo.src = "{{ url_for('static', filename='cargo.png') }}";
+        crate.src = "{{ url_for('static', filename='crate.png') }}";
+        genrad.src = "{{ url_for('static', filename='genrad.png') }}";
+        patrol.src = "{{ url_for('static', filename='patrol.png') }}";
+
+
 
         let cameraOffset = { x: window.innerWidth/2, y: window.innerHeight/2 }
         let cameraZoom = 1
         let MAX_ZOOM = 5
         let MIN_ZOOM = 0.1
         let SCROLL_SENSITIVITY = 0.001
+        let all_markers = []
 
         function draw()
         {
             canvas.width = window.innerWidth
             canvas.height = window.innerHeight
             
-            // Translate to the canvas centre before zooming - so you'll always zoom on what you're looking directly at
             ctx.translate( window.innerWidth / 2, window.innerHeight / 2 )
             ctx.scale(cameraZoom, cameraZoom)
             ctx.translate( -window.innerWidth / 2 + cameraOffset.x, -window.innerHeight / 2 + cameraOffset.y )
             ctx.drawImage(img, 0,0);
+            all_markers.forEach(marker => {
+                // let x=(marker[1]/4500*2000)-16
+                // let y=(2000-marker[2]/4500*2000)-16
+                let x = (marker[1] / 4500 * 2000) - 16;
+                let y = (2000 - marker[2] / 4500 * 2000) - 16;
+                let angleInRadians = (marker[3] * Math.PI / 180)*-1; // Convert degrees to radians
+                ctx.save(); // Save the current context state
+                ctx.translate(x, y); // Translate to the marker position
+                ctx.rotate(angleInRadians); // Rotate by the specified angle
+                switch (marker[0]) {
+                    case 1: // player
+                        if (marker[4]) {
+                            var playerImage = createImage(marker[4]);
+                            ctx.drawImage(playerImage, -16, -16);
+                        }
+                        break;
+                    case 2: // explosion
+                        ctx.drawImage(explosion, -16, -16); // Draw at center
+                        break;
+                    case 3: // shop
+                        ctx.drawImage(shop, -16, -16); // Draw at center
+                        break;
+                    case 4: // CH47
+                        ctx.drawImage(ch47, -16, -16); // Draw at center
+                        break;
+                    case 5: // cargo ship
+                    // console.log(angleInRadians)
+                        ctx.drawImage(cargo, -16, -16); // Draw at center
+                        break;
+                    case 6: // crate
+                        ctx.drawImage(crate, -16, -16); // Draw at center
+                        break;
+                    case 7: // generic radius (whats that???)
+                        ctx.drawImage(genrad, -16, -16); // Draw at center
+                        break;
+                    case 8: // patrol helicopter
+                        ctx.drawImage(patrol, -16, -16); // Draw at center
+                        break;
+                    default:
+                        ctx.drawImage(redx, -16, -16); // Draw at center
+                }
+                ctx.restore();
+            });
+            ctx.beginPath();
             requestAnimationFrame( draw )
         }
 
-        // Gets the relevant location from a mouse or single touch event
         function getEventLocation(e)
         {
             if (e.touches && e.touches.length == 1)
@@ -105,7 +171,6 @@
             let touch1 = { x: e.touches[0].clientX, y: e.touches[0].clientY }
             let touch2 = { x: e.touches[1].clientX, y: e.touches[1].clientY }
             
-            // This is distance squared, but no need for an expensive sqrt as it's only used in ratio
             let currentDistance = (touch1.x - touch2.x)**2 + (touch1.y - touch2.y)**2
             
             if (initialPinchDistance == null)
@@ -147,8 +212,27 @@
         canvas.addEventListener('touchmove', (e) => handleTouch(e, onPointerMove))
         canvas.addEventListener( 'wheel', (e) => adjustZoom(e.deltaY*SCROLL_SENSITIVITY))
 
-        // Ready, set, go
         draw()
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var socket = io();
+            socket.on('connect', function() {
+                socket.send('Client connected!');
+            });
+            socket.on('sent_devices', function(devices) {
+                var ul = document.getElementById('device_list');
+                ul.innerHTML = '';
+                devices.forEach(device => {
+                    var li = document.createElement('li');
+                    li.textContent = device[1];
+                    li.setAttribute('data-id', device[0]);
+                    ul.appendChild(li);
+                });
+            });
+            socket.on('update_markers', function(markers) {
+                all_markers = markers // update global variable, probably a better way of doing this, but the pan/zoom code makes that harder.
+            });
+        });
 
     </script>
     <form action="/add_device" method="POST">
@@ -161,6 +245,10 @@
 </div>
 </body>
 </html>
+
+<script>
+    
+</script>
 
 <style>
     html, body { 
