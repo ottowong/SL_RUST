@@ -17,6 +17,12 @@
     </ul>
     <canvas id="map_canvas"></canvas>
     <script>
+        function createImage(url) {
+            var img = new Image();
+            img.src = url;
+            return img;
+        }
+
         var canvas = document.getElementById('map_canvas');
         canvas.style.background = "#0b3a4a"
         var ctx = canvas.getContext('2d');
@@ -68,7 +74,10 @@
                 ctx.rotate(angleInRadians); // Rotate by the specified angle
                 switch (marker[0]) {
                     case 1: // player
-                        // get player icon from steam id
+                        if (marker[4]) {
+                            var playerImage = createImage(marker[4]);
+                            ctx.drawImage(playerImage, -16, -16);
+                        }
                         break;
                     case 2: // explosion
                         ctx.drawImage(explosion, -16, -16); // Draw at center
