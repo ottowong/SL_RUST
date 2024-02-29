@@ -1,6 +1,7 @@
 import os
 import asyncio
 from rustplus import RustSocket
+from rustplus import EntityEvent, TeamEvent, ChatEvent
 from dotenv import load_dotenv
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
@@ -22,6 +23,9 @@ port = os.environ.get("PORT")
 steamId = int(os.environ.get("STEAMID"))
 playerToken = int(os.environ.get("PLAYERTOKEN"))
 SteamApiKey = os.environ.get("STEAMAPIKEY")
+
+rust_socket = RustSocket(ip, port, steamId, playerToken)
+rust_socket.connect()
 
 steam_pics = {}
 
@@ -48,6 +52,7 @@ def get_steam_profile_pic(steam_id):
         return None
 
 async def update_loop():
+    await asyncio.sleep(10)
     rust_socket = RustSocket(ip, port, steamId, playerToken)
     await rust_socket.connect()
     while True:
@@ -159,6 +164,14 @@ def handle_message(message):
 def handle_request_devices():
     devices = asyncio.run(get_devices())
     emit('sent_devices', devices)
+
+@rust_socket.team_event
+async def team(event : TeamEvent):
+  print(f"The team leader's steamId is: {event.team_info.leader_steam_id}")
+
+@rust_socket.chat_event
+async def chat(event : ChatEvent):
+  print(f"{event.message.name}: {event.message.message}")
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, port=18057)

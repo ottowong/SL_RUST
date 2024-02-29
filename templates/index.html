@@ -10,7 +10,7 @@
 </head>
 <body><div id = "main">
     <h1>{{ name }}</h1>
-    <p>Current time: {{ time }}</p>
+    <p id="time">Current time: {{ time }}</p>
     <ul id="device_list">
         {% for i in range(0, len) %}
             <li id="{{ devices[i][0] }}">{{ devices[i][1] }}</li>
