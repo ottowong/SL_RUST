@@ -11,6 +11,7 @@
 <body><div id = "main">
     <h1>{{ name }}</h1>
     <p id="time">Current time: {{ time }}</p>
+    <!-- do some quirky javascript to guess the current time base off of the initial one. So that we don't spam requests -->
     <ul id="device_list">
         {% for i in range(0, len) %}
             <li id="{{ devices[i][0] }}">{{ devices[i][1] }}</li>
@@ -73,7 +74,14 @@
                     case 1: // player
                         if (marker[4]) {
                             var playerImage = createImage(marker[4]);
-                            ctx.drawImage(playerImage, 0, 0);
+                            // crop to be a circle
+                            ctx.save(); 
+                            ctx.beginPath();
+                            ctx.arc(16, 16, 16, 0, Math.PI * 2);
+                            ctx.closePath();
+                            ctx.clip();
+                            ctx.drawImage(playerImage, 0, 0, 32, 32);
+                            ctx.restore();
                         }
                         break;
                     case 2: // explosion
