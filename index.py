@@ -156,9 +156,6 @@ def add_device():
 @socketio.on('message')
 def handle_message(message):
     print('Received message: ' + message)
-    devices = asyncio.run(get_devices())
-    # emit('update_markers', markers)
-    # emit('sent_devices', devices)
 
 @socketio.on('request_devices') # unused
 def handle_request_devices():
