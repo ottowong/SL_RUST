@@ -217,13 +217,30 @@
             }
         }
 
-        canvas.addEventListener('mousedown', onPointerDown)
-        canvas.addEventListener('touchstart', (e) => handleTouch(e, onPointerDown))
-        canvas.addEventListener('mouseup', onPointerUp)
-        canvas.addEventListener('touchend',  (e) => handleTouch(e, onPointerUp))
-        canvas.addEventListener('mousemove', onPointerMove)
-        canvas.addEventListener('touchmove', (e) => handleTouch(e, onPointerMove))
+        canvas.addEventListener('mousedown', function(event) {
+            if (event.button === 1) { // Middle mouse button
+                onPointerDown(event);
+            }
+        });
+
+        canvas.addEventListener('mouseup', function(event) {
+            if (event.button === 1) { // Middle mouse button
+                onPointerUp(event);
+            }
+        });
+
+        canvas.addEventListener('mousemove', function(event) {
+            if (event.buttons === 4) { // 4 corresponds to middle mouse button
+                onPointerMove(event);
+            }
+        });
+        
         canvas.addEventListener( 'wheel', (e) => adjustZoom(e.deltaY*SCROLL_SENSITIVITY))
+
+        canvas.addEventListener('touchstart', (e) => handleTouch(e, onPointerDown))
+        canvas.addEventListener('touchend',  (e) => handleTouch(e, onPointerUp))
+        canvas.addEventListener('touchmove', (e) => handleTouch(e, onPointerMove))
+        
 
         draw()
 
