@@ -47,9 +47,16 @@
         crate.src = "{{ url_for('static', filename='crate.png') }}";
         genrad.src = "{{ url_for('static', filename='genrad.png') }}";
         patrol.src = "{{ url_for('static', filename='patrol.png') }}";
-
-        let cameraOffset = { x: window.innerWidth/2 - (img.width/2), y: window.innerHeight/2 - (img.height/2)}
-        let cameraZoom = 1
+        
+        let cameraOffset = { x: window.innerWidth/2, y: window.innerHeight/2 }
+        
+        img.onload = function() {
+            let halfWidth = img.width / 2;
+            let halfHeight = img.height / 2;
+            cameraOffset = { x: window.innerWidth / 2 - halfWidth, y: window.innerHeight / 2 - halfHeight };
+        }
+        
+        let cameraZoom = 0.5
         let MAX_ZOOM = 5
         let MIN_ZOOM = 0.1
         let SCROLL_SENSITIVITY = 0.001
