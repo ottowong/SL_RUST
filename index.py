@@ -106,13 +106,12 @@ async def Main():
         while True:
             await asyncio.sleep(5)  # Wait for an amount of time
             try:
-                data = ""
                 team_info = await rust_socket.get_team_info()
                 for member in team_info.members:
                     steam_members[member.steam_id]["is_online"] = member.is_online
                     steam_members[member.steam_id]["is_alive"] = member.is_alive
             except Exception as e:
-                print("failed to send medium update :-(\n", e)
+                print("failed to update steam members :-(\n", e)
 
     
     @socketio.on('message')
