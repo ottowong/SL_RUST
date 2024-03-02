@@ -42,7 +42,10 @@ def get_steam_member(steam_id):
         print(data['response']['players'][0]['avatar'])
         if len(data['response']['players']) > 0:
             profile_pic = data['response']['players'][0]['avatar']
-            steam_members[steam_id] = {"url": profile_pic, "is_online": False, "is_alive": True}
+            img_data = requests.get(profile_pic).content
+            with open('static/profilepics/'+str(steam_id)+'.jpg', 'wb') as handler:
+                handler.write(img_data)
+            steam_members[steam_id] = {"url": profile_pic, "is_online": False, "is_alive": True, "steam_id": str(steam_id)}
             return steam_members[steam_id]
         else:
             return None
@@ -101,14 +104,13 @@ async def Main():
     async def medium_loop():
         print("starting medium loop...")
         while True:
-            await asyncio.sleep(10)  # Wait for an amount of time
+            await asyncio.sleep(5)  # Wait for an amount of time
             try:
                 data = ""
                 team_info = await rust_socket.get_team_info()
                 for member in team_info.members:
                     steam_members[member.steam_id]["is_online"] = member.is_online
                     steam_members[member.steam_id]["is_alive"] = member.is_alive
-                    # then do coloured circles around the player in the html canvas
             except Exception as e:
                 print("failed to send medium update :-(\n", e)
 
@@ -131,7 +133,7 @@ async def Main():
         print(f"{event.message.name}: {event.message.message}")
 
 
-    @app.route("/")
+    @app.route("/") # move this out of the Main loop if possible
     def index():
         time = asyncio.run(get_time())
         devices = asyncio.run(get_devices())

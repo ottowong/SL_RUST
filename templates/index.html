@@ -82,7 +82,7 @@
                 switch (marker[0]) {
                     case 1: // player
                         if (marker[4]) {
-                            var playerImage = createImage(marker[4].url);
+                            var playerImage = createImage("/static/profilepics/"+marker[4].steam_id+".jpg"); // find a way to not create a new image every time (?)
                             // crop to be a circle
                             ctx.save(); 
                             ctx.beginPath();
@@ -108,8 +108,8 @@
                             } else {
                                 ctx.strokeStyle = '#7d7d7d';
                             }
-                            ctx.lineWidth = 2; // Set the line width
-                            ctx.stroke(); // Draw the circle
+                            ctx.lineWidth = 2;
+                            ctx.stroke();
                         }
                         break;
                     case 2: // explosion
