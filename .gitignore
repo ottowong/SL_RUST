@@ -161,4 +161,4 @@ cython_debug/
 database.db
 rustplus.config.json
 static/map.png
-static/profilepics/
+static/profilepics/*
