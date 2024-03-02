@@ -18,6 +18,7 @@
             <li id="{{ devices[i][0] }}">{{ devices[i][1] }}</li>
         {% endfor %}
     </ul>
+    
     <canvas id="map_canvas"></canvas>
     <script>
         function createImage(url) {
@@ -72,8 +73,8 @@
             ctx.translate( -window.innerWidth / 2 + cameraOffset.x, -window.innerHeight / 2 + cameraOffset.y )
             ctx.drawImage(img, 0,0);
             all_markers.forEach(marker => {
-                let x = (marker[1] / 4500 * 2000) - 16;
-                let y = (2000 - marker[2] / 4500 * 2000) - 16;
+                let x = (marker[1] / 4500 * 2000);
+                let y = (2000 - marker[2] / 4500 * 2000);
                 let angleInRadians = (marker[3] * Math.PI / 180) * -1; // Convert degrees to radians
                 ctx.save(); // Save the current context state
                 ctx.translate(x, y); // Translate to the marker position
@@ -85,37 +86,37 @@
                             // crop to be a circle
                             ctx.save(); 
                             ctx.beginPath();
-                            ctx.arc(16, 16, 16, 0, Math.PI * 2);
+                            ctx.arc(0, 0, 16, 0, Math.PI * 2);
                             ctx.closePath();
                             ctx.clip();
-                            ctx.drawImage(playerImage, 0, 0, 32, 32);
+                            ctx.drawImage(playerImage, -16, -16, 32, 32);
                             ctx.restore();
                         }
                         break;
                     case 2: // explosion
-                        ctx.drawImage(explosion, 0, 0);
+                        ctx.drawImage(explosion, 0-explosion.width/2, 0-explosion.height/2);
                         break;
                     case 3: // shop
-                        ctx.drawImage(shop, 0, 0);
+                        ctx.drawImage(shop, 0-shop.width/2, 0-shop.height/2);
                         break;
                     case 4: // CH47
-                        ctx.drawImage(ch47, 0, 0);
+                        ctx.drawImage(ch47, 0-ch47.width/2, 0-ch47.height/2);
                         break;
                     case 5: // cargo ship
                     // console.log(angleInRadians)
-                        ctx.drawImage(cargo, 0, 0);
+                        ctx.drawImage(cargo, 0-cargo.width/2, 0-cargo.height/2);
                         break;
                     case 6: // crate
-                        ctx.drawImage(crate, 0, 0);
+                        ctx.drawImage(crate, 0-crate.width/2, 0-crate.height/2);
                         break;
                     case 7: // generic radius (whats that???)
-                        ctx.drawImage(genrad, 0, 0);
+                        ctx.drawImage(genrad, 0-genrad.width/2, 0-genrad.height/2);
                         break;
                     case 8: // patrol helicopter
-                        ctx.drawImage(patrol, 0, 0);
+                        ctx.drawImage(patrol, 0-patrol.width/2, 0-patrol.height/2);
                         break;
                     default:
-                        ctx.drawImage(redx, 0, 0);
+                        ctx.drawImage(redx, 0-redx.width/2, 0-redx.height/2);
                 }
                 ctx.restore();
             });
@@ -265,13 +266,6 @@
         });
 
     </script>
-    <form action="/add_device" method="POST">
-        <label for="device_id">Device ID:</label><br>
-        <input type="text" id="device_id" name="device_id"><br>
-        <label for="device_name">Device Name:</label><br>
-        <input type="text" id="device_name" name="device_name"><br><br>
-        <input type="submit" value="Submit">
-    </form>
 </div>
 </body>
 </html>
