@@ -3,7 +3,7 @@ import asyncio
 from rustplus import RustSocket
 from rustplus import EntityEvent, TeamEvent, ChatEvent
 from dotenv import load_dotenv
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from flask_socketio import SocketIO, emit
 import sqlite3
 from PIL import Image
@@ -34,7 +34,7 @@ socketio = SocketIO(app)
 
 def get_steam_profile_pic(steam_id):
     if(steam_id in steam_pics):
-        return steam_pics[steam_id]
+        return steam_pics[steam_id]["url"]
     url = f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={SteamApiKey}&steamids={steam_id}'
     try:
         response = requests.get(url)
@@ -42,7 +42,7 @@ def get_steam_profile_pic(steam_id):
         print(data['response']['players'][0]['avatar'])
         if len(data['response']['players']) > 0:
             profile_pic = data['response']['players'][0]['avatar']
-            steam_pics[steam_id] = profile_pic
+            steam_pics[steam_id] = {"url": profile_pic, "is_online": False, "is_alive": True}
             return profile_pic
         else:
             return None
@@ -85,7 +85,6 @@ async def Main():
 
 
     async def update_loop():
-        # await asyncio.sleep(10)
         print("starting update loop...")
         while True:
             await asyncio.sleep(1)  # Wait for an amount of time
@@ -101,6 +100,23 @@ async def Main():
                 socketio.emit('update_markers', markers)
             except Exception as e:
                 print("failed to send markers :-(\n", e)
+
+    async def medium_loop():
+        print("starting update loop...")
+        while True:
+            await asyncio.sleep(10)  # Wait for an amount of time
+            try:
+                data = ""
+                team_info = await rust_socket.get_team_info()
+                for member in team_info.members:
+                    member.steam_id
+                    # update the global steam users variable
+                    # with is_online and is_alive
+                    # maybe also rename it
+                    # then do coloured circles around the player in the html canvas
+                socketio.emit('update_medium', data)
+            except Exception as e:
+                print("failed to send medium update :-(\n", e)
 
     
     @socketio.on('message')
@@ -127,6 +143,16 @@ async def Main():
         devices = asyncio.run(get_devices())
         info = asyncio.run(get_server_info())
         return render_template("index.html", time=time, devices=devices, len=len(devices), name=info.name)
+    
+    @app.route("/admin")
+    def admin():
+        conn = sqlite3.connect('database.db')
+        cur = conn.cursor()
+        cur.execute("SELECT id, name FROM tbl_devices")
+        devices = cur.fetchall()
+        cur.close()
+        conn.close()
+        return render_template("admin.html", devices=devices, len=len(devices))
         
     @app.route("/add_device", methods=["POST"]) # use sockets for this instead
     def add_device():
@@ -140,7 +166,20 @@ async def Main():
         cur.close()
         conn.close()
 
-        return "Device added successfully."
+        return redirect("/admin")
+    
+    @app.route("/remove_device", methods=["POST"])
+    def remove_device():
+        device_id = request.form["device_id"]
+        conn = sqlite3.connect('database.db')
+        cur = conn.cursor()
+        cur.execute("DELETE FROM tbl_devices WHERE id=?", (device_id,))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect("/admin")
+
+    
 
 
     # get a new map png when the program starts
@@ -158,4 +197,4 @@ def main_thread():
 if __name__ == '__main__':
     main_thread = threading.Thread(target=main_thread)
     main_thread.start()
-    socketio.run(app, debug=True, port=18057, use_reloader=False)
+    socketio.run(app, debug=False, port=18057, use_reloader=False)

@@ -18,6 +18,7 @@
             <li id="{{ devices[i][0] }}">{{ devices[i][1] }}</li>
         {% endfor %}
     </ul>
+    
     <canvas id="map_canvas"></canvas>
     <script>
         function createImage(url) {
@@ -248,13 +249,6 @@
         });
 
     </script>
-    <form action="/add_device" method="POST">
-        <label for="device_id">Device ID:</label><br>
-        <input type="text" id="device_id" name="device_id"><br>
-        <label for="device_name">Device Name:</label><br>
-        <input type="text" id="device_name" name="device_name"><br><br>
-        <input type="submit" value="Submit">
-    </form>
 </div>
 </body>
 </html>
