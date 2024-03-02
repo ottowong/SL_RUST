@@ -10,13 +10,14 @@
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 </head>
 <body><div id = "main">
-    <h1>{{ name }}</h1>
-    <p id="time">Current time: {{ time }}</p>
+    <h1 id="server_name">{{ server_name }}</h1>
+    <p id="time"></p>
     <!-- do some quirky javascript to guess the current time base off of the initial one. So that we don't spam requests -->
     <ul id="device_list">
         {% for i in range(0, len) %}
-        <li id="{{ devices[i][0] }}">{{ devices[i][1] }}</li>
+            <li id="{{ devices[i][0] }}">{{ devices[i][1] }}</li>
         {% endfor %}
+    </ul>
     </ul>
     <canvas id="map_canvas"></canvas>
     <script src="/static/script.js"></script>

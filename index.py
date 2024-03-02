@@ -28,6 +28,8 @@ rust_socket = RustSocket(ip, port, steamId, playerToken)
 
 steam_members = {}
 
+server_name=""
+
 app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
@@ -52,12 +54,8 @@ def get_steam_member(steam_id):
     except Exception as e:
         print(f"An error occurred trying to get steam profile pic: {e}")
         return None
-
-async def Main():
-    print("Starting main loop")
-    await rust_socket.connect()
-
-    async def get_devices():
+    
+async def get_devices():
         conn = sqlite3.connect('database.db')
         cur = conn.cursor()
         cur.execute("SELECT id, name FROM tbl_devices")
@@ -66,19 +64,63 @@ async def Main():
         conn.close()
         return devices
 
+@app.route("/")
+def index():
+    devices = asyncio.run(get_devices())
+    return render_template("index.html", devices=devices, len=len(devices), server_name=server_name)
+
+@app.route("/add_device", methods=["POST"]) # use sockets for this instead
+def add_device():
+    device_id = request.form["device_id"]
+    device_name = request.form["device_name"]
+
+    conn = sqlite3.connect('database.db')
+    cur = conn.cursor()
+    cur.execute("INSERT INTO tbl_devices (id, name) VALUES (?, ?)", (device_id, device_name))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect("/admin")
+
+@app.route("/remove_device", methods=["POST"])
+def remove_device():
+    device_id = request.form["device_id"]
+    conn = sqlite3.connect('database.db')
+    cur = conn.cursor()
+    cur.execute("DELETE FROM tbl_devices WHERE id=?", (device_id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect("/admin")
+
+@app.route("/admin")
+def admin():
+    conn = sqlite3.connect('database.db')
+    cur = conn.cursor()
+    cur.execute("SELECT id, name FROM tbl_devices")
+    devices = cur.fetchall()
+    cur.close()
+    conn.close()
+    return render_template("admin.html", devices=devices, len=len(devices))
+
+async def Main():
+    print("Starting main loop")
+    await rust_socket.connect()
+
     async def get_time():
         time = (await rust_socket.get_time()).time
         return time
 
     async def get_server_info():
         info = await rust_socket.get_info()
+        global server_name
+        server_name = info.name
         return info
     
     async def get_markers():
         markers = await rust_socket.get_markers()
         return markers
 
-        
     async def get_map(add_icons=False,add_events=False, add_vending_machines=False):
         rust_map = await rust_socket.get_map(add_icons=add_icons, add_events=add_events, add_vending_machines=add_vending_machines)
         return rust_map
@@ -131,55 +173,11 @@ async def Main():
     async def chat(event : ChatEvent):
         print(f"{event.message.name}: {event.message.message}")
 
-
-    @app.route("/") # move this out of the Main loop if possible
-    def index():
-        time = asyncio.run(get_time())
-        devices = asyncio.run(get_devices())
-        info = asyncio.run(get_server_info())
-        return render_template("index.html", time=time, devices=devices, len=len(devices), name=info.name)
-    
-    @app.route("/admin")
-    def admin():
-        conn = sqlite3.connect('database.db')
-        cur = conn.cursor()
-        cur.execute("SELECT id, name FROM tbl_devices")
-        devices = cur.fetchall()
-        cur.close()
-        conn.close()
-        return render_template("admin.html", devices=devices, len=len(devices))
-        
-    @app.route("/add_device", methods=["POST"]) # use sockets for this instead
-    def add_device():
-        device_id = request.form["device_id"]
-        device_name = request.form["device_name"]
-
-        conn = sqlite3.connect('database.db')
-        cur = conn.cursor()
-        cur.execute("INSERT INTO tbl_devices (id, name) VALUES (?, ?)", (device_id, device_name))
-        conn.commit()
-        cur.close()
-        conn.close()
-
-        return redirect("/admin")
-    
-    @app.route("/remove_device", methods=["POST"])
-    def remove_device():
-        device_id = request.form["device_id"]
-        conn = sqlite3.connect('database.db')
-        cur = conn.cursor()
-        cur.execute("DELETE FROM tbl_devices WHERE id=?", (device_id,))
-        conn.commit()
-        cur.close()
-        conn.close()
-        return redirect("/admin")
-
-    
-
-
     # get a new map png when the program starts
     rust_map = await get_map()
     rust_map.save("static/map.png")
+
+    await get_server_info()
 
     # start the update loop
     asyncio.create_task(update_loop())
