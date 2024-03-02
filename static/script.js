@@ -25,6 +25,7 @@ cargo.src = "/static/cargo.png";
 crate.src = "/static/crate.png";
 genrad.src = "/static/genrad.png";
 patrol.src = "/static/patrol.png";
+var playerImages = {};
 
 let cameraOffset = { x: window.innerWidth/2, y: window.innerHeight/2 }
 
@@ -59,7 +60,15 @@ function draw()
         switch (marker[0]) {
             case 1: // player
                 if (marker[4]) {
-                    var playerImage = createImage("/static/profilepics/"+marker[4].steam_id+".jpg"); // find a way to not create a new image every time (?)
+                    var steamId = marker[4].steam_id;
+                    var playerImage;
+                    if (playerImages[steamId]) {
+                        playerImage = playerImages[steamId];
+                    } else {
+                        // Create a new Image object and store it in the dictionary
+                        playerImage = createImage("/static/profilepics/" + steamId + ".jpg");
+                        playerImages[steamId] = playerImage;
+                    }
                     // crop to be a circle
                     ctx.save(); 
                     ctx.beginPath();
