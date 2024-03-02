@@ -126,7 +126,7 @@ async def Main():
         return rust_map
 
 
-    async def update_loop():
+    async def update_loop(): # updates all markers (player positions & vehicles mainly)
         print("starting update loop...")
         while True:
             await asyncio.sleep(1)  # Wait for an amount of time
@@ -155,6 +155,8 @@ async def Main():
             except Exception as e:
                 print("failed to update steam members :-(\n", e)
 
+    async def time_loop(): # get the server time every 10s or something.
+        pass
     
     @socketio.on('message')
     def handle_message(message):
@@ -164,6 +166,7 @@ async def Main():
     def handle_request_devices():
         devices = asyncio.run(get_devices())
         emit('sent_devices', devices)
+
 
     @rust_socket.team_event
     async def team(event : TeamEvent):

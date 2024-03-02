@@ -25,13 +25,15 @@ cargo.src = "/static/cargo.png";
 crate.src = "/static/crate.png";
 genrad.src = "/static/genrad.png";
 patrol.src = "/static/patrol.png";
+let halfWidth = 0
+let halfHeight = 0
 var playerImages = {};
 
 let cameraOffset = { x: window.innerWidth/2, y: window.innerHeight/2 }
 
 img.onload = function() {
-    let halfWidth = img.width / 2;
-    let halfHeight = img.height / 2;
+    halfWidth = img.width / 2;
+    halfHeight = img.height / 2;
     cameraOffset = { x: window.innerWidth / 2 - halfWidth, y: window.innerHeight / 2 - halfHeight };
 }
 
@@ -159,10 +161,39 @@ function onPointerUp(e)
 
 function onPointerMove(e)
 {
+    let maxPanDistance = 2000;
     if (isDragging)
     {
-        cameraOffset.x = getEventLocation(e).x/cameraZoom - dragStart.x
-        cameraOffset.y = getEventLocation(e).y/cameraZoom - dragStart.y
+        let newx = getEventLocation(e).x/cameraZoom - dragStart.x
+        let newy = getEventLocation(e).y/cameraZoom - dragStart.y
+        
+        // check that user has not scrolled too far
+        let quarterWidth = halfWidth/2
+        let quarterHeight = halfHeight/2
+        if(newx > maxPanDistance-quarterWidth){
+            console.log("A")
+            console.log(maxPanDistance-quarterWidth)
+            newx = maxPanDistance-quarterWidth
+        }
+        if(newy > maxPanDistance-quarterHeight){
+            console.log("B")
+            console.log(maxPanDistance-quarterHeight)
+            newy = maxPanDistance-quarterHeight
+        }
+        if(newx < (maxPanDistance + quarterWidth) * -1){
+            console.log("C")
+            console.log((maxPanDistance + quarterWidth) * -1)
+            newx = (maxPanDistance + quarterWidth) * -1
+        }
+        if(newy < (maxPanDistance + quarterHeight) * -1){
+            console.log("D")
+            console.log((maxPanDistance + quarterHeight) * -1)
+            newy = (maxPanDistance + quarterHeight) * -1
+        }
+
+        cameraOffset.x = newx
+        cameraOffset.y = newy
+        
     }
 }
 
