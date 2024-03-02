@@ -282,3 +282,30 @@ document.addEventListener('DOMContentLoaded', function() {
         all_markers = markers // update global variable, probably a better way of doing this, but the pan/zoom code makes that harder.
     });
 });
+
+
+$(document).ready(function() {
+    var socket = io();
+
+    // Function to handle turning the device on
+    function turnOn(deviceId) {
+        socket.emit('turn_on', deviceId);
+    }
+
+    // Function to handle turning the device off
+    function turnOff(deviceId) {
+        socket.emit('turn_off', deviceId);
+    }
+
+    // Add event listeners to all "On" buttons
+    $('.turn-on-btn').click(function() {
+        var deviceId = $(this).data('device-id');
+        turnOn(deviceId);
+    });
+
+    // Add event listeners to all "Off" buttons
+    $('.turn-off-btn').click(function() {
+        var deviceId = $(this).data('device-id');
+        turnOff(deviceId);
+    });
+});

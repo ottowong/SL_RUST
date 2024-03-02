@@ -15,7 +15,12 @@
     <!-- do some quirky javascript to guess the current time base off of the initial one. So that we don't spam requests -->
     <ul id="device_list">
         {% for i in range(0, len) %}
-            <li id="{{ devices[i][0] }}">{{ devices[i][1] }}</li>
+            <li id="{{ devices[i][0] }}">
+                {{ devices[i][1] }}
+                <!-- Add "On" and "Off" buttons with data attributes -->
+                <button class="turn-on-btn" data-device-id="{{ devices[i][0] }}">On</button>
+                <button class="turn-off-btn" data-device-id="{{ devices[i][0] }}">Off</button>
+            </li>
         {% endfor %}
     </ul>
     </ul>

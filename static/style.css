@@ -13,6 +13,7 @@ input{
     pointer-events:visible;
 }
 #main{
+    pointer-events:all;
     background-color: rgba(48, 48, 48, 0.75);
     width:175px;
     color:#fff;

@@ -117,6 +117,14 @@ async def Main():
         server_name = info.name
         return info
     
+    async def turn_on_device(ID):
+        await rust_socket.turn_on_smart_switch(ID)
+        return
+    
+    async def turn_off_device(ID):
+        await rust_socket.turn_off_smart_switch(ID)
+        return
+    
     async def get_markers():
         markers = await rust_socket.get_markers()
         return markers
@@ -124,7 +132,6 @@ async def Main():
     async def get_map(add_icons=False,add_events=False, add_vending_machines=False):
         rust_map = await rust_socket.get_map(add_icons=add_icons, add_events=add_events, add_vending_machines=add_vending_machines)
         return rust_map
-
 
     async def update_loop(): # updates all markers (player positions & vehicles mainly)
         print("starting update loop...")
@@ -167,6 +174,15 @@ async def Main():
         devices = asyncio.run(get_devices())
         emit('sent_devices', devices)
 
+    @socketio.on('turn_on')
+    def handle_request_turn_on(ID):
+        print("turning on device", ID)
+        asyncio.run(turn_on_device(ID))
+
+    @socketio.on('turn_off')
+    def handle_request_turn_off(ID):
+        print("turning off device", ID)
+        asyncio.run(turn_off_device(ID))
 
     @rust_socket.team_event
     async def team(event : TeamEvent):
