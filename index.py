@@ -26,15 +26,15 @@ SteamApiKey = os.environ.get("STEAMAPIKEY")
 
 rust_socket = RustSocket(ip, port, steamId, playerToken)
 
-steam_pics = {}
+steam_members = {}
 
 app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
 
-def get_steam_profile_pic(steam_id):
-    if(steam_id in steam_pics):
-        return steam_pics[steam_id]["url"]
+def get_steam_member(steam_id):
+    if(steam_id in steam_members):
+        return steam_members[steam_id]
     url = f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={SteamApiKey}&steamids={steam_id}'
     try:
         response = requests.get(url)
@@ -42,8 +42,8 @@ def get_steam_profile_pic(steam_id):
         print(data['response']['players'][0]['avatar'])
         if len(data['response']['players']) > 0:
             profile_pic = data['response']['players'][0]['avatar']
-            steam_pics[steam_id] = {"url": profile_pic, "is_online": False, "is_alive": True}
-            return profile_pic
+            steam_members[steam_id] = {"url": profile_pic, "is_online": False, "is_alive": True}
+            return steam_members[steam_id]
         else:
             return None
     except Exception as e:
@@ -72,12 +72,9 @@ async def Main():
         return info
     
     async def get_markers():
-        try:
-            markers = await rust_socket.get_markers()
-            return markers
-        except Exception as e:
-            print(f"Error occurred while fetching markers: {e}")
-            return []  # Return an empty list in case of error
+        markers = await rust_socket.get_markers()
+        return markers
+
         
     async def get_map(add_icons=False,add_events=False, add_vending_machines=False):
         rust_map = await rust_socket.get_map(add_icons=add_icons, add_events=add_events, add_vending_machines=add_vending_machines)
@@ -92,29 +89,26 @@ async def Main():
                 initial_markers = await rust_socket.get_markers()
                 markers = []
                 for marker in initial_markers:
-                    steam_id = ""
+                    steam_member = {}
                     if marker.type == 1:
-                        steam_id = get_steam_profile_pic(marker.steam_id)
-                    current_marker = [marker.type, marker.x, marker.y, marker.rotation, steam_id]
+                        steam_member = get_steam_member(marker.steam_id)
+                    current_marker = [marker.type, marker.x, marker.y, marker.rotation, steam_member]
                     markers.append(current_marker)
                 socketio.emit('update_markers', markers)
             except Exception as e:
                 print("failed to send markers :-(\n", e)
 
     async def medium_loop():
-        print("starting update loop...")
+        print("starting medium loop...")
         while True:
             await asyncio.sleep(10)  # Wait for an amount of time
             try:
                 data = ""
                 team_info = await rust_socket.get_team_info()
                 for member in team_info.members:
-                    member.steam_id
-                    # update the global steam users variable
-                    # with is_online and is_alive
-                    # maybe also rename it
+                    steam_members[member.steam_id]["is_online"] = member.is_online
+                    steam_members[member.steam_id]["is_alive"] = member.is_alive
                     # then do coloured circles around the player in the html canvas
-                socketio.emit('update_medium', data)
             except Exception as e:
                 print("failed to send medium update :-(\n", e)
 
@@ -188,6 +182,7 @@ async def Main():
 
     # start the update loop
     asyncio.create_task(update_loop())
+    asyncio.create_task(medium_loop())
 
     await rust_socket.hang()
 

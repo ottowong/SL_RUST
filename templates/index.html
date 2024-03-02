@@ -82,7 +82,7 @@
                 switch (marker[0]) {
                     case 1: // player
                         if (marker[4]) {
-                            var playerImage = createImage(marker[4]);
+                            var playerImage = createImage(marker[4].url);
                             // crop to be a circle
                             ctx.save(); 
                             ctx.beginPath();
@@ -91,6 +91,25 @@
                             ctx.clip();
                             ctx.drawImage(playerImage, -16, -16, 32, 32);
                             ctx.restore();
+                            
+                            // overlay
+                            if (!marker[4].is_alive){
+                                ctx.beginPath();
+                                ctx.arc(0, 0, 16, 0, Math.PI * 2);
+                                ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
+                                ctx.fill();
+                            }
+
+                            // border circle
+                            ctx.beginPath();
+                            ctx.arc(0, 0, 17, 0, Math.PI * 2);
+                            if (marker[4].is_online){
+                                ctx.strokeStyle = '#00ff00';
+                            } else {
+                                ctx.strokeStyle = '#7d7d7d';
+                            }
+                            ctx.lineWidth = 2; // Set the line width
+                            ctx.stroke(); // Draw the circle
                         }
                         break;
                     case 2: // explosion
@@ -103,7 +122,6 @@
                         ctx.drawImage(ch47, 0-ch47.width/2, 0-ch47.height/2);
                         break;
                     case 5: // cargo ship
-                    // console.log(angleInRadians)
                         ctx.drawImage(cargo, 0-cargo.width/2, 0-cargo.height/2);
                         break;
                     case 6: // crate
