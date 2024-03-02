@@ -6,8 +6,8 @@
     <title>SADLADS RUST MAP</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 </head>
 <body><div id = "main">
     <h1>{{ name }}</h1>
@@ -39,15 +39,15 @@
         var crate = new Image();
         var genrad = new Image();
         var patrol = new Image();
-        img.src = "{{ url_for('static', filename='map.png') }}";
-        redx.src = "{{ url_for('static', filename='redx.png') }}";
-        shop.src = "{{ url_for('static', filename='shop.png') }}";
-        explosion.src = "{{ url_for('static', filename='explosion.png') }}";
-        ch47.src = "{{ url_for('static', filename='ch47.png') }}";
-        cargo.src = "{{ url_for('static', filename='cargo.png') }}";
-        crate.src = "{{ url_for('static', filename='crate.png') }}";
-        genrad.src = "{{ url_for('static', filename='genrad.png') }}";
-        patrol.src = "{{ url_for('static', filename='patrol.png') }}";
+        img.src = "/static/map.png";
+        redx.src = "/static/redx.png";
+        shop.src = "/static/shop.png";
+        explosion.src = "/static/explosion.png";
+        ch47.src = "/static/ch47.png";
+        cargo.src = "/static/cargo.png";
+        crate.src = "/static/crate.png";
+        genrad.src = "/static/genrad.png";
+        patrol.src = "/static/patrol.png";
         
         let cameraOffset = { x: window.innerWidth/2, y: window.innerHeight/2 }
         
