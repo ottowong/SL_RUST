@@ -79,16 +79,17 @@ async def get_devices():
 @app.route("/")
 def index():
     switches, alarms, monitors = asyncio.run(get_devices()) # does not ping the API
-    return render_template("index.html", switches=switches, len_switches=len(switches), server_name=server_name, ip=ip, port=port, server_url=server_url, server_map=server_map, server_players=server_players, server_max_players=server_max_players, server_queued=server_queued, server_size=server_size, server_seed=server_seed)
+    return render_template("index.html", switches=switches, len_switches=len(switches), server_name=server_name, ip=ip, port=port, server_url=server_url, server_map=server_map, server_players=server_players, server_max_players=server_max_players, server_queued=server_queued, server_size=server_size, server_seed=server_seed, alarms=alarms, len_alarms=len(alarms), monitors=monitors, len_monitors=len(monitors))
 
 @app.route("/add_device", methods=["POST"]) # use sockets for this instead
 def add_device():
     device_id = request.form["device_id"]
     device_name = request.form["device_name"]
+    device_type = request.form["device_type"]
 
     conn = sqlite3.connect('database.db')
     cur = conn.cursor()
-    cur.execute("INSERT INTO tbl_devices (id, name) VALUES (?, ?)", (device_id, device_name))
+    cur.execute("INSERT INTO tbl_devices (id, name, type) VALUES (?, ?, ?)", (device_id, device_name, device_type))
     conn.commit()
     cur.close()
     conn.close()
