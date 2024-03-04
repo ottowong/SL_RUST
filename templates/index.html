@@ -27,7 +27,15 @@
     <h2>Switches</h2>
         {% for i in range(0, len_switches) %}
             <div id="{{ switches[i][0] }}" class="device-container">
-                <div class="status-indicator"></div>
+                <div class="status-indicator" style="background-color:
+                    {% if switches[i][2] == 1 %}
+                        green;
+                    {% elif switches[i][2] == 0 %}
+                        red;
+                    {% else %}
+                        gray;
+                    {% endif %}
+                "></div>
                 <span class="device-name">{{ switches[i][1] }}</span>
                 <button class="toggle-btn" data-device-id="{{ switches[i][0] }}">Toggle</button>
             </div>

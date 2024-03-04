@@ -70,8 +70,6 @@ async def get_device(id):
     device = cur.fetchone()
     cur.close()
     conn.close()
-    print("DEVICE HERE!!!")
-    print(device)
     return device
 
 async def get_devices():
@@ -173,8 +171,12 @@ async def Main():
         return rust_map
     
     async def get_entity_info(id):
-        info = await rust_socket.get_entity_info(id)
-        return info
+        try:
+            info = await rust_socket.get_entity_info(id)
+            return info
+        except Exception:
+            # if the entity doesnt exist
+            return None
 
     async def update_loop(): # updates all markers (player positions & vehicles mainly)
         print("starting update loop...")
@@ -237,6 +239,26 @@ async def Main():
             except Exception as e:
                 print("failed to update server info :-(\n", e)
 
+    async def switch_loop(): # checks all switches
+        print("starting device loop...")
+        while True:
+            switches, alarms, monitors = await get_devices()
+            for device in switches:
+                try:
+                    device_info = await get_entity_info(device[0])
+                    if(not device_info):
+                        value = None
+                    else:
+                        value = device_info.value
+                    if(device[2] != value):
+                        print("switch database mismatch! updating...")
+                        await update_switch(device[0], value)
+                        socketio.emit('update_switch', [device[0], value])
+                except Exception as e:
+                    print(f"Request error occurred: {e}")
+                await asyncio.sleep(5)
+
+
     async def time_loop(): # get the server time every 10s or something.
         pass
 
@@ -256,12 +278,15 @@ async def Main():
         try:
             device = asyncio.run(get_device(id))
             if(device[1]==1):
+                value = 0
                 asyncio.run(turn_off_device(id))
-            elif (device[1]==0):
+            elif(device[1]==0):
                 asyncio.run(turn_on_device(id))
-            info = asyncio.run(get_entity_info(id)) # crashes here if does not exist
-            socketio.emit('update_switch', [id, info.value])
-            asyncio.run(update_switch(id, info.value))
+                value = 1
+            else:
+                asyncio.run(turn_on_device(id))
+                value = None
+            asyncio.run(update_switch(id, value)) # update the database with a guess of what it will be
         except Exception as e:
             socketio.emit('update_switch', [id, None])
             print("sent failed update", e)
@@ -301,6 +326,7 @@ async def Main():
     asyncio.create_task(update_loop())
     asyncio.create_task(medium_loop())
     asyncio.create_task(long_loop())
+    asyncio.create_task(switch_loop())
 
     await rust_socket.hang()
 

@@ -68,20 +68,24 @@ $(document).ready(function() {
         socket.emit('toggle', deviceId);
     }
 
-    // Add event listeners to all "On" buttons
-    $('.turn-on-btn').click(function() {
-        let deviceId = $(this).data('device-id');
-        turnOn(deviceId);
-    });
-
-    // Add event listeners to all "Off" buttons
-    $('.turn-off-btn').click(function() {
-        let deviceId = $(this).data('device-id');
-        turnOff(deviceId);
-    });
-
     $('.toggle-btn').click(function() {
         let deviceId = $(this).data('device-id');
+
+        let element = document.getElementById(deviceId);
+        if (element)
+        {
+            let statusIndicator = element.querySelector(".status-indicator");
+            if(statusIndicator.style.backgroundColor == "gray"){
+                statusIndicator.style.backgroundColor = "gray";
+            } else if(statusIndicator.style.backgroundColor == "red"){
+                statusIndicator.style.backgroundColor = "green";
+            } else if (statusIndicator.style.backgroundColor == "green") {
+                statusIndicator.style.backgroundColor = "red";
+            }
+        } else {
+            console.log("Element with ID " + id + " not found.");
+        }
+
         toggle(deviceId);
     });
 
