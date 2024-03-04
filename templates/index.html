@@ -43,7 +43,11 @@
 </div>
 <div id="main3" class="info_box">
     <h2>Chat</h2>
-    <div id="chatmessages"></div>
+    <div id="chatmessages">
+        {% for i in range (0, len_message_log) %}
+            <div><b>{{ message_log[i][0] }}: </b>{{ message_log[i][1] }}</div>
+        {% endfor %}
+    </div>
 </div>
 <canvas id="map_canvas"></canvas>
 <script src="/static/canvas.js"></script>

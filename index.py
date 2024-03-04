@@ -29,6 +29,8 @@ rust_socket = RustSocket(ip, port, steamId, playerToken)
 
 steam_members = {}
 
+message_log = []
+
 server_name=""
 server_url=""
 server_map=""
@@ -97,7 +99,7 @@ async def update_switch(id, status):
 @app.route("/")
 def index():
     switches, alarms, monitors = asyncio.run(get_devices()) # does not ping the API
-    return render_template("index.html", switches=switches, len_switches=len(switches), server_name=server_name, ip=ip, port=port, server_url=server_url, server_map=server_map, server_players=server_players, server_max_players=server_max_players, server_queued=server_queued, server_size=server_size, server_seed=server_seed, alarms=alarms, len_alarms=len(alarms), monitors=monitors, len_monitors=len(monitors))
+    return render_template("index.html", switches=switches, len_switches=len(switches), server_name=server_name, ip=ip, port=port, server_url=server_url, server_map=server_map, server_players=server_players, server_max_players=server_max_players, server_queued=server_queued, server_size=server_size, server_seed=server_seed, alarms=alarms, len_alarms=len(alarms), monitors=monitors, len_monitors=len(monitors), message_log=message_log, len_message_log=len(message_log))
 
 @app.route("/add_device", methods=["POST"]) # use sockets for this instead
 def add_device():
@@ -296,6 +298,9 @@ async def Main():
     async def chat(event : ChatEvent):
         print(f"{event.message.name}: {event.message.message}")
         socketio.emit('chat_message', [event.message.name, event.message.message])
+        message_log.append([event.message.name, event.message.message])
+        if len(message_log > 10):
+            message_log.pop(0)
 
     # get a new map png when the program starts
     rust_map = await get_map()
