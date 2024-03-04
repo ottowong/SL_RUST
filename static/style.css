@@ -48,9 +48,18 @@ h1, h2{
     /* Add your button styling here */
 }
 
-.status-indicator {
+.status-indicator-on {
     width: 20px;
     height: 20px;
     background-color: green;
-    margin-right: 10px; /* Adjust margin as needed */
+    margin-right: 10px;
+    display: none;
+}
+
+.status-indicator-off {
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    margin-right: 10px;
+    display: none;
 }
