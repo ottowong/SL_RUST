@@ -42,6 +42,7 @@ let MAX_ZOOM = 5
 let MIN_ZOOM = 0.1
 let SCROLL_SENSITIVITY = 0.001
 let all_markers = []
+let all_notes = []
 
 function draw()
 {
@@ -126,6 +127,24 @@ function draw()
         }
         ctx.restore();
     });
+
+    all_notes.forEach(note => {
+        let x = (note[1] / 4500 * 2000);
+        let y = (2000 - note[2] / 4500 * 2000);
+        ctx.save(); // Save the current context state
+        ctx.translate(x, y); // Translate to the note position
+        switch (note[0]) {
+            case 0: // death marker
+                break;
+            case 1: // normal marker
+                break;
+            default:
+                ctx.drawImage(redx, 0-redx.width/2, 0-redx.height/2);
+        }
+        ctx.drawImage(redx, 0-redx.width/2, 0-redx.height/2);
+        ctx.restore();
+    });
+
     ctx.beginPath();
     requestAnimationFrame( draw )
 }
@@ -262,50 +281,3 @@ canvas.addEventListener('touchmove', (e) => handleTouch(e, onPointerMove))
 canvas.addEventListener( 'wheel', (e) => adjustZoom(e.deltaY*SCROLL_SENSITIVITY))
 
 draw()
-
-document.addEventListener('DOMContentLoaded', function() {
-    var socket = io();
-    socket.on('connect', function() {
-        socket.send('Client connected!');
-    });
-    socket.on('sent_devices', function(devices) {
-        var ul = document.getElementById('device_list');
-        ul.innerHTML = '';
-        devices.forEach(device => {
-            var li = document.createElement('li');
-            li.textContent = device[1];
-            li.setAttribute('data-id', device[0]);
-            ul.appendChild(li);
-        });
-    });
-    socket.on('update_markers', function(markers) {
-        all_markers = markers // update global variable, probably a better way of doing this, but the pan/zoom code makes that harder.
-    });
-});
-
-
-$(document).ready(function() {
-    var socket = io();
-
-    // Function to handle turning the device on
-    function turnOn(deviceId) {
-        socket.emit('turn_on', deviceId);
-    }
-
-    // Function to handle turning the device off
-    function turnOff(deviceId) {
-        socket.emit('turn_off', deviceId);
-    }
-
-    // Add event listeners to all "On" buttons
-    $('.turn-on-btn').click(function() {
-        var deviceId = $(this).data('device-id');
-        turnOn(deviceId);
-    });
-
-    // Add event listeners to all "Off" buttons
-    $('.turn-off-btn').click(function() {
-        var deviceId = $(this).data('device-id');
-        turnOff(deviceId);
-    });
-});

@@ -6,13 +6,20 @@
     <title>SADLADS RUST MAP</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
+    <script src="/static/sockets.js"></script>
     <link rel="stylesheet" href="/static/style.css">
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 </head>
 <body><div id = "main">
     <h1 id="server_name">{{ server_name }}</h1>
-    <p id="time"></p>
-    <!-- do some quirky javascript to guess the current time base off of the initial one. So that we don't spam requests -->
+    <div id="ip"><b>IP: </b><span id="ip_data">{{ ip }}:{{ port }}</span></div>
+    <div id="url"><b>URL: </b><span id="url_data">{{ server_url }}</span></div>
+    <div id="seed"><b>Seed: </b><span id="seed_data">{{ server_seed }}</span></div>
+    <div id="map_type"><b>Map: </b><span id="map_data">{{ server_map }}</span></div>
+    <div id="map_size"><b>Size: </b><span id="map_size_data">{{ server_size }}</span></div>
+    <div id="time"><b>Time: </b><span id="time_data">{{ time }}</span></div>
+    <div id="players"><b>Players: </b><span id="players_data">{{ server_players }}/{{ server_max_players }}</span></div>
+    <div id="queue"><b>Queue: </b><span id="queue_data">{{ server_queued }}</span></div>
     <ul id="device_list">
         {% for i in range(0, len) %}
             <li id="{{ devices[i][0] }}">
@@ -25,7 +32,7 @@
     </ul>
     </ul>
     <canvas id="map_canvas"></canvas>
-    <script src="/static/script.js"></script>
+    <script src="/static/canvas.js"></script>
 </div>
 </body>
 </html>

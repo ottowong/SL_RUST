@@ -30,6 +30,13 @@ rust_socket = RustSocket(ip, port, steamId, playerToken)
 steam_members = {}
 
 server_name=""
+server_url=""
+server_map=""
+server_players=""
+server_max_players=""
+server_queued=""
+server_size=""
+server_seed=""
 
 app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = os.urandom(24)
@@ -68,7 +75,7 @@ async def get_devices():
 @app.route("/")
 def index():
     devices = asyncio.run(get_devices())
-    return render_template("index.html", devices=devices, len=len(devices), server_name=server_name, ip=ip, port=port)
+    return render_template("index.html", devices=devices, len=len(devices), server_name=server_name, ip=ip, port=port, server_url=server_url, server_map=server_map, server_players=server_players, server_max_players=server_max_players, server_queued=server_queued, server_size=server_size, server_seed=server_seed)
 
 @app.route("/add_device", methods=["POST"]) # use sockets for this instead
 def add_device():
@@ -114,8 +121,16 @@ async def Main():
 
     async def get_server_info():
         info = await rust_socket.get_info()
-        global server_name
+        global server_name,server_url,server_map,server_players,server_max_players,server_queued,server_size,server_seed
+
         server_name = info.name
+        server_url = info.url
+        server_map = info.map
+        server_players = info.players
+        server_max_players = info.max_players
+        server_queued = info.queued_players
+        server_size = info.size
+        server_seed = info.seed
         return info
     
     async def turn_on_device(ID):
@@ -160,12 +175,46 @@ async def Main():
                 for member in team_info.members:
                     steam_members[member.steam_id]["is_online"] = member.is_online
                     steam_members[member.steam_id]["is_alive"] = member.is_alive
+
+                map_notes = []
+                for note in team_info.map_notes:
+                    '''
+                    RustTeamNote[type=0, x=332.1016845703125, y=1123.61181640625, icon=0, colour_index=0, label=]
+                    RustTeamNote[type=1, x=354.3470458984375, y=1194.427490234375, icon=7, colour_index=0, label=BASE]
+                    RustTeamNote[type=1, x=2240.386962890625, y=2733.18212890625, icon=1, colour_index=1, label=OUTPOST]
+                    '''
+                    map_notes.append([note.type,note.x,note.y,note.icon,note.colour_index,note.label])
+                socketio.emit('update_notes', map_notes)
             except Exception as e:
-                print("failed to update steam members :-(\n", e)
+                print("failed to update steam members/notes :-(\n", e)
+
+    async def long_loop():
+        print("starting long loop...")
+        while True:
+            await asyncio.sleep(30)  # Wait for an amount of time
+            try:
+                info = await get_server_info()
+                
+
+                server_info = {
+                    "url" : info.url,
+                    "name" : info.name,
+                    "map" : info.map,
+                    "size" : info.size,
+                    "players" : info.players,
+                    "max_players" : info.max_players,
+                    "queued_players" : info.queued_players,
+                    "seed" : info.seed
+                }
+                # {'url': '', 'name': 'SADLADS TEST SERVER', 'map': 'Procedural Map', 'size': 4500, 'players': 1, 'max_players': 500, 'queued_players': 0, 'seed': 1337}
+                socketio.emit('update_server_info', server_info)
+            except Exception as e:
+                print("failed to update server info :-(\n", e)
 
     async def time_loop(): # get the server time every 10s or something.
         pass
-    
+
+
     @socketio.on('message')
     def handle_message(message):
         print('Received message: ' + message)
@@ -202,6 +251,7 @@ async def Main():
     # start the update loop
     asyncio.create_task(update_loop())
     asyncio.create_task(medium_loop())
+    asyncio.create_task(long_loop())
 
     await rust_socket.hang()
 
