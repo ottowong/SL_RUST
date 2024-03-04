@@ -44,6 +44,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('players_data').innerHTML = server_info.players+"/"+server_info.max_players;
         document.getElementById('queue_data').innerHTML = server_info.queued_players
     });
+    socket.on('chat_message', function(message) {
+        $('#chatmessages').append('<div><b>' + message[0] + ':</b> ' + message[1] + '</div>');
+    });
 });
 
 $(document).ready(function() {

@@ -206,7 +206,7 @@ async def Main():
                     steam_members[member.steam_id]["is_online"] = member.is_online
                     steam_members[member.steam_id]["is_alive"] = member.is_alive
                 map_notes = []
-                for note in team_info.map_notes:
+                for note in team_info.map_notes: # maybe have a global variable of these to pass to "/" ?
                     map_notes.append([note.type,note.x,note.y,note.icon,note.colour_index,note.label])
                 socketio.emit('update_notes', map_notes)
             except Exception as e:
@@ -295,6 +295,7 @@ async def Main():
     @rust_socket.chat_event
     async def chat(event : ChatEvent):
         print(f"{event.message.name}: {event.message.message}")
+        socketio.emit('chat_message', [event.message.name, event.message.message])
 
     # get a new map png when the program starts
     rust_map = await get_map()
