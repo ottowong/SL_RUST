@@ -198,7 +198,7 @@ async def Main():
     async def medium_loop():
         print("starting medium loop...")
         while True:
-            await asyncio.sleep(2)  # Wait for an amount of time
+            await asyncio.sleep(3)  # Wait for an amount of time
             try:
                 team_info = await rust_socket.get_team_info()
                 for member in team_info.members:

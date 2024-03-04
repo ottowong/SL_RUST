@@ -49,6 +49,7 @@ function drawText(ctx, x, y, text) {
         let textWidth = ctx.measureText(text).width;
         let textHeight = parseInt(ctx.font);
 
+        // draw semi-transparent rectangle behind text
         ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
         ctx.fillRect(x - textWidth / 2 - 9, y - textHeight / 2 - 30, textWidth + 18, textHeight + 7);
 
@@ -58,6 +59,7 @@ function drawText(ctx, x, y, text) {
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(text, x, y-25);
+        
         // reset these
         ctx.textAlign = "start";
         ctx.textBaseline = "alphabetic";
@@ -104,7 +106,7 @@ function drawTriangle(ctx, x, y, size, colour, colour2, type) {
             icon = "\uf03e"; // Picture
             break;
         default:
-            icon = "";
+            icon = ""; // should not happen
             break;
     }
     if (type === 0) {
@@ -121,33 +123,31 @@ function drawTriangle(ctx, x, y, size, colour, colour2, type) {
         ctx.lineWidth = 3;
         ctx.stroke();
     } else {
-        y=y+5
-        // Draw circle under the icon
-        let circleCenterX = x; // Center of the circle is the same as the x position of the triangle
-        let circleCenterY = y - 6; // Adjusted vertically to be under the icon
-
+        // black border
         ctx.beginPath();
-        ctx.arc(circleCenterX, circleCenterY, 16, 0, 2 * Math.PI);
+        ctx.arc(x, y, 16, 0, 2 * Math.PI);
         ctx.fillStyle = "#000000";
         ctx.fill();
 
+        // light colour border
         ctx.beginPath();
-        ctx.arc(circleCenterX, circleCenterY, 13, 0, 2 * Math.PI);
-        ctx.fillStyle = colour; // Set color to primary color
+        ctx.arc(x, y, 13, 0, 2 * Math.PI);
+        ctx.fillStyle = colour;
         ctx.fill();
 
+        // dark colour circle
         ctx.beginPath();
-        ctx.arc(circleCenterX, circleCenterY, 11, 0, 2 * Math.PI);
-        ctx.fillStyle = colour2; // Set color to secondary color
+        ctx.arc(x, y, 11, 0, 2 * Math.PI);
+        ctx.fillStyle = colour2;
         ctx.fill();
 
         // Draw FontAwesome icon
-        ctx.font = "15px FontAwesome"; // Adjust size as needed
-        let iconWidth = ctx.measureText(icon).width; // Get width of the icon
-        let iconX = x - iconWidth / 2; // Calculate x position of the icon
+        ctx.font = "15px FontAwesome";
+        let iconWidth = ctx.measureText(icon).width;
+        let iconX = x - iconWidth / 2;
 
-        ctx.fillStyle = colour; // Set color to secondary color
-        ctx.fillText(icon, iconX, y); // Draw icon
+        ctx.fillStyle = colour;
+        ctx.fillText(icon, iconX, y + 5);
     }
 }
 
@@ -164,8 +164,8 @@ function draw()
         let x = (marker[1] / 4500 * 2000);
         let y = (2000 - marker[2] / 4500 * 2000);
         let angleInRadians = (marker[3] * Math.PI / 180) * -1; // Convert degrees to radians
-        ctx.save(); // Save the current context state
-        ctx.translate(x, y); // Translate to the marker position
+        ctx.save();
+        ctx.translate(x, y);
         ctx.rotate(angleInRadians); // Rotate by the specified angle
         switch (marker[0]) {
             case 1: // player
@@ -234,12 +234,11 @@ function draw()
         }
         ctx.restore();
     });
-    console.log(all_notes)
     all_notes.forEach(note => {
         let x = (note[1] / 4500 * 2000);
         let y = (2000 - note[2] / 4500 * 2000);
-        ctx.save(); // Save the current context state
-        ctx.translate(x, y); // Translate to the note position
+        ctx.save();
+        ctx.translate(x, y);
         switch (note[0]) {
             case 0: // death marker
                 break;
@@ -271,7 +270,7 @@ function draw()
                         colour = "#0ae8be"
                         colour2 = "#08493a"
                         break;
-                    default: // dunno if this will happen
+                    default: // this shouldn't happen
                         colour = "#000000"
                         colour2 = "#ffffff";
                 }
@@ -283,11 +282,12 @@ function draw()
         ctx.restore();
     });
 
+    // put text labels on top of other markers
     all_notes.forEach(note => {
         let x = (note[1] / 4500 * 2000);
         let y = (2000 - note[2] / 4500 * 2000);
-        ctx.save(); // Save the current context state
-        ctx.translate(x, y); // Translate to the note position
+        ctx.save();
+        ctx.translate(x, y);
         drawText(ctx, 0, -12, note[5])
         ctx.restore();
     });
