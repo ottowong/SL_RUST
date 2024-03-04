@@ -6,10 +6,11 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect
 from flask_socketio import SocketIO, emit
 import sqlite3
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 import threading
 import time
 import requests
+import math
 
 conn = sqlite3.connect('database.db')
 cur = conn.cursor()
@@ -67,7 +68,7 @@ async def get_devices():
 @app.route("/")
 def index():
     devices = asyncio.run(get_devices())
-    return render_template("index.html", devices=devices, len=len(devices), server_name=server_name)
+    return render_template("index.html", devices=devices, len=len(devices), server_name=server_name, ip=ip, port=port)
 
 @app.route("/add_device", methods=["POST"]) # use sockets for this instead
 def add_device():
