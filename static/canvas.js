@@ -43,11 +43,29 @@ let MIN_ZOOM = 0.1
 let SCROLL_SENSITIVITY = 0.001
 let all_markers = []
 let all_notes = []
+function drawText(ctx, x, y, text) {
+    if(text != "")
+    {
+        let textWidth = ctx.measureText(text).width;
+        let textHeight = parseInt(ctx.font);
 
-function drawTriangle(ctx, x, y, size, colour, colour2, text, type) {
-    let textWidth = ctx.measureText(text).width;
-    let textHeight = parseInt(ctx.font); // Assuming font size is set in pixels
-    var icon
+        ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+        ctx.fillRect(x - textWidth / 2 - 9, y - textHeight / 2 - 30, textWidth + 18, textHeight + 7);
+
+        // text
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "12px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(text, x, y-25);
+        // reset these
+        ctx.textAlign = "start";
+        ctx.textBaseline = "alphabetic";
+    }
+}
+
+function drawTriangle(ctx, x, y, size, colour, colour2, type) {
+    let icon
     switch (type) {
         case 0:
             icon = "";
@@ -89,23 +107,6 @@ function drawTriangle(ctx, x, y, size, colour, colour2, text, type) {
             icon = "";
             break;
     }
-
-    // Add background rectangle
-    if(text != "")
-    {
-        ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; // Adjust alpha value for transparency
-        ctx.fillRect(x - textWidth / 2 - 8, y - textHeight / 2 - 32, textWidth + 16, textHeight + 8);
-
-        // text
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "12px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(text, x, y-27);
-        // reset these
-        ctx.textAlign = "start";
-        ctx.textBaseline = "alphabetic";
-    }
     if (type === 0) {
         ctx.beginPath();
         ctx.moveTo(x, y + size / 2); // Bottom point
@@ -131,7 +132,7 @@ function drawTriangle(ctx, x, y, size, colour, colour2, text, type) {
         ctx.fill();
 
         ctx.beginPath();
-        ctx.arc(circleCenterX, circleCenterY, 14, 0, 2 * Math.PI);
+        ctx.arc(circleCenterX, circleCenterY, 13, 0, 2 * Math.PI);
         ctx.fillStyle = colour; // Set color to primary color
         ctx.fill();
 
@@ -274,11 +275,20 @@ function draw()
                         colour = "#000000"
                         colour2 = "#ffffff";
                 }
-                drawTriangle(ctx, 0, -12, 30, colour, colour2, note[5], note[3]);
+                drawTriangle(ctx, 0, -12, 30, colour, colour2, note[3]);
                 break;
             default:
                 ctx.drawImage(redx, 0-redx.width/2, 0-redx.height/2);
         }
+        ctx.restore();
+    });
+
+    all_notes.forEach(note => {
+        let x = (note[1] / 4500 * 2000);
+        let y = (2000 - note[2] / 4500 * 2000);
+        ctx.save(); // Save the current context state
+        ctx.translate(x, y); // Translate to the note position
+        drawText(ctx, 0, -12, note[5])
         ctx.restore();
     });
 
