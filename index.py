@@ -77,6 +77,7 @@ async def get_devices():
     return switches, alarms, monitors
 
 async def update_switch(id, status):
+    print("update_switch")
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
     cur.execute("UPDATE tbl_devices SET status = ? WHERE type = 1 AND id = ?", (status, id))
@@ -243,17 +244,16 @@ async def Main():
         print("turning on device", id)
         asyncio.run(turn_on_device(id))
         info = asyncio.run(get_entity_info(id))
+        socketio.emit('update_switch', [id, info.value])
         asyncio.run(update_switch(id, info.value))
-        print(info.value)
-        emit('update_device', [id, info.value])
         
     @socketio.on('turn_off')
     def handle_request_turn_off(id):
         print("turning off device", id)
         asyncio.run(turn_off_device(id))
         info = asyncio.run(get_entity_info(id))
+        socketio.emit('update_switch', [id, info.value])
         asyncio.run(update_switch(id, info.value))
-        emit('update_device', [id, info.value])
 
     @rust_socket.team_event
     async def team(event : TeamEvent):
