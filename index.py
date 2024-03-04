@@ -198,21 +198,15 @@ async def Main():
     async def medium_loop():
         print("starting medium loop...")
         while True:
-            await asyncio.sleep(5)  # Wait for an amount of time
+            await asyncio.sleep(2)  # Wait for an amount of time
             try:
                 team_info = await rust_socket.get_team_info()
                 for member in team_info.members:
                     get_steam_member(member.steam_id)
                     steam_members[member.steam_id]["is_online"] = member.is_online
                     steam_members[member.steam_id]["is_alive"] = member.is_alive
-
                 map_notes = []
                 for note in team_info.map_notes:
-                    '''
-                    RustTeamNote[type=0, x=332.1016845703125, y=1123.61181640625, icon=0, colour_index=0, label=]
-                    RustTeamNote[type=1, x=354.3470458984375, y=1194.427490234375, icon=7, colour_index=0, label=BASE]
-                    RustTeamNote[type=1, x=2240.386962890625, y=2733.18212890625, icon=1, colour_index=1, label=OUTPOST]
-                    '''
                     map_notes.append([note.type,note.x,note.y,note.icon,note.colour_index,note.label])
                 socketio.emit('update_notes', map_notes)
             except Exception as e:

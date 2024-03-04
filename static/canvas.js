@@ -44,37 +44,110 @@ let SCROLL_SENSITIVITY = 0.001
 let all_markers = []
 let all_notes = []
 
-function drawTriangle(ctx, x, y, size, color, text) {
+function drawTriangle(ctx, x, y, size, colour, colour2, text, type) {
     let textWidth = ctx.measureText(text).width;
     let textHeight = parseInt(ctx.font); // Assuming font size is set in pixels
-
-    let ty = y
+    var icon
+    switch (type) {
+        case 0:
+            icon = "";
+            break;
+        case 1:
+            icon = "\uf155"; // Dollar sign
+            break;
+        case 2:
+            icon = "\uf015"; // House
+            break;
+        case 3:
+            icon = "\uf4cd"; // Parachute
+            break;
+        case 4:
+            icon = "\uf05b"; // Crosshair
+            break;
+        case 5:
+            icon = "\uf132"; // Shield
+            break;
+        case 6:
+            icon = "\uf54c"; // Skull
+            break;
+        case 7:
+            icon = "\uf236"; // Bed
+            break;
+        case 8:
+            icon = "Z"; // ZZZ (you have to pay for the zzz emoji)
+            break;
+        case 9:
+            icon = "\ue19b"; // Gun
+            break;
+        case 10:
+            icon = "\uf6fc"; // Rock
+            break;
+        case 11:
+            icon = "\uf03e"; // Picture
+            break;
+        default:
+            icon = "";
+            break;
+    }
 
     // Add background rectangle
     if(text != "")
     {
         ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; // Adjust alpha value for transparency
         ctx.fillRect(x - textWidth / 2 - 8, y - textHeight / 2 - 32, textWidth + 16, textHeight + 8);
+
+        // text
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "12px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(text, x, y-27);
+        // reset these
+        ctx.textAlign = "start";
+        ctx.textBaseline = "alphabetic";
     }
-    ctx.beginPath();
-    ctx.moveTo(x, y + size / 2); // Bottom point
-    ctx.lineTo(x - size / 2, y - size / 2); // Top left point
-    ctx.lineTo(x + size / 2, y - size / 2); // Top right point
-    ctx.closePath();
-    ctx.fillStyle = color;
-    ctx.fill();
+    if (type === 0) {
+        ctx.beginPath();
+        ctx.moveTo(x, y + size / 2); // Bottom point
+        ctx.lineTo(x - size / 2, y - size / 2); // Top left point
+        ctx.lineTo(x + size / 2, y - size / 2); // Top right point
+        ctx.closePath();
+        ctx.fillStyle = colour;
+        ctx.fill();
 
-    // black border
-    ctx.strokeStyle = "#000000";
-    ctx.lineWidth = 3;
-    ctx.stroke();
+        // black border
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+    } else {
+        y=y+5
+        // Draw circle under the icon
+        let circleCenterX = x; // Center of the circle is the same as the x position of the triangle
+        let circleCenterY = y - 6; // Adjusted vertically to be under the icon
 
-    // text
-    ctx.fillStyle = "#ffffff"; // White color for text
-    ctx.font = "12px Arial"; // Adjust font size and family as needed
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(text, x, y-27);
+        ctx.beginPath();
+        ctx.arc(circleCenterX, circleCenterY, 16, 0, 2 * Math.PI);
+        ctx.fillStyle = "#000000";
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(circleCenterX, circleCenterY, 14, 0, 2 * Math.PI);
+        ctx.fillStyle = colour; // Set color to primary color
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(circleCenterX, circleCenterY, 11, 0, 2 * Math.PI);
+        ctx.fillStyle = colour2; // Set color to secondary color
+        ctx.fill();
+
+        // Draw FontAwesome icon
+        ctx.font = "15px FontAwesome"; // Adjust size as needed
+        let iconWidth = ctx.measureText(icon).width; // Get width of the icon
+        let iconX = x - iconWidth / 2; // Calculate x position of the icon
+
+        ctx.fillStyle = colour; // Set color to secondary color
+        ctx.fillText(icon, iconX, y); // Draw icon
+    }
 }
 
 function draw()
@@ -171,29 +244,37 @@ function draw()
                 break;
             case 1: // normal marker
                 let colour = "#ffffff";
+                let colour2 = "#000000";
                 switch (note[4]){
                     case 0: // yellow
                         colour = "#b9bb4c"
+                        colour2 = "#454619"
                         break;
                     case 1: // blue
                         colour = "#2e6bb8"
+                        colour2 = "#12243f"
                         break;
                     case 2: // green
                         colour = "#72a137"
+                        colour2 = "#243510"
                         break;
                     case 3: // red
                         colour = "#ae3534"
+                        colour2 = "#371210"
                         break;
                     case 4: // magenta
                         colour = "#9b4fa6"
+                        colour2 = "#351a39"
                         break;
                     case 5: // cyan
                         colour = "#0ae8be"
+                        colour2 = "#08493a"
                         break;
                     default: // dunno if this will happen
                         colour = "#000000"
+                        colour2 = "#ffffff";
                 }
-                drawTriangle(ctx, 0, -12, 30, colour, note[5]);
+                drawTriangle(ctx, 0, -12, 30, colour, colour2, note[5], note[3]);
                 break;
             default:
                 ctx.drawImage(redx, 0-redx.width/2, 0-redx.height/2);
