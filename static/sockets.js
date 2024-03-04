@@ -16,11 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.on('update_switch', function(info) {
         console.log("UPDATE SWITCH")
         let id = info[0]
-        let statusIndicatorOn = document.getElementById(id).getElementsByClassName("status-indicator-on")[0];
-        let statusIndicatorOff = document.getElementById(id).getElementsByClassName("status-indicator-off")[0];
         console.log(info)
-        console.log(statusIndicatorOn)
-        console.log(statusIndicatorOff)
 
         let element = document.getElementById(id);
         if (element)
