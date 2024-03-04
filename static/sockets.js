@@ -40,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function() {
         all_notes = notes // update global variable
     });
     socket.on('update_server_info', function(server_info) {
-        console.log(server_info);
         document.getElementById('server_name').innerHTML = server_info.name;
         document.getElementById('players_data').innerHTML = server_info.players+"/"+server_info.max_players;
         document.getElementById('queue_data').innerHTML = server_info.queued_players

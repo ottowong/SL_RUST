@@ -44,6 +44,39 @@ let SCROLL_SENSITIVITY = 0.001
 let all_markers = []
 let all_notes = []
 
+function drawTriangle(ctx, x, y, size, color, text) {
+    let textWidth = ctx.measureText(text).width;
+    let textHeight = parseInt(ctx.font); // Assuming font size is set in pixels
+
+    let ty = y
+
+    // Add background rectangle
+    if(text != "")
+    {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; // Adjust alpha value for transparency
+        ctx.fillRect(x - textWidth / 2 - 8, y - textHeight / 2 - 32, textWidth + 16, textHeight + 8);
+    }
+    ctx.beginPath();
+    ctx.moveTo(x, y + size / 2); // Bottom point
+    ctx.lineTo(x - size / 2, y - size / 2); // Top left point
+    ctx.lineTo(x + size / 2, y - size / 2); // Top right point
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+
+    // black border
+    ctx.strokeStyle = "#000000";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // text
+    ctx.fillStyle = "#ffffff"; // White color for text
+    ctx.font = "12px Arial"; // Adjust font size and family as needed
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(text, x, y-27);
+}
+
 function draw()
 {
     canvas.width = window.innerWidth
@@ -97,7 +130,7 @@ function draw()
                     } else {
                         ctx.strokeStyle = '#7d7d7d';
                     }
-                    ctx.lineWidth = 2;
+                    ctx.lineWidth = 3;
                     ctx.stroke();
                 }
                 break;
@@ -127,7 +160,7 @@ function draw()
         }
         ctx.restore();
     });
-
+    console.log(all_notes)
     all_notes.forEach(note => {
         let x = (note[1] / 4500 * 2000);
         let y = (2000 - note[2] / 4500 * 2000);
@@ -137,11 +170,34 @@ function draw()
             case 0: // death marker
                 break;
             case 1: // normal marker
+                let colour = "#ffffff";
+                switch (note[4]){
+                    case 0: // yellow
+                        colour = "#b9bb4c"
+                        break;
+                    case 1: // blue
+                        colour = "#2e6bb8"
+                        break;
+                    case 2: // green
+                        colour = "#72a137"
+                        break;
+                    case 3: // red
+                        colour = "#ae3534"
+                        break;
+                    case 4: // magenta
+                        colour = "#9b4fa6"
+                        break;
+                    case 5: // cyan
+                        colour = "#0ae8be"
+                        break;
+                    default: // dunno if this will happen
+                        colour = "#000000"
+                }
+                drawTriangle(ctx, 0, -12, 30, colour, note[5]);
                 break;
             default:
                 ctx.drawImage(redx, 0-redx.width/2, 0-redx.height/2);
         }
-        ctx.drawImage(redx, 0-redx.width/2, 0-redx.height/2);
         ctx.restore();
     });
 
