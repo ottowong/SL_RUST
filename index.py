@@ -11,10 +11,10 @@ import threading
 import time
 import requests
 import math
-
-conn = sqlite3.connect('database.db')
+database_name = "database.db"
+conn = sqlite3.connect(database_name)
 cur = conn.cursor()
-cur.execute("CREATE TABLE IF NOT EXISTS tbl_devices (id INTEGER PRIMARY KEY, name TEXT, type INTEGER);")
+cur.execute("CREATE TABLE IF NOT EXISTS tbl_devices (id INTEGER PRIMARY KEY, name TEXT, type INTEGER, status INTEGER);")
 cur.close()
 conn.close()
 
@@ -64,17 +64,25 @@ def get_steam_member(steam_id):
         return None
     
 async def get_devices():
-        conn = sqlite3.connect('database.db')
-        cur = conn.cursor()
-        cur.execute("SELECT id, name FROM tbl_devices WHERE type = 1")
-        switches = cur.fetchall()
-        cur.execute("SELECT id, name FROM tbl_devices WHERE type = 2")
-        alarms = cur.fetchall()
-        cur.execute("SELECT id, name FROM tbl_devices WHERE type = 3")
-        monitors = cur.fetchall()
-        cur.close()
-        conn.close()
-        return switches, alarms, monitors
+    conn = sqlite3.connect(database_name)
+    cur = conn.cursor()
+    cur.execute("SELECT id, name, status FROM tbl_devices WHERE type = 1")
+    switches = cur.fetchall()
+    cur.execute("SELECT id, name FROM tbl_devices WHERE type = 2")
+    alarms = cur.fetchall()
+    cur.execute("SELECT id, name FROM tbl_devices WHERE type = 3")
+    monitors = cur.fetchall()
+    cur.close()
+    conn.close()
+    return switches, alarms, monitors
+
+async def update_switch(id, status):
+    conn = sqlite3.connect(database_name)
+    cur = conn.cursor()
+    cur.execute("UPDATE tbl_devices SET status = ? WHERE type = 1 AND id = ?", (status, id))
+    conn.commit()
+    cur.close()
+    conn.close()
 
 @app.route("/")
 def index():
@@ -87,7 +95,7 @@ def add_device():
     device_name = request.form["device_name"]
     device_type = request.form["device_type"]
 
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(database_name)
     cur = conn.cursor()
     cur.execute("INSERT INTO tbl_devices (id, name, type) VALUES (?, ?, ?)", (device_id, device_name, device_type))
     conn.commit()
@@ -98,7 +106,7 @@ def add_device():
 @app.route("/remove_device", methods=["POST"])
 def remove_device():
     device_id = request.form["device_id"]
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(database_name)
     cur = conn.cursor()
     cur.execute("DELETE FROM tbl_devices WHERE id=?", (device_id,))
     conn.commit()
@@ -108,7 +116,7 @@ def remove_device():
 
 @app.route("/admin")
 def admin():
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(database_name)
     cur = conn.cursor()
     cur.execute("SELECT id, name FROM tbl_devices")
     devices = cur.fetchall()
@@ -138,13 +146,11 @@ async def Main():
         server_seed = info.seed
         return info
     
-    async def turn_on_device(ID):
-        await rust_socket.turn_on_smart_switch(ID)
-        return
+    async def turn_on_device(id):
+        await rust_socket.turn_on_smart_switch(id)
     
-    async def turn_off_device(ID):
-        await rust_socket.turn_off_smart_switch(ID)
-        return
+    async def turn_off_device(id):
+        await rust_socket.turn_off_smart_switch(id)
     
     async def get_markers():
         markers = await rust_socket.get_markers()
@@ -153,6 +159,10 @@ async def Main():
     async def get_map(add_icons=False,add_events=False, add_vending_machines=False):
         rust_map = await rust_socket.get_map(add_icons=add_icons, add_events=add_events, add_vending_machines=add_vending_machines)
         return rust_map
+    
+    async def get_entity_info(id):
+        info = await rust_socket.get_entity_info(id)
+        return info
 
     async def update_loop(): # updates all markers (player positions & vehicles mainly)
         print("starting update loop...")
@@ -199,7 +209,6 @@ async def Main():
             await asyncio.sleep(30)  # Wait for an amount of time
             try:
                 info = await get_server_info()
-                
 
                 server_info = {
                     "url" : info.url,
@@ -230,14 +239,21 @@ async def Main():
         emit('sent_devices', devices)
 
     @socketio.on('turn_on')
-    def handle_request_turn_on(ID):
-        print("turning on device", ID)
-        asyncio.run(turn_on_device(ID))
-
+    def handle_request_turn_on(id):
+        print("turning on device", id)
+        asyncio.run(turn_on_device(id))
+        info = asyncio.run(get_entity_info(id))
+        asyncio.run(update_switch(id, info.value))
+        print(info.value)
+        emit('update_device', [id, info.value])
+        
     @socketio.on('turn_off')
-    def handle_request_turn_off(ID):
-        print("turning off device", ID)
-        asyncio.run(turn_off_device(ID))
+    def handle_request_turn_off(id):
+        print("turning off device", id)
+        asyncio.run(turn_off_device(id))
+        info = asyncio.run(get_entity_info(id))
+        asyncio.run(update_switch(id, info.value))
+        emit('update_device', [id, info.value])
 
     @rust_socket.team_event
     async def team(event : TeamEvent):
