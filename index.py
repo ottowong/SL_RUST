@@ -14,7 +14,7 @@ import math
 
 conn = sqlite3.connect('database.db')
 cur = conn.cursor()
-cur.execute("CREATE TABLE IF NOT EXISTS tbl_devices (id INTEGER PRIMARY KEY, name TEXT);")
+cur.execute("CREATE TABLE IF NOT EXISTS tbl_devices (id INTEGER PRIMARY KEY, name TEXT, type INTEGER);")
 cur.close()
 conn.close()
 
@@ -66,16 +66,20 @@ def get_steam_member(steam_id):
 async def get_devices():
         conn = sqlite3.connect('database.db')
         cur = conn.cursor()
-        cur.execute("SELECT id, name FROM tbl_devices")
-        devices = cur.fetchall()
+        cur.execute("SELECT id, name FROM tbl_devices WHERE type = 1")
+        switches = cur.fetchall()
+        cur.execute("SELECT id, name FROM tbl_devices WHERE type = 2")
+        alarms = cur.fetchall()
+        cur.execute("SELECT id, name FROM tbl_devices WHERE type = 3")
+        monitors = cur.fetchall()
         cur.close()
         conn.close()
-        return devices
+        return switches, alarms, monitors
 
 @app.route("/")
 def index():
-    devices = asyncio.run(get_devices())
-    return render_template("index.html", devices=devices, len=len(devices), server_name=server_name, ip=ip, port=port, server_url=server_url, server_map=server_map, server_players=server_players, server_max_players=server_max_players, server_queued=server_queued, server_size=server_size, server_seed=server_seed)
+    switches, alarms, monitors = asyncio.run(get_devices()) # does not ping the API
+    return render_template("index.html", switches=switches, len_switches=len(switches), server_name=server_name, ip=ip, port=port, server_url=server_url, server_map=server_map, server_players=server_players, server_max_players=server_max_players, server_queued=server_queued, server_size=server_size, server_seed=server_seed)
 
 @app.route("/add_device", methods=["POST"]) # use sockets for this instead
 def add_device():

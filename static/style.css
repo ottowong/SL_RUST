@@ -12,7 +12,9 @@ canvas {
 input{
     pointer-events:visible;
 }
-#main{
+
+.info_box{
+    text-align: left;
     pointer-events:all;
     background-color: rgba(48, 48, 48, 0.75);
     width:175px;
@@ -25,6 +27,30 @@ input{
     border-radius: 5%;
 }
 
-h1{
+h1, h2{
     text-align: center;
+}
+
+.device-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.device-name {
+    flex: 1; /* This will make the device name take up the available space */
+    text-align: left;
+}
+
+.turn-on-btn,
+.turn-off-btn {
+    /* Add your button styling here */
+}
+
+.status-indicator {
+    width: 20px;
+    height: 20px;
+    background-color: green;
+    margin-right: 10px; /* Adjust margin as needed */
 }

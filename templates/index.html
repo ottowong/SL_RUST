@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="/static/style.css">
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 </head>
-<body><div id = "main">
+<body>
+<div id="main" class="info_box">
     <h1 id="server_name">{{ server_name }}</h1>
     <div id="ip"><b>IP: </b><span id="ip_data">{{ ip }}:{{ port }}</span></div>
     <div id="url"><b>URL: </b><span id="url_data">{{ server_url }}</span></div>
@@ -20,19 +21,21 @@
     <div id="time"><b>Time: </b><span id="time_data">{{ time }}</span></div>
     <div id="players"><b>Players: </b><span id="players_data">{{ server_players }}/{{ server_max_players }}</span></div>
     <div id="queue"><b>Queue: </b><span id="queue_data">{{ server_queued }}</span></div>
-    <ul id="device_list">
-        {% for i in range(0, len) %}
-            <li id="{{ devices[i][0] }}">
-                {{ devices[i][1] }}
-                <!-- Add "On" and "Off" buttons with data attributes -->
-                <button class="turn-on-btn" data-device-id="{{ devices[i][0] }}">On</button>
-                <button class="turn-off-btn" data-device-id="{{ devices[i][0] }}">Off</button>
-            </li>
-        {% endfor %}
-    </ul>
-    </ul>
-    <canvas id="map_canvas"></canvas>
-    <script src="/static/canvas.js"></script>
+
 </div>
+<div id="main2" class="info_box">
+    <h2>Switches</h2>
+        {% for i in range(0, len_switches) %}
+            <div id="{{ switches[i][0] }}" class="device-container">
+                <div class="status-indicator"></div>
+                <span class="device-name">{{ switches[i][1] }}</span>
+                <!-- Add "On" and "Off" buttons with data attributes -->
+                <button class="turn-on-btn" data-device-id="{{ switches[i][0] }}">On</button>
+                <button class="turn-off-btn" data-device-id="{{ switches[i][0] }}">Off</button>
+            </div>
+        {% endfor %}
+</div>
+<canvas id="map_canvas"></canvas>
+<script src="/static/canvas.js"></script>
 </body>
 </html>
