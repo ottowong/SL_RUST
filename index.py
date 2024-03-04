@@ -49,7 +49,7 @@ def get_steam_member(steam_id):
     try:
         response = requests.get(url)
         data = response.json()
-        print(data['response']['players'][0]['avatar'])
+        print("Got new avatar",data['response']['players'][0]['avatar'])
         if len(data['response']['players']) > 0:
             profile_pic = data['response']['players'][0]['avatar']
             img_data = requests.get(profile_pic).content
@@ -202,6 +202,7 @@ async def Main():
             try:
                 team_info = await rust_socket.get_team_info()
                 for member in team_info.members:
+                    get_steam_member(member.steam_id)
                     steam_members[member.steam_id]["is_online"] = member.is_online
                     steam_members[member.steam_id]["is_alive"] = member.is_alive
 
@@ -292,22 +293,6 @@ async def Main():
             socketio.emit('update_switch', [id, None])
             print("sent failed update", e)
             asyncio.run(update_switch(id, None))
-
-    @socketio.on('turn_on')
-    def handle_request_turn_on(id):
-        print("turning on device", id)
-        asyncio.run(turn_on_device(id))
-        info = asyncio.run(get_entity_info(id))
-        socketio.emit('update_switch', [id, info.value])
-        asyncio.run(update_switch(id, info.value))
-        
-    @socketio.on('turn_off')
-    def handle_request_turn_off(id):
-        print("turning off device", id)
-        asyncio.run(turn_off_device(id))
-        info = asyncio.run(get_entity_info(id))
-        socketio.emit('update_switch', [id, info.value])
-        asyncio.run(update_switch(id, info.value))
 
     @rust_socket.team_event
     async def team(event : TeamEvent):
