@@ -287,6 +287,7 @@ async def Main():
                 asyncio.run(turn_on_device(id))
                 value = None
             asyncio.run(update_switch(id, value)) # update the database with a guess of what it will be
+            socketio.emit('update_switch', [id, value])
         except Exception as e:
             socketio.emit('update_switch', [id, None])
             print("sent failed update", e)

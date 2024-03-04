@@ -28,9 +28,9 @@ document.addEventListener('DOMContentLoaded', function() {
             let statusIndicator = element.querySelector(".status-indicator");
             if(info[1] === undefined){
                 statusIndicator.style.backgroundColor = "gray";
-            } else if(info[1] === true){
+            } else if(info[1] === true || info[1] === 1){
                 statusIndicator.style.backgroundColor = "green";
-            } else if (info[1] === false) {
+            } else if (info[1] === false || info[1] === 0) {
                 statusIndicator.style.backgroundColor = "red";
             }
         } else {
@@ -70,22 +70,6 @@ $(document).ready(function() {
 
     $('.toggle-btn').click(function() {
         let deviceId = $(this).data('device-id');
-
-        let element = document.getElementById(deviceId);
-        if (element)
-        {
-            let statusIndicator = element.querySelector(".status-indicator");
-            if(statusIndicator.style.backgroundColor == "gray"){
-                statusIndicator.style.backgroundColor = "gray";
-            } else if(statusIndicator.style.backgroundColor == "red"){
-                statusIndicator.style.backgroundColor = "green";
-            } else if (statusIndicator.style.backgroundColor == "green") {
-                statusIndicator.style.backgroundColor = "red";
-            }
-        } else {
-            console.log("Element with ID " + id + " not found.");
-        }
-
         toggle(deviceId);
     });
 
