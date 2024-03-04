@@ -26,13 +26,10 @@
 <div id="main2" class="info_box">
     <h2>Switches</h2>
         {% for i in range(0, len_switches) %}
-            <div id="{{ switches[i][0] }}" class="device-container is-offline">
-                <div class="status-indicator"></div>
+            <div id="{{ switches[i][0] }}" class="device-container">
                 <div class="status-indicator"></div>
                 <span class="device-name">{{ switches[i][1] }}</span>
-                <!-- Add "On" and "Off" buttons with data attributes -->
-                <button class="turn-on-btn" data-device-id="{{ switches[i][0] }}">On</button>
-                <button class="turn-off-btn" data-device-id="{{ switches[i][0] }}">Off</button>
+                <button class="toggle-btn" data-device-id="{{ switches[i][0] }}">Toggle</button>
             </div>
         {% endfor %}
 </div>

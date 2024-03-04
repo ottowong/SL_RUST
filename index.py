@@ -63,6 +63,17 @@ def get_steam_member(steam_id):
         print(f"An error occurred trying to get steam profile pic: {e}")
         return None
     
+async def get_device(id):
+    conn = sqlite3.connect(database_name)
+    cur = conn.cursor()
+    cur.execute("SELECT name, status FROM tbl_devices WHERE id = ?", (id,))
+    device = cur.fetchone()
+    cur.close()
+    conn.close()
+    print("DEVICE HERE!!!")
+    print(device)
+    return device
+
 async def get_devices():
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
@@ -238,6 +249,23 @@ async def Main():
     def handle_request_devices():
         devices = asyncio.run(get_devices())
         emit('sent_devices', devices)
+
+    @socketio.on('toggle')
+    def handle_request_turn_on(id):
+        print("toggling device", id)
+        try:
+            device = asyncio.run(get_device(id))
+            if(device[1]==1):
+                asyncio.run(turn_off_device(id))
+            elif (device[1]==0):
+                asyncio.run(turn_on_device(id))
+            info = asyncio.run(get_entity_info(id)) # crashes here if does not exist
+            socketio.emit('update_switch', [id, info.value])
+            asyncio.run(update_switch(id, info.value))
+        except Exception as e:
+            socketio.emit('update_switch', [id, None])
+            print("sent failed update", e)
+            asyncio.run(update_switch(id, None))
 
     @socketio.on('turn_on')
     def handle_request_turn_on(id):

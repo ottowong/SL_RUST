@@ -21,14 +21,21 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(info)
         console.log(statusIndicatorOn)
         console.log(statusIndicatorOff)
-        if(info[1]){
-            statusIndicatorOn.style.display = "block";
-            statusIndicatorOff.style.display = "none";
-        } else {
-            statusIndicatorOn.style.display = "none";
-            statusIndicatorOff.style.display = "block";
-        }
 
+        let element = document.getElementById(id);
+        if (element)
+        {
+            let statusIndicator = element.querySelector(".status-indicator");
+            if(info[1] === undefined){
+                statusIndicator.style.backgroundColor = "gray";
+            } else if(info[1] === true){
+                statusIndicator.style.backgroundColor = "green";
+            } else if (info[1] === false) {
+                statusIndicator.style.backgroundColor = "red";
+            }
+        } else {
+            console.log("Element with ID " + id + " not found.");
+        }
     });
     socket.on('update_markers', function(markers) {
         all_markers = markers // update global variable
@@ -57,6 +64,10 @@ $(document).ready(function() {
         socket.emit('turn_off', deviceId);
     }
 
+    function toggle(deviceId) {
+        socket.emit('toggle', deviceId);
+    }
+
     // Add event listeners to all "On" buttons
     $('.turn-on-btn').click(function() {
         let deviceId = $(this).data('device-id');
@@ -68,4 +79,10 @@ $(document).ready(function() {
         let deviceId = $(this).data('device-id');
         turnOff(deviceId);
     });
+
+    $('.toggle-btn').click(function() {
+        let deviceId = $(this).data('device-id');
+        toggle(deviceId);
+    });
+
 });
