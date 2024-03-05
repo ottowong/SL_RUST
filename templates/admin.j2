@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+</head>
+<body>
+    <h1>Admin Page</h1>
+    <ul>
+        {% for i in range(0, len) %}
+            <li>{{ devices[i][1] }} <form method="post" action="/remove_device">
+                <input type="hidden" name="device_id" value="{{ devices[i][0] }}"><button type="submit">Remove</button>
+            </form></li>
+        {% endfor %}
+    </ul>
+    <form action="/add_device" method="POST">
+        <label for="device_id">Device ID:</label><br>
+        <input type="text" id="device_id" name="device_id"><br>
+        <label for="device_name">Device Name:</label><br>
+        <input type="text" id="device_name" name="device_name"><br><br>
+        <label for="device_type">Device Type:</label><br>
+        <select id="device_type" name="device_type">
+            <option value="1">Switch</option>
+            <option value="2">Alarm</option>
+            <option value="3">Storage Monitor</option>
+        </select><br><br>
+        <input type="submit" value="Add Device">
+    </form>
+</body>
+</html>
