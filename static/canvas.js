@@ -43,9 +43,12 @@ let MIN_ZOOM = 0.1
 let SCROLL_SENSITIVITY = 0.001
 let all_markers = []
 let all_notes = []
+let all_monuments = []
 function drawText(ctx, x, y, text) {
     if(text != "")
     {
+        ctx.font = "12px Arial";
+
         let textWidth = ctx.measureText(text).width;
         let textHeight = parseInt(ctx.font);
 
@@ -55,7 +58,6 @@ function drawText(ctx, x, y, text) {
 
         // text
         ctx.fillStyle = "#ffffff";
-        ctx.font = "12px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(text, x, y-25);
@@ -66,7 +68,7 @@ function drawText(ctx, x, y, text) {
     }
 }
 
-function drawTriangle(ctx, x, y, size, colour, colour2, type) {
+function drawNote(ctx, x, y, size, colour, colour2, type) {
     let icon
     switch (type) {
         case 0:
@@ -160,6 +162,56 @@ function draw()
     ctx.scale(cameraZoom, cameraZoom)
     ctx.translate( -window.innerWidth / 2 + cameraOffset.x, -window.innerHeight / 2 + cameraOffset.y )
     ctx.drawImage(img, 0,0);
+
+    all_monuments.forEach(monument => {
+        let text = monument[0]
+        let x = (monument[1] / 4500 * 2000);
+        let y = (2000 - monument[2] / 4500 * 2000);
+        let icon
+        let colour = "#282828"
+        let colour2 = "#d4cac1"
+        var do_text = false;
+        switch (text) {
+            case "Train Tunnel":
+                icon = "\uf238" // train
+                break;
+            case "Train Tunnel Link":
+                icon = "\uf557" // archway (tunnel)
+                break;
+            case "Dungeonbase":
+                do_text = true;
+                text = "";
+                break;
+            default:
+                do_text = true;
+        }
+        if(do_text) // if we want text
+        {
+            ctx.fillStyle = colour;
+            ctx.font = "bold 16px 'Comic Sans MS'";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(text, x, y);
+            
+            // reset these
+            ctx.textAlign = "start";
+            ctx.textBaseline = "alphabetic";
+        } else { // if we want an icon
+            ctx.beginPath();
+            ctx .arc(x, y, 16, 0, 2 * Math.PI);
+            ctx.fillStyle = colour2;
+            ctx.fill();
+
+            // Draw FontAwesome icon
+            ctx.font = "18px FontAwesome";
+            let iconWidth = ctx.measureText(icon).width;
+            let iconX = x - iconWidth / 2;
+
+            ctx.fillStyle = colour;
+            ctx.fillText(icon, iconX, y+7);
+        }
+    });
+
     all_markers.forEach(marker => {
         let x = (marker[1] / 4500 * 2000);
         let y = (2000 - marker[2] / 4500 * 2000);
@@ -274,7 +326,7 @@ function draw()
                         colour = "#000000"
                         colour2 = "#ffffff";
                 }
-                drawTriangle(ctx, 0, -12, 30, colour, colour2, note[3]);
+                drawNote(ctx, 0, -12, 30, colour, colour2, note[3]);
                 break;
             default:
                 ctx.drawImage(redx, 0-redx.width/2, 0-redx.height/2);

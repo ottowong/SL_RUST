@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let isScrolledToBottom = chatMessages.scrollTop() + chatMessages.innerHeight() >= chatMessages[0].scrollHeight;
         
         chatMessages.append('<div><b>' + message[0] + ':</b> ' + message[1] + '</div>');
-        if (messageCount > 25) {
+        if (messageCount > 50) {
             chatMessages.children().first().remove();
         }
 
@@ -59,22 +59,20 @@ document.addEventListener('DOMContentLoaded', function() {
             chatMessages.scrollTop(chatMessages[0].scrollHeight);
         }
     });
+    socket.on('monuments', function(monuments) {
+        all_monuments = monuments // update global variable
+    });
 
     let chatInput = document.getElementById('chat_input');
 
-    // Add event listener for the 'keydown' event
+    // Handle sending messages
     chatInput.addEventListener('keydown', function(event) {
-        // Check if the key pressed is Enter
         if (event.key === 'Enter') {
-            // Prevent the default behavior of Enter key (form submission)
+            // Prevent the default behavior of Enter key
             event.preventDefault();
-
-            // Get the message from the input box
             let message = chatInput.value.trim();
 
-            // Check if the message is not empty
             if (message !== '') {
-                // Process the message (You can send it to the server, display it, etc.)
                 console.log('Sending message: ' + message);
                 socket.emit('send_message', message);
 

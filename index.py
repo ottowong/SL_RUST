@@ -11,6 +11,8 @@ import threading
 import time
 import requests
 import math
+import string
+
 database_name = "database.db"
 conn = sqlite3.connect(database_name)
 cur = conn.cursor()
@@ -30,6 +32,8 @@ rust_socket = RustSocket(ip, port, steamId, playerToken)
 steam_members = {}
 
 message_log = []
+
+monuments = []
 
 server_name=""
 server_url=""
@@ -173,6 +177,17 @@ async def Main():
 
     async def get_map(add_icons=False,add_events=False, add_vending_machines=False):
         rust_map = await rust_socket.get_map(add_icons=add_icons, add_events=add_events, add_vending_machines=add_vending_machines)
+        map_data = await rust_socket.get_raw_map_data()
+        monuments.clear()
+        for monument in map_data.monuments:
+            newtext = monument.token.replace("_"," ").replace("display name","")
+            print(newtext)
+            newtext = string.capwords(newtext)
+            newtext = newtext.replace("Abandonedmilitarybase","Abandoned Military Base")
+            newtext = newtext.replace("Launchsite","Launch Site")
+            newtext = newtext.replace("Hqm","HQM")
+            monuments.append([newtext,monument.x,monument.y])
+        print(monuments)
         return rust_map
     
     async def get_entity_info(id):
@@ -266,6 +281,7 @@ async def Main():
     @socketio.on('message')
     def handle_message(message):
         print('Received message: ' + message)
+        emit("monuments", monuments)
 
     @socketio.on('send_message')
     def handle_send_message(message):
@@ -290,7 +306,7 @@ async def Main():
             else:
                 asyncio.run(turn_on_device(id))
                 value = None
-            asyncio.run(update_switch(id, value)) # update the database with a guess of what it will be
+            asyncio.run(update_switch(id, value))
             socketio.emit('update_switch', [id, value])
         except Exception as e:
             socketio.emit('update_switch', [id, None])
@@ -306,7 +322,7 @@ async def Main():
         print(f"{event.message.name}: {event.message.message}")
         socketio.emit('chat_message', [event.message.name, event.message.message])
         message_log.append([event.message.name, event.message.message])
-        if (len(message_log)  > 25):
+        if (len(message_log)  > 50):
             message_log.pop(0)
 
     # get a new map png when the program starts
