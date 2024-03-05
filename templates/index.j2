@@ -10,59 +10,17 @@
     <link rel="stylesheet" type="text/css" href="/static/css/users.css">
     <link rel="stylesheet" type="text/css" href="/static/css/mobile.css">
 
-    <style>
-            .main {
-                background-image: url('img/background-ph.png'); 
-                background-size: cover; 
-                background-position: center;        
-                }
-                /* ^^^^^  its shit but it fucking works so fucking leave it? */
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
+    <script src="/static/sockets.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 
-            .container-left-head {
-                /* background-color: antiquewhite; */
-                text-align: center;
-                border: 1px solid #888;
-                background-color: #222222;
-            } h2 {
-                color: red;
-            } h4 {
+<style>
+</style>
 
-            }
 
-            .content-main-header {
-                position: absolute;
-                top: 0; 
-                left: 0; 
-                max-width: 100%; 
-                background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0)); 
-                padding: 10px;
-                text-align: center;
-            } img {
-                vertical-align: middle;
-                margin-top: 10px;
-            }
-
-            .content-main-footer {
-                position: absolute;
-                bottom: 0; 
-                left: 0; 
-                width: 100%; 
-                padding: 10px;
-                text-align: center;
-            }
-
-            .container-left-main-content {
-
-                margin-top: 8px;
-                overflow: hidden;
-                text-align: center;
-
-                display: flex;
-                flex-direction: column;
-                height: 100%;
-            }
-
-    </style>
 
 </head>
 <body>
@@ -265,7 +223,7 @@
 
         <div class="main">
             <div class="content-main-header">
-                    <img src="img/logo-ph.png">
+                    <img src="/static/img/logo-ph.png">
             </div>
             <div class="map-canvas">
                 <canvas id="map_canvas"></canvas>
@@ -279,7 +237,52 @@
         </div>
 
 
-        <div class="container-right-left"></div>
+        <div class="container-right-left">
+            <div class="container-right-left-content-wrapper">
+                <div class="list-item">
+                    <div class="icon">
+                        <img src="/static/img/switch.png" alt="Icon 1">
+                    </div>
+                    <div class="name">Lights</div>
+                    <div class="status"><span class="status-text-online">• Online</span></div>
+                </div>
+
+                <div class="list-item">
+                    <div class="icon">
+                        <img src="/static/img/switch.png" alt="Icon 2">
+                    </div>
+                    <div class="name">Turrets</div>
+                    <div class="status"><span class="status-text-offline">• Offline</span></div>
+                </div>
+
+                <div class="list-item">
+                    <div class="icon">
+                        <img src="/static/img/switch.png" alt="Icon 3">
+                    </div>
+                    <div class="name">Doors</div>
+                    <div class="status"><span class="status-text-noSig">• No Signal</span></div>
+                </div>
+                <p>aaa</p>
+                {% for i in range(0, len_switches) %}
+                    <div class="list-item">
+                        <div class="icon">
+                            <img src="/static/img/switch.png" alt="Icon 1">
+                        </div>
+                        <div class="name">{{ switches[i][1] }}</div>
+                        <div class="status" id="{{ switches[i][0] }}" style="color:
+                    {% if switches[i][2] == 1 %}
+         
+                        green;
+                    {% elif switches[i][2] == 0 %}
+                        red;
+                    {% else %}
+                        grey;
+                    {% endif %}
+                " data-device-id="{{ switches[i][0] }}" >not working</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
         <div class="container-right-right"></div>
         <div class="container-right-main"></div>
         <div class="footer-left"></div>

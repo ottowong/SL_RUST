@@ -24,10 +24,13 @@ document.addEventListener('DOMContentLoaded', function() {
             let statusIndicator = element.querySelector(".status-indicator");
             if(info[1] === undefined){
                 statusIndicator.style.backgroundColor = "gray";
+                element.innerHTML = "No signal";
             } else if(info[1] === true || info[1] === 1){
                 statusIndicator.style.backgroundColor = "green";
+                element.innerHTML = "Online";
             } else if (info[1] === false || info[1] === 0) {
                 statusIndicator.style.backgroundColor = "red";
+                element.innerHTML = "Offline";
             }
         } else {
             console.log("Element with ID " + id + " not found.");
@@ -87,20 +90,13 @@ $(document).ready(function() {
     let socket = io();
 
     // Function to handle turning the device on
-    function turnOn(deviceId) {
-        socket.emit('turn_on', deviceId);
-    }
 
-    // Function to handle turning the device off
-    function turnOff(deviceId) {
-        socket.emit('turn_off', deviceId);
-    }
 
     function toggle(deviceId) {
         socket.emit('toggle', deviceId);
     }
 
-    $('.toggle-btn').click(function() {
+    $('.status').click(function() {
         let deviceId = $(this).data('device-id');
         toggle(deviceId);
     });
