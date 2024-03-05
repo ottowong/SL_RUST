@@ -180,7 +180,7 @@ async def Main():
         map_data = await rust_socket.get_raw_map_data()
         monuments.clear()
         for monument in map_data.monuments:
-            newtext = monument.token.replace("_"," ").replace("display name","")
+            newtext = monument.token.replace("_"," ").replace("display name","").replace("monument name","")
             print(newtext)
             newtext = string.capwords(newtext)
             newtext = newtext.replace("Abandonedmilitarybase","Abandoned Military Base")
