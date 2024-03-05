@@ -1,0 +1,58 @@
+@media screen and (max-width: 600px) {
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        background-color: #010101;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #a7a6a2;
+        overflow: auto;
+    }
+
+
+    .container {
+        display: grid;
+        width: 100%;
+        height: auto;
+        grid-template-areas: "header header header"
+        "main main main"
+        "container-right-main container-right-main container-right-main"
+        "container-right-left container-right-left container-right-left"
+        "container-right-right container-right-right container-right-right"
+        "footer-left footer-left footer-left"
+        "footer-left footer-left footer-left"
+        "container-left container-left container-left"
+        "footer-main footer-main footer-main";
+        grid-template-columns: 120px 4fr 1fr;
+        grid-template-rows: 160px 1fr 80px 1fr 1fr 1fr 1fr 1fr 1fr;
+      }
+      .container > div {
+        border: 1px dashed #888;
+      }
+      
+      .header {
+        grid-area: header;
+      }
+      .main {
+        grid-area: main;
+      }
+      .container-right-main {
+        grid-area: container-right-main;
+      }
+      .container-right-left {
+        grid-area: container-right-left;
+      }
+      .container-right-right {
+        grid-area: container-right-right;
+      }
+      .footer-left {
+        grid-area: footer-left;
+      }
+      .container-left {
+        grid-area: container-left;
+      }
+      .footer-main {
+        grid-area: footer-main;
+      }
+  }

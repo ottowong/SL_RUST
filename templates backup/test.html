@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Full View Background Image</title>
+<style>
+body {
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    background-image: url('img/background-ph.png'); /* Replace 'your-background-image.jpg' with the path to your image */
+    background-size: cover; /* Cover the entire viewport */
+    background-position: center; /* Center the background image */
+    background-repeat: no-repeat; /* Do not repeat the background image */
+    height: 100vh; /* Set the height of the body to be equal to the viewport height */
+    overflow: hidden;
+}
+
+.sticky-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px 20px;
+    display: flex;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.0));
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+}
+
+.logo {
+    text-align: center; /* Center the content within the logo div */
+}
+
+.left-content {
+    display: flex;
+    align-items: center;
+}
+
+.right-content {
+    display: flex;
+    align-items: center;
+}
+
+.container {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 300px;
+        border: 1px solid #ccc;
+    }
+    .content {
+        display: none;
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+    .header {
+        padding: 10px;
+        background-color: #e0e0e0;
+        cursor: pointer;
+    }
+
+
+</style>
+</head>
+<body>
+    <header class="sticky-header">
+
+        <div class="left-content">
+        </div>
+    <div class="logo">
+        <img src="img/logo-ph.png" alt="Logo">
+    </div>
+
+    <div class="right-content">
+    </div>
+</header>
+
+<div class="container">
+    <div class="item">
+        <div class="header" onclick="toggleContent(1)">Header 1</div>
+        <div class="content">Content 1<br>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+    </div>
+    <div class="item">
+        <div class="header" onclick="toggleContent(2)">Header 2</div>
+        <div class="content">Content 2<br>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+    </div>
+    <div class="item">
+        <div class="header" onclick="toggleContent(3)">Header 3</div>
+        <div class="content">Content 3<br>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+    </div>
+</div>
+
+<script>
+    function toggleContent(index) {
+        var content = document.querySelectorAll('.content');
+        var clickedContent = content[index - 1];
+        var otherContent = [...content].filter((item) => item !== clickedContent);
+
+        if (clickedContent.style.display === 'none') {
+            // Show clicked content and expand its height
+            clickedContent.style.display = 'block';
+            clickedContent.style.height = 'auto';
+            var clickedContentHeight = clickedContent.clientHeight + 'px';
+            clickedContent.style.height = '0';
+            setTimeout(function() {
+                clickedContent.style.height = clickedContentHeight;
+            }, 0);
+
+            // Move other content down if necessary
+            otherContent.forEach(function(item) {
+                if (item.offsetTop > clickedContent.offsetTop) {
+                    item.style.transform = 'translateY(' + clickedContentHeight + ')';
+                }
+            });
+        } else {
+            // Collapse clicked content and move other content back up
+            clickedContent.style.height = '0';
+            otherContent.forEach(function(item) {
+                if (item.offsetTop > clickedContent.offsetTop) {
+                    item.style.transform = 'translateY(0)';
+                }
+            });
+            setTimeout(function() {
+                clickedContent.style.display = 'none';
+            }, 300); // Duration of the transition
+        }
+    }
+</script>
+
+</body>
+</html>

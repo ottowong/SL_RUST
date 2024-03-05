@@ -1,0 +1,34 @@
+        /* Style for the user list */
+        .Player-list {
+            flex-grow: 1;
+            overflow: auto;
+
+            border: 1px solid #888;
+            background-color: #222222;
+            
+        }
+      
+        .user-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .user-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid gray;
+            padding: 0 10px 5px 10px;
+        } h3 {
+            margin: 0 0 5px 5px;
+            font-size: medium;
+            text-align: left;
+        } p {
+            margin: 0 0 0 5px;
+            font-size: small;
+        }
+        .user-item img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 0 5px 0 5px;
+        }
