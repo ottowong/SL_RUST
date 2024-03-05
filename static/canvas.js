@@ -160,13 +160,13 @@ function drawNote(ctx, x, y, size, colour, colour2, type, is_leader) {
 
         ctx.beginPath();
         ctx.arc(x+13, y-13, 4, 0, 2 * Math.PI);
-        ctx.fillStyle = "#00ff00";
+        ctx.fillStyle = "#89c02d";
         ctx.fill();
         // draw a circle
         ctx.beginPath();
         ctx.arc(x+13, y-13, 3, 0, 2 * Math.PI);
         if(team_leader[1]){
-            ctx.fillStyle = "#00ff00";
+            ctx.fillStyle = "#89c02d";
         } else {
             ctx.fillStyle = "#283b0b";
         }
