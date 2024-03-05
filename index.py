@@ -99,7 +99,7 @@ async def update_switch(id, status):
 @app.route("/")
 def index():
     switches, alarms, monitors = asyncio.run(get_devices()) # does not ping the API
-    return render_template("index.html", switches=switches, len_switches=len(switches), server_name=server_name, ip=ip, port=port, server_url=server_url, server_map=server_map, server_players=server_players, server_max_players=server_max_players, server_queued=server_queued, server_size=server_size, server_seed=server_seed, alarms=alarms, len_alarms=len(alarms), monitors=monitors, len_monitors=len(monitors), message_log=message_log, len_message_log=len(message_log))
+    return render_template("index.j2", switches=switches, len_switches=len(switches), server_name=server_name, ip=ip, port=port, server_url=server_url, server_map=server_map, server_players=server_players, server_max_players=server_max_players, server_queued=server_queued, server_size=server_size, server_seed=server_seed, alarms=alarms, len_alarms=len(alarms), monitors=monitors, len_monitors=len(monitors), message_log=message_log, len_message_log=len(message_log))
 
 @app.route("/add_device", methods=["POST"]) # use sockets for this instead
 def add_device():
@@ -134,7 +134,7 @@ def admin():
     devices = cur.fetchall()
     cur.close()
     conn.close()
-    return render_template("admin.html", devices=devices, len=len(devices))
+    return render_template("admin.j2", devices=devices, len=len(devices))
 
 async def Main():
     print("Starting main loop")
