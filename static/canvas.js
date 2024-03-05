@@ -68,7 +68,7 @@ function drawText(ctx, x, y, text) {
     }
 }
 
-function drawNote(ctx, x, y, size, colour, colour2, type) {
+function drawNote(ctx, x, y, size, colour, colour2, type, is_leader) {
     let icon
     switch (type) {
         case 0:
@@ -150,6 +150,18 @@ function drawNote(ctx, x, y, size, colour, colour2, type) {
 
         ctx.fillStyle = colour;
         ctx.fillText(icon, iconX, y + 5);
+    }
+    if(is_leader){
+        ctx.beginPath();
+        ctx.arc(x+13, y-13, 6, 0, 2 * Math.PI);
+        ctx.fillStyle = "#000000";
+        ctx.fill();
+
+        // draw a circle
+        ctx.beginPath();
+        ctx.arc(x+13, y-13, 3, 0, 2 * Math.PI);
+        ctx.fillStyle = "#00ff00";
+        ctx.fill();
     }
 }
 
@@ -338,7 +350,7 @@ function draw()
                         colour = "#000000"
                         colour2 = "#ffffff";
                 }
-                drawNote(ctx, 0, -12, 30, colour, colour2, note[3]);
+                drawNote(ctx, 0, -12, 30, colour, colour2, note[3], note[6]);
                 break;
             default:
                 ctx.drawImage(redx, 0-redx.width/2, 0-redx.height/2);

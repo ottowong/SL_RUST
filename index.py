@@ -226,8 +226,10 @@ async def Main():
                     steam_members[member.steam_id]["is_online"] = member.is_online
                     steam_members[member.steam_id]["is_alive"] = member.is_alive
                 map_notes = []
-                for note in team_info.map_notes: # maybe have a global variable of these to pass to "/" ?
-                    map_notes.append([note.type,note.x,note.y,note.icon,note.colour_index,note.label])
+                for note in team_info.map_notes:
+                    map_notes.append([note.type,note.x,note.y,note.icon,note.colour_index,note.label,0])
+                for note in team_info.leader_map_notes:
+                    map_notes.append([note.type,note.x,note.y,note.icon,note.colour_index,note.label,1])
                 socketio.emit('update_notes', map_notes)
             except Exception as e:
                 print("failed to update steam members/notes :-(\n", e)
