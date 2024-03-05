@@ -44,7 +44,7 @@ let SCROLL_SENSITIVITY = 0.001
 let all_markers = []
 let all_notes = []
 let all_monuments = []
-let all_steam_members = []
+let team_leader = []
 function drawText(ctx, x, y, text) {
     if(text != "")
     {
@@ -154,14 +154,22 @@ function drawNote(ctx, x, y, size, colour, colour2, type, is_leader) {
     }
     if(is_leader){
         ctx.beginPath();
-        ctx.arc(x+13, y-13, 6, 0, 2 * Math.PI);
+        ctx.arc(x+13, y-13, 7, 0, 2 * Math.PI);
         ctx.fillStyle = "#000000";
         ctx.fill();
 
+        ctx.beginPath();
+        ctx.arc(x+13, y-13, 4, 0, 2 * Math.PI);
+        ctx.fillStyle = "#00ff00";
+        ctx.fill();
         // draw a circle
         ctx.beginPath();
         ctx.arc(x+13, y-13, 3, 0, 2 * Math.PI);
-        ctx.fillStyle = "#00ff00";
+        if(team_leader[1]){
+            ctx.fillStyle = "#00ff00";
+        } else {
+            ctx.fillStyle = "#283b0b";
+        }
         ctx.fill();
     }
 }

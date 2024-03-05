@@ -63,7 +63,12 @@ document.addEventListener('DOMContentLoaded', function() {
         all_monuments = monuments // update global variable
     });
     socket.on('update_steam_members', function(steam_members) {
-        all_steam_members = steam_members // update global variable
+        for (var steamId in steam_members) {
+            if(steam_members[steamId]["is_leader"]){
+                team_leader = [steamId,steam_members[steamId]["is_online"]] // update global variable
+                console.log(team_leader)
+            }
+        }
     });
     let chatInput = document.getElementById('chat_input');
 
