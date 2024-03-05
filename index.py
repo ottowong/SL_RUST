@@ -28,7 +28,7 @@ playerToken = int(os.environ.get("PLAYERTOKEN"))
 SteamApiKey = os.environ.get("STEAMAPIKEY")
 
 rust_socket = RustSocket(ip, port, steamId, playerToken)
-
+team_leader = []
 steam_members = {}
 
 message_log = []
@@ -61,7 +61,7 @@ def get_steam_member(steam_id):
             img_data = requests.get(profile_pic).content
             with open('static/profilepics/'+str(steam_id)+'.jpg', 'wb') as handler:
                 handler.write(img_data)
-            steam_members[steam_id] = {"url": profile_pic, "is_online": False, "is_alive": True, "steam_id": str(steam_id)}
+            steam_members[steam_id] = {"url": profile_pic, "is_online": False, "is_alive": True, "steam_id": str(steam_id), "is_leader": False}
             return steam_members[steam_id]
         else:
             return None
@@ -225,12 +225,14 @@ async def Main():
                     get_steam_member(member.steam_id)
                     steam_members[member.steam_id]["is_online"] = member.is_online
                     steam_members[member.steam_id]["is_alive"] = member.is_alive
+                    steam_members[member.steam_id]["is_leader"] = (member.steam_id==team_info.leader_steam_id)
                 map_notes = []
                 for note in team_info.map_notes:
                     map_notes.append([note.type,note.x,note.y,note.icon,note.colour_index,note.label,0])
                 for note in team_info.leader_map_notes:
                     map_notes.append([note.type,note.x,note.y,note.icon,note.colour_index,note.label,1])
                 socketio.emit('update_notes', map_notes)
+                socketio.emit('update_steam_members', steam_members)
             except Exception as e:
                 print("failed to update steam members/notes :-(\n", e)
 

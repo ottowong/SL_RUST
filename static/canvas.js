@@ -44,6 +44,7 @@ let SCROLL_SENSITIVITY = 0.001
 let all_markers = []
 let all_notes = []
 let all_monuments = []
+let all_steam_members = []
 function drawText(ctx, x, y, text) {
     if(text != "")
     {

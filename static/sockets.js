@@ -62,7 +62,9 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.on('monuments', function(monuments) {
         all_monuments = monuments // update global variable
     });
-
+    socket.on('update_steam_members', function(steam_members) {
+        all_steam_members = steam_members // update global variable
+    });
     let chatInput = document.getElementById('chat_input');
 
     // Handle sending messages
