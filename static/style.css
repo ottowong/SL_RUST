@@ -55,3 +55,34 @@ h1, h2{
     margin-right: 10px;
     border-radius: 100%;
 }
+
+#chatmessages{
+    height: calc(300px - 16px);
+    overflow-y:auto;
+    overflow-x: hidden;
+    margin-top: 20px;
+    word-wrap: break-word;
+}
+
+
+
+/* Target WebKit browsers like Chrome and Safari */
+::-webkit-scrollbar {
+    width: 12px; /* Width of the scrollbar */
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: rgba(48, 48, 48, 0); /* Color of the scrollbar track */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #888; /* Color of the scrollbar handle */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the scrollbar handle when hovered */
+}

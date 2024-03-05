@@ -74,6 +74,9 @@ async def get_device(id):
     conn.close()
     return device
 
+async def send_message(message):
+    await rust_socket.send_team_message("[SL]: " + message)
+
 async def get_devices():
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
@@ -264,6 +267,10 @@ async def Main():
     def handle_message(message):
         print('Received message: ' + message)
 
+    @socketio.on('send_message')
+    def handle_send_message(message):
+        asyncio.run(send_message(message))
+
     @socketio.on('request_devices') # unused
     def handle_request_devices():
         devices = asyncio.run(get_devices())
@@ -299,7 +306,7 @@ async def Main():
         print(f"{event.message.name}: {event.message.message}")
         socketio.emit('chat_message', [event.message.name, event.message.message])
         message_log.append([event.message.name, event.message.message])
-        if len(message_log > 10):
+        if (len(message_log)  > 25):
             message_log.pop(0)
 
     # get a new map png when the program starts

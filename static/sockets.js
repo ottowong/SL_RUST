@@ -45,7 +45,43 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('queue_data').innerHTML = server_info.queued_players
     });
     socket.on('chat_message', function(message) {
-        $('#chatmessages').append('<div><b>' + message[0] + ':</b> ' + message[1] + '</div>');
+        let chatMessages = $('#chatmessages');
+        let messageCount = chatMessages.children().length;
+        let isScrolledToBottom = chatMessages.scrollTop() + chatMessages.innerHeight() >= chatMessages[0].scrollHeight;
+        
+        chatMessages.append('<div><b>' + message[0] + ':</b> ' + message[1] + '</div>');
+        if (messageCount > 25) {
+            chatMessages.children().first().remove();
+        }
+
+        // Scroll to the bottom if already scrolled to the bottom before adding a new message
+        if (isScrolledToBottom) {
+            chatMessages.scrollTop(chatMessages[0].scrollHeight);
+        }
+    });
+
+    let chatInput = document.getElementById('chat_input');
+
+    // Add event listener for the 'keydown' event
+    chatInput.addEventListener('keydown', function(event) {
+        // Check if the key pressed is Enter
+        if (event.key === 'Enter') {
+            // Prevent the default behavior of Enter key (form submission)
+            event.preventDefault();
+
+            // Get the message from the input box
+            let message = chatInput.value.trim();
+
+            // Check if the message is not empty
+            if (message !== '') {
+                // Process the message (You can send it to the server, display it, etc.)
+                console.log('Sending message: ' + message);
+                socket.emit('send_message', message);
+
+                // Clear the input box
+                chatInput.value = '';
+            }
+        }
     });
 });
 
