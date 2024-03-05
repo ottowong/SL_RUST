@@ -46,7 +46,9 @@ html, body {
     }
     .main {
     grid-area: main;
-    position: relative
+    position: relative;
+
+    overflow: hidden;
 
     }
     .container-right-left {
@@ -65,4 +67,8 @@ html, body {
     grid-area: footer-main;
     }
 
-    
+    .map-canvas{
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+    }

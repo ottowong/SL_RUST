@@ -2,63 +2,289 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SADLADS RUST MAP</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
-    <script src="/static/sockets.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-    <link rel="stylesheet" href="/static/style.css">
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>Document</title>
+
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/users.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/mobile.css">
+
+    <style>
+            .main {
+                background-image: url('img/background-ph.png'); 
+                background-size: cover; 
+                background-position: center;        
+                }
+                /* ^^^^^  its shit but it fucking works so fucking leave it? */
+
+            .container-left-head {
+                /* background-color: antiquewhite; */
+                text-align: center;
+                border: 1px solid #888;
+                background-color: #222222;
+            } h2 {
+                color: red;
+            } h4 {
+
+            }
+
+            .content-main-header {
+                position: absolute;
+                top: 0; 
+                left: 0; 
+                max-width: 100%; 
+                background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0)); 
+                padding: 10px;
+                text-align: center;
+            } img {
+                vertical-align: middle;
+                margin-top: 10px;
+            }
+
+            .content-main-footer {
+                position: absolute;
+                bottom: 0; 
+                left: 0; 
+                width: 100%; 
+                padding: 10px;
+                text-align: center;
+            }
+
+            .container-left-main-content {
+
+                margin-top: 8px;
+                overflow: hidden;
+                text-align: center;
+
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+
+    </style>
+
 </head>
 <body>
-<div id="main_server_info" class="info_box">
-    <h2 id="server_name">{{ server_name }}</h2>
-    <div id="ip"><b>IP: </b><span id="ip_data">{{ ip }}:{{ port }}</span></div>
-    <div id="url"><b>URL: </b><span id="url_data">{{ server_url }}</span></div>
-    <div id="seed"><b>Seed: </b><span id="seed_data">{{ server_seed }}</span></div>
-    <div id="map_type"><b>Map: </b><span id="map_data">{{ server_map }}</span></div>
-    <div id="map_size"><b>Size: </b><span id="map_size_data">{{ server_size }}</span></div>
-    <div id="time"><b>Time: </b><span id="time_data">{{ time }}</span></div>
-    <div id="players"><b>Players: </b><span id="players_data">{{ server_players }}/{{ server_max_players }}</span></div>
-    <div id="queue"><b>Queue: </b><span id="queue_data">{{ server_queued }}</span></div>
-</div>
-<div id="main_switches" class="info_box">
-    <h2>Switches</h2>
-        {% for i in range(0, len_switches) %}
-            <div id="{{ switches[i][0] }}" class="device-container">
-                <div class="status-indicator" style="background-color:
-                    {% if switches[i][2] == 1 %}
-                        green;
-                    {% elif switches[i][2] == 0 %}
-                        red;
-                    {% else %}
-                        gray;
-                    {% endif %}
-                "></div>
-                <span class="device-name">{{ switches[i][1] }}</span>
-                <button class="toggle-btn" data-device-id="{{ switches[i][0] }}">Toggle</button>
+    
+    <div class="container">
+        <div class="header"></div>
+
+        <div class="container-left">
+            <div class="container-left-main-content">
+            <div class="container-left-head">
+                <h1>Total Players</h1>
+                <h2>250/250 (18)</h2>
+                <h4>Estimated Queue Time: 17mins</h4>
             </div>
-        {% endfor %}
-</div>
-<div id="main_chat" class="info_box">
-    <div id="header">
-        <h2>Chat</h2>
-    </div>
-    <div id="messages">
-        <div id="chatmessages">
-            {% for i in range (0, len_message_log) %}
-                <div class="message"><b>{{ message_log[i][0] }}: </b>{{ message_log[i][1] }}</div>
-            {% endfor %}
+                    <span>Last updated: 0 seconds ago</span>
+                    <div class="Player-list">
+                        <ul class="user-list">
+                            <li class="user-item">
+                                <img src="img/otto.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #8cbb55">Otto</span></h3>
+                                    <p>11,805.2 hours |<span style="color: #8cbb55"> Exploring the wilderness </span></p>
+                                </div>
+                            </li>
+                            <li class="user-item">
+                                <img src="img/harry.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #8cbb55">Harry</span></h3>
+                                    <p>420.69 hours |<span style="color: #8cbb55"> Browsing skins</span></p>
+                                </div>
+                            </li>
+                            <li class="user-item">
+                                <img src="img/joop.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #62b7da">Joop</span></h3>
+                                    <p>1.6 hours |<span style="color: #62b7da"> Slacking</span></p>
+                                </div>
+                            </li>
+                        
+                            <li class="user-item">
+                                <img src="img/otto.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #8cbb55">Otto</span></h3>
+                                    <p>11,805.2 hours |<span style="color: #8cbb55"> Exploring the wilderness </span></p>
+                                </div>
+                            </li>
+                            <li class="user-item">
+                                <img src="img/harry.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #8cbb55">Harry</span></h3>
+                                    <p>420.69 hours |<span style="color: #8cbb55"> Browsing skins</span></p>
+                                </div>
+                            </li>
+                            <li class="user-item">
+                                <img src="img/joop.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #62b7da">Joop</span></h3>
+                                    <p>1.6 hours |<span style="color: #62b7da"> Slacking</span></p>
+                                </div>
+                            </li>
+                        
+                            <li class="user-item">
+                                <img src="img/otto.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #8cbb55">Otto</span></h3>
+                                    <p>11,805.2 hours |<span style="color: #8cbb55"> Exploring the wilderness </span></p>
+                                </div>
+                            </li>
+                            <li class="user-item">
+                                <img src="img/harry.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #8cbb55">Harry</span></h3>
+                                    <p>420.69 hours |<span style="color: #8cbb55"> Browsing skins</span></p>
+                                </div>
+                            </li>
+                            <li class="user-item">
+                                <img src="img/joop.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #62b7da">Joop</span></h3>
+                                    <p>1.6 hours |<span style="color: #62b7da"> Slacking</span></p>
+                                </div>
+                            </li>
+                        
+                            <li class="user-item">
+                                <img src="img/otto.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #8cbb55">Otto</span></h3>
+                                    <p>11,805.2 hours |<span style="color: #8cbb55"> Exploring the wilderness </span></p>
+                                </div>
+                            </li>
+                            <li class="user-item">
+                                <img src="img/harry.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #8cbb55">Harry</span></h3>
+                                    <p>420.69 hours |<span style="color: #8cbb55"> Browsing skins</span></p>
+                                </div>
+                            </li>
+                            <li class="user-item">
+                                <img src="img/joop.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #62b7da">Joop</span></h3>
+                                    <p>1.6 hours |<span style="color: #62b7da"> Slacking</span></p>
+                                </div>
+                            </li>
+                        
+                            <li class="user-item">
+                                <img src="img/otto.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #8cbb55">Otto</span></h3>
+                                    <p>11,805.2 hours |<span style="color: #8cbb55"> Exploring the wilderness </span></p>
+                                </div>
+                            </li>
+                            <li class="user-item">
+                                <img src="img/harry.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #8cbb55">Harry</span></h3>
+                                    <p>420.69 hours |<span style="color: #8cbb55"> Browsing skins</span></p>
+                                </div>
+                            </li>
+                            <li class="user-item">
+                                <img src="img/joop.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #62b7da">Joop</span></h3>
+                                    <p>1.6 hours |<span style="color: #62b7da"> Slacking</span></p>
+                                </div>
+                            </li>
+                        
+                            <li class="user-item">
+                                <img src="img/otto.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #8cbb55">Otto</span></h3>
+                                    <p>11,805.2 hours |<span style="color: #8cbb55"> Exploring the wilderness </span></p>
+                                </div>
+                            </li>
+                            <li class="user-item">
+                                <img src="img/harry.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #8cbb55">Harry</span></h3>
+                                    <p>420.69 hours |<span style="color: #8cbb55"> Browsing skins</span></p>
+                                </div>
+                            </li>
+                            <li class="user-item">
+                                <img src="img/joop.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #62b7da">Joop</span></h3>
+                                    <p>1.6 hours |<span style="color: #62b7da"> Slacking</span></p>
+                                </div>
+                            </li>
+                        
+                            <li class="user-item">
+                                <img src="img/otto.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #8cbb55">Otto</span></h3>
+                                    <p>11,805.2 hours |<span style="color: #8cbb55"> Exploring the wilderness </span></p>
+                                </div>
+                            </li>
+                            <li class="user-item">
+                                <img src="img/harry.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #8cbb55">Harry</span></h3>
+                                    <p>420.69 hours |<span style="color: #8cbb55"> Browsing skins</span></p>
+                                </div>
+                            </li>
+                            <li class="user-item">
+                                <img src="img/joop.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #62b7da">Joop</span></h3>
+                                    <p>1.6 hours |<span style="color: #62b7da"> Slacking</span></p>
+                                </div>
+                            </li>
+                        
+                            <li class="user-item">
+                                <img src="img/otto.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #8cbb55">Otto</span></h3>
+                                    <p>11,805.2 hours |<span style="color: #8cbb55"> Exploring the wilderness </span></p>
+                                </div>
+                            </li>
+                            <li class="user-item">
+                                <img src="img/harry.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #8cbb55">Harry</span></h3>
+                                    <p>420.69 hours |<span style="color: #8cbb55"> Browsing skins</span></p>
+                                </div>
+                            </li>
+                            <li class="user-item">
+                                <img src="img/joop.jpg" alt="Profile Picture">
+                                <div>
+                                    <h3><span style="color: #62b7da">Joop</span></h3>
+                                    <p>1.6 hours |<span style="color: #62b7da"> Slacking</span></p>
+                                </div>
+                            </li>
+                        
+
+                        </ul>  
+                    </div>
+                </div>
         </div>
+
+
+        <div class="main">
+            <div class="content-main-header">
+                    <img src="img/logo-ph.png">
+            </div>
+            <div class="map-canvas">
+                <canvas id="map_canvas"></canvas>
+                <script src="/static/canvas.js"></script>
+
+            </div>
+
+            <div class="content-main-footer">
+                    Status : LIVE   |       Time:   04:20
+            </div>
+        </div>
+
+
+        <div class="container-right-left"></div>
+        <div class="container-right-right"></div>
+        <div class="container-right-main"></div>
+        <div class="footer-left"></div>
+        <div class="footer-main"></div>
     </div>
-    <div id="send_box">
-        <form>
-            <input id="chat_input" type="text" name="message" placeholder="Type your message..." autocomplete="off">
-        </form>
-    </div>
-</div>
-<canvas id="map_canvas"></canvas>
-<script src="/static/canvas.js"></script>
+
 </body>
 </html>
