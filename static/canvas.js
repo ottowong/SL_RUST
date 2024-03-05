@@ -182,6 +182,18 @@ function draw()
                 do_text = true;
                 text = "";
                 break;
+            case "Stables A":
+            case "Stables B":
+            case "Fishing Village":
+            case "Large Fishing Village":
+                do_text = true;
+                y=y+30
+                break;
+            case "Outpost":
+            case "Bandit Camp":
+                do_text = true;
+                y=y+40
+                break;
             default:
                 do_text = true;
         }
