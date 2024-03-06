@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     socket.on('update_switch', function(info) {
-        console.log("UPDATE SWITCH")
         let id = info[0]
         console.log(info)
 
@@ -23,14 +22,14 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             let statusIndicator = element.querySelector(".status-indicator");
             if(info[1] === undefined){
-                statusIndicator.style.backgroundColor = "gray";
-                element.innerHTML = "No signal";
+                element.innerHTML = "No Signal";
+                element.style.color = "gray";
             } else if(info[1] === true || info[1] === 1){
-                statusIndicator.style.backgroundColor = "green";
                 element.innerHTML = "Online";
+                element.style.color = "green";
             } else if (info[1] === false || info[1] === 0) {
-                statusIndicator.style.backgroundColor = "red";
                 element.innerHTML = "Offline";
+                element.style.color = "red";
             }
         } else {
             console.log("Element with ID " + id + " not found.");
@@ -97,15 +96,9 @@ $(document).ready(function() {
     let socket = io();
 
     // Function to handle turning the device on
-
-
-    function toggle(deviceId) {
-        socket.emit('toggle', deviceId);
-    }
-
     $('.status').click(function() {
         let deviceId = $(this).data('device-id');
-        toggle(deviceId);
+        socket.emit('toggle', deviceId);
     });
 
 });

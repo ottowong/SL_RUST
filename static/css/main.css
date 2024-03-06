@@ -22,147 +22,150 @@ html, body {
     grid-template-rows: 56px 644px 1fr 80px;
     box-sizing: border-box;
     overflow: hidden;
-    }
-    .container > div {
+}
+.container > div {
     border: 1px solid #888;
     background-color: #222222;
     margin: 4px;
+}
 
-    }
-
-    .header {
+.header {
     grid-area: header;
     height: 50px;
-    }
-    .container-left {
-    grid-area: container-left;
-    
+}
 
+.container-left {
+    grid-area: container-left;
     border: none !important;
     background-color: transparent !important;
     overflow: hidden;
     height: 1fr;
+}
 
-    }
-    .main {
+.main {
     grid-area: main;
     position: relative;
-
     overflow: hidden;
+}
 
-    }
-    .container-right-left {
+.container-right-left {
     grid-area: container-right-left;
-    }
-    .container-right-right {
+}
+.container-right-right {
     grid-area: container-right-right;
-    }
-    .container-right-main {
+}
+.container-right-main {
     grid-area: container-right-main;
-    }
-    .footer-left {
+}
+.footer-left {
     grid-area: footer-left;
-    }
-    .footer-main {
+}
+.footer-main {
     grid-area: footer-main;
-    }
+}
 
-    .map-canvas{
-        overflow: hidden;
-        width: 100%;
-        height: 100%;
+.map-canvas{
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
 
-        display: flex;
-        justify-content: center;
-    }
+    display: flex;
+    justify-content: center;
+}
 
-    .container-left-head {
-        /* background-color: antiquewhite; */
-        text-align: center;
-        border: 1px solid #888;
-        background-color: #222222;
-    } h2 {
-        color: red;
-    } h4 {
+.container-left-head {
+    /* background-color: antiquewhite; */
+    text-align: center;
+    border: 1px solid #888;
+    background-color: #222222;
+} h2 {
+    color: red;
+} h4 {
 
-    }
+}
 
-    .content-main-header {
-        position: absolute;
-        top: 0; 
-        left: 0; 
-        width: 100%; 
-        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0)); 
-        padding: 10px;
-        text-align: center;
-    } img {
-        vertical-align: middle;
-        margin-top: 10px;
-    }
-
-    .content-main-footer {
-        position: absolute;
-        bottom: 0; 
-        left: 0; 
-        width: 100%; 
-        padding: 10px;
-        text-align: center;
-    }
-
-    .container-left-main-content {
-
-        margin-top: 8px;
-        overflow: hidden;
-        text-align: center;
-
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-    }
-
-    /* CSS for list items */
-    .list-item {
-        display: flex;
-        align-items: center;
-        padding: 10px;
-        border-bottom: 1px solid #ccc;
-    }
-
-    /* CSS for icon */
-
-    .icon {
-        margin-right: 10px;
-        width: 30px; 
-        height: 30px; 
-    } 
+.content-main-header {
+    position: absolute;
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0)); 
+    padding: 10px;
+    text-align: center;
+} 
     
-    .icon img {
-        height: 100%;
-        width: 100%;
+img {
+    vertical-align: middle;
+    margin-top: 10px;
+}
 
-        margin: 0;
-    }
+.content-main-footer {
+    position: absolute;
+    bottom: 0; 
+    left: 0; 
+    width: 100%; 
+    padding: 10px;
+    text-align: center;
+}
 
-    /* CSS for name */
-    .name {
-        flex: 1;
-    }
+.container-left-main-content {
 
-    /* CSS for status */
-    .status {
-        font-style:normal ;
-        font-weight: bold;
-        font-family: Arial, Helvetica, sans-serif;
-    }
+    margin-top: 8px;
+    overflow: hidden;
+    text-align: center;
 
-    .status-text-online {
-        color: #45ff45;
-    }
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
 
-    .status-text-offline {
-        color: red;
-    }
+/* CSS for list items */
+.list-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
 
-    .status-text-noSig {
-        color: #5b5b5b;
-    }
+/* CSS for icon */
+.icon {
+    margin-right: 10px;
+    width: 30px; 
+    height: 30px; 
+} 
+
+.icon img {
+    height: 100%;
+    width: 100%;
+
+    margin: 0;
+}
+
+/* CSS for name */
+.name {
+    flex: 1;
+}
+
+/* CSS for status */
+.status {
+    font-style:normal ;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    user-select: none;
+}
+
+.status:hover{
+    cursor: pointer;
+}
+
+.status-text-online {
+    color: #45ff45;
+}
+
+.status-text-offline {
+    color: red;
+}
+
+.status-text-noSig {
+    color: #5b5b5b;
+}
