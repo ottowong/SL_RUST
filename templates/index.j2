@@ -11,7 +11,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
     <script src="/static/sockets.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-    <link rel="stylesheet" href="/static/style.css">
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 </head>
 <body>
@@ -60,33 +59,7 @@
 
         {# Switches #}
         <div class="container-right-left">
-            <div class="container-right-left-content-wrapper">
-                {% for i in range(0, len_switches) %}
-                    <div class="list-item">
-                        <div class="icon">
-                            <img src="/static/img/switch.png" alt="Icon 1">
-                        </div>
-                        <div class="name">{{ switches[i][1] }}</div>
-                        <div class="status" id="{{ switches[i][0] }}" style="color:
-                            {% if switches[i][2] == 1 %}
-                                green;
-                            {% elif switches[i][2] == 0 %}
-                                red;
-                            {% else %}
-                                grey;
-                            {% endif %}" 
-                        data-device-id="{{ switches[i][0] }}" >
-                    {% if switches[i][2] == 1 %}
-                        Online
-                    {% elif switches[i][2] == 0 %}
-                        Offline
-                    {% else %}
-                        No Signal
-                    {% endif %}
-                </div>
-                </div>
-                {% endfor %}
-            </div>
+            <div id="device_list" class="container-right-left-content-wrapper"></div>
         </div>
         <div class="container-right-right"></div>
         <div class="container-right-main"></div>

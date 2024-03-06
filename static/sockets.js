@@ -1,22 +1,68 @@
 document.addEventListener('DOMContentLoaded', function() {
     let socket = io();
+    function toggle(deviceId) {
+        console.log(deviceId)
+        socket.emit('toggle', deviceId);
+    }
     socket.on('connect', function() {
         socket.send('Client connected!');
     });
+    // create the list of devices (just switches for now)
     socket.on('sent_devices', function(devices) {
-        let ul = document.getElementById('device_list');
-        ul.innerHTML = '';
+        console.log("got devices")
+        console.log(devices)
+        
+        let parentDiv = document.getElementById('device_list');
+        parentDiv.innerHTML = '';
+    
         devices.forEach(device => {
-            let li = document.createElement('li');
-            li.textContent = device[1];
-            li.setAttribute('data-id', device[0]);
-            ul.appendChild(li);
+            let listItemDiv = document.createElement('div');
+            listItemDiv.classList.add('list-item');
+    
+            let iconDiv = document.createElement('div');
+            iconDiv.classList.add('icon');
+            let iconImg = document.createElement('img');
+            iconImg.setAttribute('src', '/static/img/switch.png');
+            iconImg.setAttribute('alt', 'Icon');
+    
+            iconDiv.appendChild(iconImg);
+    
+            let nameDiv = document.createElement('div');
+            nameDiv.classList.add('name');
+            nameDiv.textContent = device[1];
+    
+            let statusDiv = document.createElement('div');
+            statusDiv.classList.add('status');
+            statusDiv.setAttribute('id', device[0]);
+            statusDiv.setAttribute('data-device-id', device[0]);
+    
+            if (device[2] === 1) {
+                statusDiv.textContent = 'Online';
+                statusDiv.style.color = 'green';
+            } else if (device[2] === 0) {
+                statusDiv.textContent = 'Offline';
+                statusDiv.style.color = 'red';
+            } else {
+                statusDiv.textContent = 'Undefined';
+                statusDiv.style.color = 'gray';
+            }
+
+            statusDiv.addEventListener('click', function() {
+                let deviceId = $(this).data('device-id');
+                toggle(deviceId);
+            });
+    
+            listItemDiv.appendChild(iconDiv);
+            listItemDiv.appendChild(nameDiv);
+            listItemDiv.appendChild(statusDiv);
+    
+            parentDiv.appendChild(listItemDiv);
         });
     });
+    // if some switch data is wrong, update it here.
     socket.on('update_switch', function(info) {
         let id = info[0]
         console.log(info)
-
         let element = document.getElementById(id);
         if (element)
         {
@@ -94,11 +140,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 $(document).ready(function() {
     let socket = io();
-
+    
     // Function to handle turning the device on
     $('.status').click(function() {
         let deviceId = $(this).data('device-id');
         socket.emit('toggle', deviceId);
     });
-
 });

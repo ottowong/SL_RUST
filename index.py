@@ -12,6 +12,7 @@ import time
 import requests
 import math
 import string
+import logging
 
 database_name = "database.db"
 conn = sqlite3.connect(database_name)
@@ -47,6 +48,9 @@ server_seed=""
 app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
+
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
 def get_steam_member(steam_id):
     if(steam_id in steam_members):
@@ -282,17 +286,14 @@ async def Main():
 
     @socketio.on('message')
     def handle_message(message):
+        devices = asyncio.run(get_devices())
         print('Received message: ' + message)
         emit("monuments", monuments)
+        emit("sent_devices", devices)
 
     @socketio.on('send_message')
     def handle_send_message(message):
         asyncio.run(send_message(message))
-
-    @socketio.on('request_devices') # unused
-    def handle_request_devices():
-        devices = asyncio.run(get_devices())
-        emit('sent_devices', devices)
 
     @socketio.on('toggle')
     def handle_request_turn_on(id):
