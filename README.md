@@ -17,3 +17,8 @@ And pair with some smart devive in game, in order to get your playerToken and pl
 Put these in the .env
 Keep this running, since you can also use it to get device (entity) IDs.
 Alternatively, you can whack your smart device with a rock (in-game) and F1 + 'combatlog' 10s later, and take the 2nd ID.
+
+Requires the following Python libraries to be installed:
+```
+pip install rustplus flask python-dotenv flask-socketio pillow requests battlemetrics
+```
