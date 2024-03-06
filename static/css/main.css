@@ -173,3 +173,7 @@ img {
 .status-text-noSig {
     color: #5b5b5b;
 }
+
+#queue-time-header{
+    display:none;
+}

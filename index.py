@@ -45,6 +45,8 @@ server_queued=""
 server_size=""
 server_seed=""
 
+server_info = {}
+
 app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
@@ -203,7 +205,6 @@ async def Main():
     async def update_loop(): # updates all markers (player positions & vehicles mainly)
         print("starting update loop...")
         while True:
-            await asyncio.sleep(1)  # Wait for an amount of time
             try:
                 initial_markers = await rust_socket.get_markers()
                 markers = []
@@ -216,11 +217,11 @@ async def Main():
                 socketio.emit('update_markers', markers)
             except Exception as e:
                 print("failed to send markers :-(\n", e)
+            await asyncio.sleep(1)  # Wait for an amount of time
 
     async def medium_loop():
         print("starting medium loop...")
         while True:
-            await asyncio.sleep(3)  # Wait for an amount of time
             try:
                 team_info = await rust_socket.get_team_info()
                 for member in team_info.members:
@@ -237,14 +238,14 @@ async def Main():
                 socketio.emit('update_steam_members', steam_members)
             except Exception as e:
                 print("failed to update steam members/notes :-(\n", e)
+            await asyncio.sleep(3)  # Wait for an amount of time
 
     async def long_loop():
         print("starting long loop...")
+        global server_info
         while True:
-            await asyncio.sleep(30)  # Wait for an amount of time
             try:
                 info = await get_server_info()
-
                 server_info = {
                     "url" : info.url,
                     "name" : info.name,
@@ -259,6 +260,7 @@ async def Main():
                 socketio.emit('update_server_info', server_info)
             except Exception as e:
                 print("failed to update server info :-(\n", e)
+            await asyncio.sleep(30)  # Wait for an amount of time
 
     async def switch_loop(): # checks all switches
         print("starting device loop...")
@@ -283,13 +285,14 @@ async def Main():
     async def time_loop(): # get the server time every 10s or something.
         pass
 
-
+    # on first connection
     @socketio.on('message')
     def handle_message(message):
-        devices = asyncio.run(get_devices())
         print('Received message: ' + message)
+        devices = asyncio.run(get_devices())
         emit("monuments", monuments)
         emit("sent_devices", devices)
+        emit("update_server_info", server_info)
 
     @socketio.on('send_message')
     def handle_send_message(message):

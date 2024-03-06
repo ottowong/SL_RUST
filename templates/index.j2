@@ -15,16 +15,13 @@
 </head>
 <body>
     <div class="container">
-        <div class="header"></div>
-
+        <div class="header"><h1 id="server_name"></h1></div>
         <div class="container-left">
             <div class="container-left-main-content">
                 <div class="container-left-head">
                     <h1>Total Players</h1>
-                    <h2 id="player-count">{{ server_players }}/{{ server_max_players }}{% if server_queued > 0 %} ({{ server_queued }}){% endif %}</h2>
-                    {% if server_queued > 0 %}
-                        <h4>Estimated Queue Time: <span id="time-queue"></span></h4>
-                    {% endif %}
+                    <h2 id="player-count"></h2>
+                    <h4 id="queue-time-header">Estimated Queue Time: <span id="time-queue"></span></h4>
                 </div>
                 <span>Last updated: <span id="time-last-updated"></span></span>
                 <div class="Player-list">
@@ -53,7 +50,7 @@
             </div>
 
             <div class="content-main-footer">
-                Status : LIVE   |       Time:   04:20
+                Status : <span id="server-status"></span>   |       Time:   <span id="server-time"></span>
             </div>
         </div>
 
@@ -61,11 +58,26 @@
         <div class="container-right-left">
             <div id="device_list" class="container-right-left-content-wrapper"></div>
         </div>
-        <div class="container-right-right"></div>
-        <div class="container-right-main"></div>
-        <div class="footer-left"></div>
-        <div class="footer-main"></div>
-    </div>
 
+        {# Storage? #}
+        <div class="container-right-right">
+
+        </div>
+
+        {# Chat? #}
+        <div class="container-right-main">
+
+        </div>
+
+        {# Events? #}
+        <div class="footer-left">
+
+        </div>
+
+        {#  #}
+        <div class="footer-main">
+            
+        </div>
+    </div>
 </body>
 </html>

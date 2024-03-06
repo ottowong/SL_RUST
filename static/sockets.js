@@ -89,8 +89,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     socket.on('update_server_info', function(server_info) {
         document.getElementById('server_name').innerHTML = server_info.name;
-        document.getElementById('players_data').innerHTML = server_info.players+"/"+server_info.max_players;
-        document.getElementById('queue_data').innerHTML = server_info.queued_players
+        let queueTimeHeader = document.getElementById('queue-time-header');
+        let playerStr = server_info.players+"/"+server_info.max_players;
+        if(server_info.queued_players > 0){
+            queueTimeHeader.style.display = 'block';
+            playerStr += " (" + server_info.queued_players + ")"
+        } else {
+            console.log("hide thing")
+            queueTimeHeader.style.display = 'none';
+        }
+        document.getElementById('player-count').innerHTML = playerStr
+
     });
     socket.on('chat_message', function(message) {
         let chatMessages = $('#chatmessages');
