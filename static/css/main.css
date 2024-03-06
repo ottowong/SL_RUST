@@ -6,6 +6,7 @@ html, body {
     font-family: Arial, Helvetica, sans-serif;
     color: #a7a6a2;
     overflow: hidden;
+    user-select: none; /* disable highlighting anything. may want to re/move later. */
 }
 
 ::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:#cccccc;border-radius:0px}::-webkit-scrollbar-thumb{background:#2f2f2f;border-radius:0px}
@@ -176,4 +177,8 @@ img {
 
 #queue-time-header{
     display:none;
+}
+
+a {
+    text-decoration: none;
 }

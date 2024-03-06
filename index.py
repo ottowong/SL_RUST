@@ -29,6 +29,9 @@ playerToken = int(os.environ.get("PLAYERTOKEN"))
 SteamApiKey = os.environ.get("STEAMAPIKEY")
 
 rust_socket = RustSocket(ip, port, steamId, playerToken)
+
+RUST_SECONDS_PER_MINUTE = 5
+
 team_leader = []
 steam_members = {}
 
@@ -44,6 +47,9 @@ server_max_players=""
 server_queued=""
 server_size=""
 server_seed=""
+
+server_time = ""
+real_time = ""
 
 server_info = {}
 
@@ -263,6 +269,7 @@ async def Main():
                 }
                 # {'url': '', 'name': 'SADLADS TEST SERVER', 'map': 'Procedural Map', 'size': 4500, 'players': 1, 'max_players': 500, 'queued_players': 0, 'seed': 1337}                
                 socketio.emit('update_server_info', server_info)
+                await update_time()
             except Exception as e:
                 print("failed to update server info :-(\n", e)
             await asyncio.sleep(30)  # Wait for an amount of time
@@ -288,7 +295,11 @@ async def Main():
 
 
     async def time_loop(): # get the server time every 10s or something.
-        pass
+        print("starting time loop...")
+        while True:
+            guessedtime = await get_in_game_time()
+            socketio.emit('update_time', guessedtime)
+            await asyncio.sleep(RUST_SECONDS_PER_MINUTE) # send every time a minute occurs
 
     # on first connection
     @socketio.on('message')
@@ -336,17 +347,50 @@ async def Main():
         if (len(message_log)  > 50):
             message_log.pop(0)
 
+    async def update_time():
+        global server_time
+        global real_time
+        server_time = await get_time()
+        real_time = time.time()
+
+    async def get_in_game_time():
+        # Calculate the elapsed real-life time since the program first loads
+        current_real_time = time.time()
+        elapsed_real_time_seconds = current_real_time - real_time
+
+        hours_str, minutes_str = server_time.split(":")        
+        hours = int(hours_str)
+        minutes = int(minutes_str)
+
+        # Calculate the elapsed Rust time
+        elapsed_rust_time_seconds = ((minutes) + (hours * 60) + (elapsed_real_time_seconds / RUST_SECONDS_PER_MINUTE)) * 60
+
+        # Calculate Rust time components
+        rust_hours = int((elapsed_rust_time_seconds % 86400) // 3600)
+        rust_minutes = int((elapsed_rust_time_seconds % 3600) // 60)
+
+        # Format Rust time
+        rust_time = "{:02d}:{:02d}".format(rust_hours, rust_minutes)
+
+        # Return Rust time
+        return rust_time
+
     # get a new map png when the program starts
     rust_map = await get_map()
     rust_map.save("static/map.png")
 
     await get_server_info()
+    await update_time()
+    
 
     # start the update loop
     asyncio.create_task(update_loop())
     asyncio.create_task(medium_loop())
     asyncio.create_task(long_loop())
     asyncio.create_task(switch_loop())
+    asyncio.create_task(time_loop())
+
+    
 
     await rust_socket.hang()
 

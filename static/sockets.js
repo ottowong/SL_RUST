@@ -148,7 +148,6 @@ document.addEventListener('DOMContentLoaded', function() {
             spanName.textContent = member.name;
             spanName.setAttribute('href', member.profile_url);
             spanName.setAttribute('target', '_blank');
-            
             if (member.state === 1) {
                 // #8cbb55 in-game green
                 spanName.style.color = '#62b7da'; // Blue for Online
@@ -167,6 +166,11 @@ document.addEventListener('DOMContentLoaded', function() {
             userList.appendChild(listItem);
         }
     });
+    socket.on('update_time', function(rust_time) {
+        let server_time = document.getElementById('server-time');
+        server_time.innerHTML = rust_time;
+    });
+    
     let chatInput = document.getElementById('chat_input');
 
     // Handle sending messages
