@@ -65,7 +65,14 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.on('monuments', function(monuments) {
         all_monuments = monuments // update global variable
     });
-
+    socket.on('update_steam_members', function(steam_members) {
+        for (var steamId in steam_members) {
+            if(steam_members[steamId]["is_leader"]){
+                team_leader = [steamId,steam_members[steamId]["is_online"]] // update global variable
+                console.log(team_leader)
+            }
+        }
+    });
     let chatInput = document.getElementById('chat_input');
 
     // Handle sending messages
