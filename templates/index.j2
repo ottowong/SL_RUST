@@ -20,34 +20,35 @@
 
         <div class="container-left">
             <div class="container-left-main-content">
-            <div class="container-left-head">
-                <h1>Total Players</h1>
-                <h2>250/250 (18)</h2>
-                <h4>Estimated Queue Time: 17mins</h4>
-            </div>
-                    <span>Last updated: 0 seconds ago</span>
-                    <div class="Player-list">
-                        <ul class="user-list">
-                            <li class="user-item">
-                                <img src="/static/img/otto.jpg" alt="Profile Picture">
-                                <div>
-                                    <h3><span style="color: #8cbb55">Otto</span></h3>
-                                    <p>11,805.2 hours |<span style="color: #8cbb55"> Exploring the wilderness </span></p>
-                                </div>
-                            </li>
-                        </ul>  
-                    </div>
+                <div class="container-left-head">
+                    <h1>Total Players</h1>
+                    <h2 id="player-count">{{ server_players }}/{{ server_max_players }}{% if server_queued > 0 %} ({{ server_queued }}){% endif %}</h2>
+                    <h4>Estimated Queue Time: <span id="time-queue"></span></h4>
                 </div>
+                <span>Last updated: <span id="time-last-updated"></span></span>
+                <div class="Player-list">
+                    <ul class="user-list">
+                        <li class="user-item">
+                            <img src="/static/img/otto.jpg" alt="Profile Picture">
+                            <div>
+                                <h3><span style="color: #8cbb55">Otto</span></h3>
+                                <p>11,805.2 hours |<span style="color: #8cbb55"> Exploring the wilderness </span></p>
+                            </div>
+                        </li>
+                    </ul>  
+                </div>
+            </div>
         </div>
 
+        {# Map #}
         <div class="main">
             <div class="content-main-header">
-                    <img src="/static/img/logo-ph.png">
+                <img src="/static/img/logo-ph.png">
             </div>
+
             <div class="map-canvas">
                 <canvas id="map_canvas"></canvas>
                 <script src="/static/canvas.js"></script>
-
             </div>
 
             <div class="content-main-footer">
@@ -55,6 +56,7 @@
             </div>
         </div>
 
+        {# Switches #}
         <div class="container-right-left">
             <div class="container-right-left-content-wrapper">
                 {% for i in range(0, len_switches) %}
