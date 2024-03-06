@@ -92,6 +92,8 @@ html, body {
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0)); 
     padding: 10px;
     text-align: center;
+    pointer-events:none;
+    user-select: none;
 } 
     
 img {
@@ -106,6 +108,8 @@ img {
     width: 100%; 
     padding: 10px;
     text-align: center;
+    pointer-events:none;
+    user-select: none;
 }
 
 .container-left-main-content {
