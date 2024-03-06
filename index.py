@@ -181,13 +181,11 @@ async def Main():
         monuments.clear()
         for monument in map_data.monuments:
             newtext = monument.token.replace("_"," ").replace("display name","").replace("monument name","").replace("monument","")
-            print(newtext)
             newtext = string.capwords(newtext)
             newtext = newtext.replace("Abandonedmilitarybase","Abandoned Military Base")
             newtext = newtext.replace("Launchsite","Launch Site")
             newtext = newtext.replace("Hqm","HQM")
             monuments.append([newtext,monument.x,monument.y])
-        print(monuments)
         return rust_map
     
     async def get_entity_info(id):
