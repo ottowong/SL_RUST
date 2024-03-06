@@ -130,34 +130,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 team_leader = [steamId,steam_members[steamId]["is_online"]] // update global variable
             }
             console.log(member)
-            // Create li element
+            // list item
             var listItem = document.createElement('li');
             listItem.classList.add('user-item');
     
-            // Create img element
+            // profile pic
             var img = document.createElement('img');
             img.setAttribute('src', member.url);
             img.setAttribute('alt', 'Profile Picture');
             listItem.appendChild(img);
     
-            // Create div element
             var div = document.createElement('div');
     
-            // Create h3 element
+            // name
             var h3 = document.createElement('h3');
             var spanName = document.createElement('a');
             spanName.textContent = member.name;
             spanName.setAttribute('href', member.profile_url);
             spanName.setAttribute('target', '_blank');
+            
             if (member.state === 1) {
-                spanName.style.color = '#8cbb55'; // Green for Online
+                // #8cbb55 in-game green
+                spanName.style.color = '#62b7da'; // Blue for Online
             } else {
                 spanName.style.color = 'gray'; // Gray for Offline and other states
             }
             h3.appendChild(spanName);
             div.appendChild(h3);
     
-            // Create p element
+            // online status
             var p = document.createElement('p');
             p.textContent = 'Status: ' + getStateText(member.state);
             div.appendChild(p);
