@@ -54,8 +54,8 @@ socketio = SocketIO(app)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
-def get_steam_member(steam_id):
-    if(steam_id in steam_members):
+def get_steam_member(steam_id, update=False):
+    if(steam_id in steam_members and not update):
         return steam_members[steam_id]
     url = f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={SteamApiKey}&steamids={steam_id}'
     try:
@@ -64,10 +64,16 @@ def get_steam_member(steam_id):
         print("Got new avatar",data['response']['players'][0]['avatar'])
         if len(data['response']['players']) > 0:
             profile_pic = data['response']['players'][0]['avatar']
+            state = data['response']['players'][0]['personastate']
+            name = data['response']['players'][0]['personaname']
+            profile_url = data['response']['players'][0]['profileurl']
             img_data = requests.get(profile_pic).content
-            with open('static/profilepics/'+str(steam_id)+'.jpg', 'wb') as handler:
-                handler.write(img_data)
-            steam_members[steam_id] = {"url": profile_pic, "is_online": False, "is_alive": True, "steam_id": str(steam_id), "is_leader": False}
+            if(steam_id in steam_members):
+                steam_members[steam_id]["state"] =  state
+            else:
+                steam_members[steam_id] = {"url": profile_pic, "is_online": False, "is_alive": True, "steam_id": str(steam_id), "is_leader": False, "state": state, "name": name, "profile_url": profile_url}
+                with open('static/profilepics/'+str(steam_id)+'.jpg', 'wb') as handler:
+                    handler.write(img_data)
             return steam_members[steam_id]
         else:
             return None
@@ -211,7 +217,7 @@ async def Main():
                 for marker in initial_markers:
                     steam_member = {}
                     if marker.type == 1:
-                        steam_member = get_steam_member(marker.steam_id)
+                        steam_member = get_steam_member(marker.steam_id) # for profile pics on player markers
                     current_marker = [marker.type, marker.x, marker.y, marker.rotation, steam_member]
                     markers.append(current_marker)
                 socketio.emit('update_markers', markers)
@@ -225,7 +231,7 @@ async def Main():
             try:
                 team_info = await rust_socket.get_team_info()
                 for member in team_info.members:
-                    get_steam_member(member.steam_id)
+                    get_steam_member(member.steam_id) # for updating notes
                     steam_members[member.steam_id]["is_online"] = member.is_online
                     steam_members[member.steam_id]["is_alive"] = member.is_alive
                     steam_members[member.steam_id]["is_leader"] = (member.steam_id==team_info.leader_steam_id)
@@ -256,8 +262,12 @@ async def Main():
                     "queued_players" : info.queued_players,
                     "seed" : info.seed
                 }
-                # {'url': '', 'name': 'SADLADS TEST SERVER', 'map': 'Procedural Map', 'size': 4500, 'players': 1, 'max_players': 500, 'queued_players': 0, 'seed': 1337}
+                # {'url': '', 'name': 'SADLADS TEST SERVER', 'map': 'Procedural Map', 'size': 4500, 'players': 1, 'max_players': 500, 'queued_players': 0, 'seed': 1337}                
                 socketio.emit('update_server_info', server_info)
+
+                team_info = await rust_socket.get_team_info()
+                for member in team_info.members:
+                    get_steam_member(member.steam_id, True) # for updating actual member info
             except Exception as e:
                 print("failed to update server info :-(\n", e)
             await asyncio.sleep(30)  # Wait for an amount of time

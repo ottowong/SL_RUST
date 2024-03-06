@@ -119,12 +119,51 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.on('monuments', function(monuments) {
         all_monuments = monuments // update global variable
     });
+
     socket.on('update_steam_members', function(steam_members) {
+        var userList = document.querySelector('.user-list');
+        userList.innerHTML = ''; // Clear previous content
+    
         for (var steamId in steam_members) {
-            if(steam_members[steamId]["is_leader"]){
+            var member = steam_members[steamId];
+            if(member["is_leader"]){
                 team_leader = [steamId,steam_members[steamId]["is_online"]] // update global variable
-                console.log(team_leader)
             }
+            console.log(member)
+            // Create li element
+            var listItem = document.createElement('li');
+            listItem.classList.add('user-item');
+    
+            // Create img element
+            var img = document.createElement('img');
+            img.setAttribute('src', member.url);
+            img.setAttribute('alt', 'Profile Picture');
+            listItem.appendChild(img);
+    
+            // Create div element
+            var div = document.createElement('div');
+    
+            // Create h3 element
+            var h3 = document.createElement('h3');
+            var spanName = document.createElement('a');
+            spanName.textContent = member.name;
+            spanName.setAttribute('href', member.profile_url);
+            spanName.setAttribute('target', '_blank');
+            if (member.state === 1) {
+                spanName.style.color = '#8cbb55'; // Green for Online
+            } else {
+                spanName.style.color = 'gray'; // Gray for Offline and other states
+            }
+            h3.appendChild(spanName);
+            div.appendChild(h3);
+    
+            // Create p element
+            var p = document.createElement('p');
+            p.textContent = 'Status: ' + getStateText(member.state);
+            div.appendChild(p);
+    
+            listItem.appendChild(div);
+            userList.appendChild(listItem);
         }
     });
     let chatInput = document.getElementById('chat_input');
@@ -147,12 +186,23 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-$(document).ready(function() {
-    let socket = io();
-    
-    // Function to handle turning the device on
-    $('.status').click(function() {
-        let deviceId = $(this).data('device-id');
-        socket.emit('toggle', deviceId);
-    });
-});
+function getStateText(state) {
+    switch (state) {
+        case 0:
+            return 'Offline';
+        case 1:
+            return 'Online';
+        case 2:
+            return 'Busy';
+        case 3:
+            return 'Away';
+        case 4:
+            return 'Snooze';
+        case 5:
+            return 'Looking to trade';
+        case 6:
+            return 'Looking to play';
+        default:
+            return 'Unknown';
+    }
+}
