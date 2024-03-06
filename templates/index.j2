@@ -23,7 +23,9 @@
                 <div class="container-left-head">
                     <h1>Total Players</h1>
                     <h2 id="player-count">{{ server_players }}/{{ server_max_players }}{% if server_queued > 0 %} ({{ server_queued }}){% endif %}</h2>
-                    <h4>Estimated Queue Time: <span id="time-queue"></span></h4>
+                    {% if server_queued > 0 %}
+                        <h4>Estimated Queue Time: <span id="time-queue"></span></h4>
+                    {% endif %}
                 </div>
                 <span>Last updated: <span id="time-last-updated"></span></span>
                 <div class="Player-list">
