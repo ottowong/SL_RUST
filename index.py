@@ -61,7 +61,6 @@ def get_steam_member(steam_id, update=False):
     try:
         response = requests.get(url)
         data = response.json()
-        print("Got new avatar",data['response']['players'][0]['avatar'])
         if len(data['response']['players']) > 0:
             profile_pic = data['response']['players'][0]['avatar']
             state = data['response']['players'][0]['personastate']
@@ -231,7 +230,7 @@ async def Main():
             try:
                 team_info = await rust_socket.get_team_info()
                 for member in team_info.members:
-                    get_steam_member(member.steam_id) # for updating notes
+                    get_steam_member(member.steam_id, True) # for updating notes
                     steam_members[member.steam_id]["is_online"] = member.is_online
                     steam_members[member.steam_id]["is_alive"] = member.is_alive
                     steam_members[member.steam_id]["is_leader"] = (member.steam_id==team_info.leader_steam_id)
@@ -264,10 +263,6 @@ async def Main():
                 }
                 # {'url': '', 'name': 'SADLADS TEST SERVER', 'map': 'Procedural Map', 'size': 4500, 'players': 1, 'max_players': 500, 'queued_players': 0, 'seed': 1337}                
                 socketio.emit('update_server_info', server_info)
-
-                team_info = await rust_socket.get_team_info()
-                for member in team_info.members:
-                    get_steam_member(member.steam_id, True) # for updating actual member info
             except Exception as e:
                 print("failed to update server info :-(\n", e)
             await asyncio.sleep(30)  # Wait for an amount of time
