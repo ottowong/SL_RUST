@@ -12,11 +12,15 @@ import requests
 import math
 import string
 import logging
+from datetime import timedelta
+
 
 database_name = "database.db"
 conn = sqlite3.connect(database_name)
 cur = conn.cursor()
-cur.execute("CREATE TABLE IF NOT EXISTS tbl_devices (id INTEGER PRIMARY KEY, name TEXT, type INTEGER, status INTEGER);")
+cur.execute("CREATE TABLE IF NOT EXISTS tbl_switches (id INTEGER PRIMARY KEY, name TEXT, status INTEGER)")
+cur.execute("CREATE TABLE IF NOT EXISTS tbl_alarms   (id INTEGER PRIMARY KEY, name TEXT)")
+cur.execute("CREATE TABLE IF NOT EXISTS tbl_monitors (id INTEGER PRIMARY KEY, name TEXT, combine INTEGER)")
 cur.close()
 conn.close()
 
@@ -87,10 +91,10 @@ def get_steam_member(steam_id, update=False):
         print(f"An error occurred trying to get steam profile pic: {e}")
         return None
     
-async def get_device(id):
+async def get_switch(id):
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
-    cur.execute("SELECT name, status FROM tbl_devices WHERE id = ?", (id,))
+    cur.execute("SELECT name, status FROM tbl_switches WHERE id = ?", (id,))
     device = cur.fetchone()
     cur.close()
     conn.close()
@@ -102,7 +106,7 @@ async def send_message(message):
 async def get_switches():
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
-    cur.execute("SELECT id, name, status FROM tbl_devices WHERE type = 1")
+    cur.execute("SELECT id, name, status FROM tbl_switches")
     switches = cur.fetchall()
     cur.close()
     conn.close()
@@ -111,7 +115,7 @@ async def get_switches():
 async def get_monitors():
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
-    cur.execute("SELECT id, name FROM tbl_devices WHERE type = 3")
+    cur.execute("SELECT id, name FROM tbl_monitors")
     monitors = cur.fetchall()
     cur.close()
     conn.close()
@@ -120,7 +124,7 @@ async def get_monitors():
 async def get_alarms():
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
-    cur.execute("SELECT id, name FROM tbl_devices WHERE type = 2")
+    cur.execute("SELECT id, name, description FROM tbl_alarms")
     alarms = cur.fetchall()
     cur.close()
     conn.close()
@@ -129,7 +133,7 @@ async def get_alarms():
 async def update_switch(id, status):
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
-    cur.execute("UPDATE tbl_devices SET status = ? WHERE type = 1 AND id = ?", (status, id))
+    cur.execute("UPDATE tbl_switches SET status = ? WHERE id = ?", (status, id))
     conn.commit()
     cur.close()
     conn.close()
@@ -146,7 +150,17 @@ def add_device():
 
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
-    cur.execute("INSERT INTO tbl_devices (id, name, type) VALUES (?, ?, ?)", (device_id, device_name, device_type))
+    print(device_type)
+    if(device_type == "1"):
+        table = "tbl_switches"
+        cur.execute("INSERT INTO tbl_switches (id, name) VALUES (?, ?)", (device_id, device_name))
+    elif(device_type == "2"):
+        cur.execute("INSERT INTO tbl_alarms (id, name) VALUES (?, ?)", (device_id, device_name))
+    elif(device_type == "3"):
+        combine = 1 # temporary - add an option in /admin
+        cur.execute("INSERT INTO tbl_monitors (id, name, combine) VALUES (?, ?, ?)", (device_id, device_name, combine))
+    else:
+        return redirect("/admin")
     conn.commit()
     cur.close()
     conn.close()
@@ -157,7 +171,10 @@ def remove_device():
     device_id = request.form["device_id"]
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
-    cur.execute("DELETE FROM tbl_devices WHERE id=?", (device_id,))
+    # this is probably fine since 2 devices shouldn't have the same id
+    cur.execute("DELETE FROM tbl_switches WHERE id=?", (device_id,))
+    cur.execute("DELETE FROM tbl_alarms WHERE id=?", (device_id,))
+    cur.execute("DELETE FROM tbl_monitors WHERE id=?", (device_id,))
     conn.commit()
     cur.close()
     conn.close()
@@ -167,7 +184,13 @@ def remove_device():
 def admin():
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
-    cur.execute("SELECT id, name FROM tbl_devices")
+    cur.execute("""
+    SELECT id, name FROM tbl_switches
+    UNION ALL
+    SELECT id, name FROM tbl_monitors
+    UNION ALL
+    SELECT id, name FROM tbl_alarms;
+    """)
     devices = cur.fetchall()
     cur.close()
     conn.close()
@@ -195,23 +218,23 @@ async def Main():
         server_seed = info.seed
         return info
     
-    async def turn_on_device(id):
+    async def turn_on_switch(id):
         await rust_socket.turn_on_smart_switch(id)
     
-    async def turn_off_device(id):
+    async def turn_off_switch(id):
         await rust_socket.turn_off_smart_switch(id)
 
     async def toggle_switch(id):
         try:
-            device = await get_device(id)
+            device = await get_switch(id)
             if(device[1]==1):
                 value = 0
-                await turn_off_device(id)
+                await turn_off_switch(id)
             elif(device[1]==0):
-                await turn_on_device(id)
+                await turn_on_switch(id)
                 value = 1
             else:
-                await turn_on_device(id)
+                await turn_on_switch(id)
                 value = None
             await update_switch(id, value)
             socketio.emit('update_switch', [id, value])
@@ -221,51 +244,57 @@ async def Main():
             await update_switch(id, None)
     
     async def get_monitor(id):
-        monitor = await rust_socket.get_contents(id, False)
+        try:
+            monitor = await rust_socket.get_contents(id, False)
 
-        td = monitor.protection_time
-        days = td.days
-        hours, remainder = divmod(td.seconds, 3600)
-        minutes, seconds = divmod(remainder, 60)
-        protection_time = ""
-        if days > 0:
-            protection_time += f"{days} Days, "
-        if hours > 0:
-            protection_time += f"{hours} Hours, "
-        if minutes > 0:
-            protection_time += f"{minutes} Minutes, "
-        if seconds > 0:
-            protection_time += f"{seconds} Seconds"
-        # Remove trailing comma and space if there is one
-        if protection_time.endswith(", "):
-            protection_time = protection_time[:-2]
+            protection_time = ""
+            td = monitor.protection_time
+            print(td)
+            if(td >= timedelta()):
+                days = td.days
+                hours, remainder = divmod(td.seconds, 3600)
+                minutes, seconds = divmod(remainder, 60)
+                if days > 0:
+                    protection_time += f"{days} Days, "
+                if hours > 0:
+                    protection_time += f"{hours} Hours, "
+                if minutes > 0:
+                    protection_time += f"{minutes} Minutes, "
+                if seconds > 0:
+                    protection_time += f"{seconds} Seconds"
+                # Remove trailing comma and space if there is one
+                if protection_time.endswith(", "):
+                    protection_time = protection_time[:-2]
+            print(monitor.has_protection)
+            has_protection = monitor.has_protection
 
-        has_protection = monitor.has_protection
-        items = []
-        temp_combined = {}
-        combined_items = []
-        for item in monitor.contents:
-            item_id = item.item_id
-            name = item.name
-            quantity = item.quantity
-            is_blueprint = item.is_blueprint
-            items.append([item_id, name, quantity, is_blueprint])
-            # make a total list
-            if(item_id in temp_combined):
-                temp_combined[item_id]['quantity'] += quantity
-            else:
-                temp_combined[item_id] = {'name': name, 'quantity': quantity, 'is_blueprint': is_blueprint}
-        for item_id, details in temp_combined.items():
-            combined_items.append([item_id, details['name'], details['quantity'], details['is_blueprint']])
-        monitor_dict = {
-            "id": id,
-            "items": items,
-            "combined_items": combined_items,
-            "has_protection": has_protection,
-            "protection_time": protection_time
-        }
-        print(monitor_dict)
-        return monitor_dict
+            items = []
+            temp_combined = {}
+            combined_items = []
+            for item in monitor.contents:
+                item_id = item.item_id
+                name = item.name
+                quantity = item.quantity
+                is_blueprint = item.is_blueprint
+                items.append([item_id, name, quantity, is_blueprint])
+                # make a total list
+                if(item_id in temp_combined):
+                    temp_combined[item_id]['quantity'] += quantity
+                else:
+                    temp_combined[item_id] = {'name': name, 'quantity': quantity, 'is_blueprint': is_blueprint}
+            for item_id, details in temp_combined.items():
+                combined_items.append([item_id, details['name'], details['quantity'], details['is_blueprint']])
+            monitor_dict = {
+                "id": id,
+                "items": items,
+                "combined_items": combined_items,
+                "has_protection": has_protection,
+                "protection_time": protection_time
+            }
+            return monitor_dict
+        except Exception as e:
+            print("Monitor not found", e)
+            return None # monitor not found
 
     async def get_map(add_icons=False,add_events=False, add_vending_machines=False):
         rust_map = await rust_socket.get_map(add_icons=add_icons, add_events=add_events, add_vending_machines=add_vending_machines)
@@ -377,10 +406,10 @@ async def Main():
             for monitor in monitors:
                 monitor_id = monitor[0]
                 monitor_name = monitor[1]
-                print("monitor")
-                print(monitor_id)
-                print(monitor_name)
                 monitor_info = await get_monitor(monitor_id)
+                print(monitor_name)
+                print(monitor_info)
+                print()
                 socketio.emit("update_monitor", monitor_info)
                 await asyncio.sleep(5)
 
@@ -429,7 +458,7 @@ async def Main():
         successes = 0
         for switch in command.args:
             try:
-                cur.execute("SELECT id, status FROM tbl_devices WHERE name like ? and type = 1", (switch,))
+                cur.execute("SELECT id, status FROM tbl_switches WHERE name like ?", (switch,))
                 device = cur.fetchone()
                 print(device)
                 await toggle_switch(device[0])
