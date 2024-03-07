@@ -7,15 +7,15 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.on('connect', function() {
         socket.send('Client connected!');
     });
-    // create the list of devices (just switches for now)
-    socket.on('sent_devices', function(devices) {
-        console.log("got devices")
-        console.log(devices)
+    // create the list of switches
+    socket.on('sent_switches', function(switches) {
+        console.log("got switches")
+        console.log(switches)
         
         let parentDiv = document.getElementById('device_list');
         parentDiv.innerHTML = '';
     
-        devices.forEach(device => {
+        switches.forEach(device => {
             let listItemDiv = document.createElement('div');
             listItemDiv.classList.add('list-item');
     
@@ -59,6 +59,19 @@ document.addEventListener('DOMContentLoaded', function() {
             parentDiv.appendChild(listItemDiv);
         });
     });
+
+    socket.on('sent_monitors', function(monitors) {
+        monitors.forEach(device => {
+            monitor_id = device[0]
+            monitor_name = device[1]
+            // make monitor div stuff here
+        });
+    });
+
+    socket.on('update_monitor', function(monitor) {
+        console.log(monitor)
+    });
+
     // if some switch data is wrong, update it here.
     socket.on('update_switch', function(info) {
         let id = info[0]
@@ -99,8 +112,8 @@ document.addEventListener('DOMContentLoaded', function() {
             queueTimeHeader.style.display = 'none';
         }
         document.getElementById('player-count').innerHTML = playerStr
-
     });
+
     socket.on('chat_message', function(message) {
         let chatMessages = $('#chatmessages');
         let messageCount = chatMessages.children().length;
@@ -116,6 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
             chatMessages.scrollTop(chatMessages[0].scrollHeight);
         }
     });
+
     socket.on('monuments', function(monuments) {
         all_monuments = monuments // update global variable
     });
@@ -166,6 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
             userList.appendChild(listItem);
         }
     });
+    
     socket.on('update_time', function(rust_time) {
         let server_time = document.getElementById('server-time');
         server_time.innerHTML = rust_time;

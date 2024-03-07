@@ -99,18 +99,32 @@ async def get_device(id):
 async def send_message(message):
     await rust_socket.send_team_message("[SL]: " + message)
 
-async def get_devices():
+async def get_switches():
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
     cur.execute("SELECT id, name, status FROM tbl_devices WHERE type = 1")
     switches = cur.fetchall()
-    cur.execute("SELECT id, name FROM tbl_devices WHERE type = 2")
-    alarms = cur.fetchall()
+    cur.close()
+    conn.close()
+    return switches
+
+async def get_monitors():
+    conn = sqlite3.connect(database_name)
+    cur = conn.cursor()
     cur.execute("SELECT id, name FROM tbl_devices WHERE type = 3")
     monitors = cur.fetchall()
     cur.close()
     conn.close()
-    return switches, alarms, monitors
+    return monitors
+
+async def get_alarms():
+    conn = sqlite3.connect(database_name)
+    cur = conn.cursor()
+    cur.execute("SELECT id, name FROM tbl_devices WHERE type = 2")
+    alarms = cur.fetchall()
+    cur.close()
+    conn.close()
+    return alarms
 
 async def update_switch(id, status):
     conn = sqlite3.connect(database_name)
@@ -122,8 +136,7 @@ async def update_switch(id, status):
 
 @app.route("/")
 def index():
-    switches, alarms, monitors = asyncio.run(get_devices()) # does not ping the API
-    return render_template("index.j2", switches=switches, len_switches=len(switches), server_name=server_name, ip=ip, port=port, server_url=server_url, server_map=server_map, server_players=server_players, server_max_players=server_max_players, server_queued=server_queued, server_size=server_size, server_seed=server_seed, alarms=alarms, len_alarms=len(alarms), monitors=monitors, len_monitors=len(monitors), message_log=message_log, len_message_log=len(message_log))
+    return render_template("index.j2")
 
 @app.route("/add_device", methods=["POST"]) # use sockets for this instead
 def add_device():
@@ -187,10 +200,72 @@ async def Main():
     
     async def turn_off_device(id):
         await rust_socket.turn_off_smart_switch(id)
+
+    async def toggle_switch(id):
+        try:
+            device = await get_device(id)
+            if(device[1]==1):
+                value = 0
+                await turn_off_device(id)
+            elif(device[1]==0):
+                await turn_on_device(id)
+                value = 1
+            else:
+                await turn_on_device(id)
+                value = None
+            await update_switch(id, value)
+            socketio.emit('update_switch', [id, value])
+        except Exception as e:
+            socketio.emit('update_switch', [id, None])
+            print("sent failed update", e)
+            await update_switch(id, None)
     
-    async def get_markers():
-        markers = await rust_socket.get_markers()
-        return markers
+    async def get_monitor(id):
+        monitor = await rust_socket.get_contents(id, False)
+
+        td = monitor.protection_time
+        days = td.days
+        hours, remainder = divmod(td.seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        protection_time = ""
+        if days > 0:
+            protection_time += f"{days} Days, "
+        if hours > 0:
+            protection_time += f"{hours} Hours, "
+        if minutes > 0:
+            protection_time += f"{minutes} Minutes, "
+        if seconds > 0:
+            protection_time += f"{seconds} Seconds"
+        # Remove trailing comma and space if there is one
+        if protection_time.endswith(", "):
+            protection_time = protection_time[:-2]
+
+        has_protection = monitor.has_protection
+        items = []
+        temp_combined = {}
+        combined_items = []
+        for item in monitor.contents:
+            item_id = item.item_id
+            name = item.name
+            quantity = item.quantity
+            is_blueprint = item.is_blueprint
+            items.append([item_id, name, quantity, is_blueprint])
+            # make a total list
+            if(item_id in temp_combined):
+                temp_combined[item_id]['quantity'] += quantity
+            else:
+                temp_combined[item_id] = {'name': name, 'quantity': quantity, 'is_blueprint': is_blueprint}
+        for item_id, details in temp_combined.items():
+            combined_items.append([item_id, details['name'], details['quantity'], details['is_blueprint']])
+        monitor_dict = {
+            "id": id,
+            "items": items,
+            "combined_items": combined_items,
+            "has_protection": has_protection,
+            "protection_time": protection_time
+        }
+        print(monitor_dict)
+        return monitor_dict
 
     async def get_map(add_icons=False,add_events=False, add_vending_machines=False):
         rust_map = await rust_socket.get_map(add_icons=add_icons, add_events=add_events, add_vending_machines=add_vending_machines)
@@ -212,6 +287,8 @@ async def Main():
         except Exception:
             # if the entity doesnt exist
             return None
+        
+    # LOOPS
 
     async def update_loop(): # updates all markers (player positions & vehicles mainly)
         print("starting update loop...")
@@ -277,7 +354,7 @@ async def Main():
     async def switch_loop(): # checks all switches
         print("starting device loop...")
         while True:
-            switches, alarms, monitors = await get_devices()
+            switches = await get_switches()
             for device in switches:
                 try:
                     device_info = await get_entity_info(device[0])
@@ -293,24 +370,19 @@ async def Main():
                     print(f"Request error occurred: {e}")
                 await asyncio.sleep(5)
 
-    async def toggle_switch(id):
-        try:
-            device = await get_device(id)
-            if(device[1]==1):
-                value = 0
-                await turn_off_device(id)
-            elif(device[1]==0):
-                await turn_on_device(id)
-                value = 1
-            else:
-                await turn_on_device(id)
-                value = None
-            await update_switch(id, value)
-            socketio.emit('update_switch', [id, value])
-        except Exception as e:
-            socketio.emit('update_switch', [id, None])
-            print("sent failed update", e)
-            await update_switch(id, None)
+    async def monitor_loop():
+        print("starting monitor loop...")
+        while True:
+            monitors = await get_monitors()
+            for monitor in monitors:
+                monitor_id = monitor[0]
+                monitor_name = monitor[1]
+                print("monitor")
+                print(monitor_id)
+                print(monitor_name)
+                monitor_info = await get_monitor(monitor_id)
+                socketio.emit("update_monitor", monitor_info)
+                await asyncio.sleep(5)
 
     async def time_loop(): # get the server time every 10s or something.
         print("starting time loop...")
@@ -323,9 +395,9 @@ async def Main():
     @socketio.on('message')
     def handle_message(message):
         print('Received message: ' + message)
-        devices = asyncio.run(get_devices())
+        switches = asyncio.run(get_switches())
         emit("monuments", monuments)
-        emit("sent_devices", devices)
+        emit("sent_switches", switches)
         emit("update_server_info", server_info)
 
     @socketio.on('send_message')
@@ -336,7 +408,6 @@ async def Main():
     def handle_request_turn_on(id):
         print("toggling device", id)
         asyncio.run(toggle_switch(id))
-        
 
     @rust_socket.team_event
     async def team(event : TeamEvent):
@@ -367,7 +438,6 @@ async def Main():
                 print("failed")
         cur.close()
         conn.close()
-
 
     async def update_time():
         global server_time
@@ -408,6 +478,7 @@ async def Main():
     asyncio.create_task(long_loop())
     asyncio.create_task(switch_loop())
     asyncio.create_task(time_loop())
+    asyncio.create_task(monitor_loop())
 
     
 
