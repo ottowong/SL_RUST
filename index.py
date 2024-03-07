@@ -62,8 +62,8 @@ app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
 
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
+# log = logging.getLogger('werkzeug')
+# log.setLevel(logging.ERROR)
 
 def get_steam_member(steam_id, update=False):
     if(steam_id in steam_members and not update):
@@ -381,7 +381,7 @@ async def Main():
             await asyncio.sleep(30)  # Wait for an amount of time
 
     async def switch_loop(): # checks all switches
-        print("starting device loop...")
+        print("starting switch loop...")
         while True:
             switches = await get_switches()
             for device in switches:
@@ -397,10 +397,10 @@ async def Main():
                         socketio.emit('update_switch', [device[0], value])
                 except Exception as e:
                     print(f"Request error occurred: {e}")
-                await asyncio.sleep(5)
+                await asyncio.sleep(4)
+            await asyncio.sleep(1)
 
     async def monitor_loop():
-        print("starting monitor loop...")
         while True:
             monitors = await get_monitors()
             for monitor in monitors:
@@ -411,10 +411,10 @@ async def Main():
                 print(monitor_info)
                 print()
                 socketio.emit("update_monitor", monitor_info)
-                await asyncio.sleep(5)
+                await asyncio.sleep(4)
+            await asyncio.sleep(1)
 
     async def time_loop(): # get the server time every 10s or something.
-        print("starting time loop...")
         while True:
             guessedtime = await get_in_game_time()
             socketio.emit('update_time', guessedtime)
@@ -424,9 +424,9 @@ async def Main():
     @socketio.on('message')
     def handle_message(message):
         print('Received message: ' + message)
-        switches = asyncio.run(get_switches())
+        # switches = asyncio.run(get_switches())
         emit("monuments", monuments)
-        emit("sent_switches", switches)
+        # emit("sent_switches", switches)
         emit("update_server_info", server_info)
 
     @socketio.on('send_message')
