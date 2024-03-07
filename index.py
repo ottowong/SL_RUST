@@ -1,7 +1,6 @@
 import os
 import asyncio
-from rustplus import RustSocket
-from rustplus import EntityEvent, TeamEvent, ChatEvent
+from rustplus import RustSocket, EntityEvent, TeamEvent, ChatEvent, CommandOptions, Command
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect
 from flask_socketio import SocketIO, emit
@@ -28,7 +27,9 @@ steamId = int(os.environ.get("STEAMID"))
 playerToken = int(os.environ.get("PLAYERTOKEN"))
 SteamApiKey = os.environ.get("STEAMAPIKEY")
 
-rust_socket = RustSocket(ip, port, steamId, playerToken)
+options = CommandOptions(prefix="!")
+rust_socket = RustSocket(ip, port, steamId, playerToken, command_options=options)
+
 
 RUST_SECONDS_PER_MINUTE = 5
 
@@ -112,7 +113,6 @@ async def get_devices():
     return switches, alarms, monitors
 
 async def update_switch(id, status):
-    print("update_switch")
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
     cur.execute("UPDATE tbl_devices SET status = ? WHERE type = 1 AND id = ?", (status, id))
@@ -269,7 +269,7 @@ async def Main():
                 }
                 # {'url': '', 'name': 'SADLADS TEST SERVER', 'map': 'Procedural Map', 'size': 4500, 'players': 1, 'max_players': 500, 'queued_players': 0, 'seed': 1337}                
                 socketio.emit('update_server_info', server_info)
-                await update_time()
+                await update_time() # update the time so that we stay on track
             except Exception as e:
                 print("failed to update server info :-(\n", e)
             await asyncio.sleep(30)  # Wait for an amount of time
@@ -293,6 +293,24 @@ async def Main():
                     print(f"Request error occurred: {e}")
                 await asyncio.sleep(5)
 
+    async def toggle_switch(id):
+        try:
+            device = await get_device(id)
+            if(device[1]==1):
+                value = 0
+                await turn_off_device(id)
+            elif(device[1]==0):
+                await turn_on_device(id)
+                value = 1
+            else:
+                await turn_on_device(id)
+                value = None
+            await update_switch(id, value)
+            socketio.emit('update_switch', [id, value])
+        except Exception as e:
+            socketio.emit('update_switch', [id, None])
+            print("sent failed update", e)
+            await update_switch(id, None)
 
     async def time_loop(): # get the server time every 10s or something.
         print("starting time loop...")
@@ -317,23 +335,8 @@ async def Main():
     @socketio.on('toggle')
     def handle_request_turn_on(id):
         print("toggling device", id)
-        try:
-            device = asyncio.run(get_device(id))
-            if(device[1]==1):
-                value = 0
-                asyncio.run(turn_off_device(id))
-            elif(device[1]==0):
-                asyncio.run(turn_on_device(id))
-                value = 1
-            else:
-                asyncio.run(turn_on_device(id))
-                value = None
-            asyncio.run(update_switch(id, value))
-            socketio.emit('update_switch', [id, value])
-        except Exception as e:
-            socketio.emit('update_switch', [id, None])
-            print("sent failed update", e)
-            asyncio.run(update_switch(id, None))
+        asyncio.run(toggle_switch(id))
+        
 
     @rust_socket.team_event
     async def team(event : TeamEvent):
@@ -347,6 +350,25 @@ async def Main():
         if (len(message_log)  > 50):
             message_log.pop(0)
 
+    @rust_socket.command
+    async def toggle(command : Command):
+        print("toggling", command.args)
+        conn = sqlite3.connect(database_name)
+        cur = conn.cursor()
+        successes = 0
+        for switch in command.args:
+            try:
+                cur.execute("SELECT id, status FROM tbl_devices WHERE name like ? and type = 1", (switch,))
+                device = cur.fetchone()
+                print(device)
+                await toggle_switch(device[0])
+                successes += 1
+            except Exception:
+                print("failed")
+        cur.close()
+        conn.close()
+
+
     async def update_time():
         global server_time
         global real_time
@@ -354,7 +376,7 @@ async def Main():
         real_time = time.time()
 
     async def get_in_game_time():
-        # Calculate the elapsed real-life time since the program first loads
+        # Do some shitty maths to figure out what the time is
         current_real_time = time.time()
         elapsed_real_time_seconds = current_real_time - real_time
 
@@ -362,17 +384,14 @@ async def Main():
         hours = int(hours_str)
         minutes = int(minutes_str)
 
-        # Calculate the elapsed Rust time
+        # add the starting time to the elapsed time, convert irl time to rust time
         elapsed_rust_time_seconds = ((minutes) + (hours * 60) + (elapsed_real_time_seconds / RUST_SECONDS_PER_MINUTE)) * 60
 
-        # Calculate Rust time components
         rust_hours = int((elapsed_rust_time_seconds % 86400) // 3600)
         rust_minutes = int((elapsed_rust_time_seconds % 3600) // 60)
 
-        # Format Rust time
         rust_time = "{:02d}:{:02d}".format(rust_hours, rust_minutes)
 
-        # Return Rust time
         return rust_time
 
     # get a new map png when the program starts
