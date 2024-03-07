@@ -140,7 +140,7 @@ async def update_switch(id, status):
 
 @app.route("/")
 def index():
-    return render_template("index.j2")
+    return render_template("index.html")
 
 @app.route("/add_device", methods=["POST"]) # use sockets for this instead
 def add_device():
