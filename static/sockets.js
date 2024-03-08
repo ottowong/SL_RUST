@@ -107,6 +107,22 @@ document.addEventListener('DOMContentLoaded', function() {
         if(server_info.queued_players > 0){
             queueTimeHeader.style.display = 'block';
             playerStr += " (" + server_info.queued_players + ")"
+            var queuedMinutes = server_info.queued_players * 2;
+            var hours = Math.floor(queuedMinutes / 60);
+            var minutes = queuedMinutes % 60;
+
+            var displayText;
+            if (hours > 0) {
+                displayText = hours + " hours ";
+                if (minutes > 0) {
+                    displayText += minutes + " minutes";
+                }
+            } else {
+                displayText = minutes + " minutes";
+            }
+
+document.getElementById('time-queue').innerHTML = displayText;
+
         } else {
             console.log("hide thing")
             queueTimeHeader.style.display = 'none';
