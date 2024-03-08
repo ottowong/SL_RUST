@@ -65,7 +65,7 @@ html, body {
     grid-area: footer-main;
 }
 
-.map-canvas{
+#map-canvas{
     overflow: hidden;
     width: 100%;
     height: 100%;
@@ -181,4 +181,18 @@ img {
 
 a {
     text-decoration: none;
+}
+
+#main_chat{
+    position: relative;
+    height: 100%;
+}
+
+#send_box{
+    position: absolute;
+    bottom: 0;
+}
+
+.trackDiv:hover{
+    cursor: pointer;
 }

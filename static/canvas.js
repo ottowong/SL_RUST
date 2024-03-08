@@ -37,7 +37,7 @@ img.onload = function() {
     cameraOffset = { x: window.innerWidth / 2 - halfWidth, y: window.innerHeight / 2 - halfHeight };
 }
 
-let cameraZoom = 0.5
+let cameraZoom = 1
 let MAX_ZOOM = 5
 let MIN_ZOOM = 0.1
 let SCROLL_SENSITIVITY = 0.001
@@ -45,6 +45,7 @@ let all_markers = []
 let all_notes = []
 let all_monuments = []
 let team_leader = []
+let player_to_track = ""
 function drawText(ctx, x, y, text) {
     if(text != "")
     {
@@ -291,6 +292,20 @@ function draw()
                     }
                     ctx.lineWidth = 3;
                     ctx.stroke();
+
+                    if (player_to_track == steamId){
+                        var parentDiv = document.getElementById('map-canvas');
+                        var parentWidth = parentDiv.offsetWidth;
+                        var parentHeight = parentDiv.offsetHeight;
+
+                        // Calculate the center position of the parent div considering the zoom factor
+                        var centerX = parentWidth
+                        var centerY = parentHeight/2
+
+                        // Adjust the camera offset to center it on the player's position
+                        cameraOffset.x = 0 - x + centerX - 100; // these are not accurate but good enough
+                        cameraOffset.y = 0 - y + centerY + 100;
+                    }
                 }
                 break;
             case 2: // explosion

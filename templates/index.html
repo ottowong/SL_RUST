@@ -11,6 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
     <script src="../static/sockets.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
     <link rel="icon" type="image/x-icon" href="../static/favicon.ico">
 </head>
 <body>
@@ -55,10 +56,10 @@
                 <img src="../static/img/logo-ph.png">
             </div>
 
-            <div class="map-canvas">
+            <div id="map-canvas">
                 <canvas id="map_canvas"></canvas>
-                <script src="../static/canvas.js"></script>
             </div>
+            <script src="../static/canvas.js"></script>
 
             <div class="content-main-footer">
                 Time:   <span id="server-time"></span>
@@ -73,7 +74,6 @@
                 <!-- #endregion PLACEHOLDER -->
             </div>
         </div>
-
         <div class="container-right-right">
         </div>
 
