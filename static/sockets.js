@@ -113,12 +113,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             var displayText;
             if (hours > 0) {
-                displayText = hours + " hours ";
+                displayText = hours + " h ";
                 if (minutes > 0) {
-                    displayText += minutes + " minutes";
+                    displayText += minutes + " m";
                 }
             } else {
-                displayText = minutes + " minutes";
+                displayText = minutes + " m";
             }
 
 document.getElementById('time-queue').innerHTML = displayText;
