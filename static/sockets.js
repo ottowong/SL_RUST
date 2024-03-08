@@ -106,8 +106,10 @@ document.addEventListener('DOMContentLoaded', function() {
         let playerStr = server_info.players+"/"+server_info.max_players;
         if(server_info.queued_players > 0){
             queueTimeHeader.style.display = 'block';
-            var queuedMinutes = server_info.queued_players * .5;
+
+            var queuedMinutes = server_info.queued_players;
             playerStr += " (" + queuedMinutes + ")"
+            queuedMinutes = queuedMinutes * .5;
             var hours = Math.floor(queuedMinutes / 60);
             var minutes = queuedMinutes % 60;
 
