@@ -424,9 +424,9 @@ async def Main():
     @socketio.on('message')
     def handle_message(message):
         print('Received message: ' + message)
-        # switches = asyncio.run(get_switches())
+        switches = asyncio.run(get_switches())
         emit("monuments", monuments)
-        # emit("sent_switches", switches)
+        emit("sent_switches", switches) # this should be sent more than once
         emit("update_server_info", server_info)
 
     @socketio.on('send_message')
