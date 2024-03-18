@@ -1,5 +1,5 @@
 # SL RUST
-A Rust+ Python application
+A Rust+ Python application.
 
 ## Get Stuff Set Up
 We use the JS stuff to get the player token since the Python one is more hassle, and doesn't actually work (for me).
