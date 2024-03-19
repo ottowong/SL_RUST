@@ -1,0 +1,16 @@
+:root {
+    --SL_Gernal_color: #a7a6a2;
+    --SL_Green: #c8f699;
+    --SL_Red: red;
+    --SL_Yellow: #d3d02c;
+    --SL_Grey: #5b5b5b;
+    --Steam_Blue:  rgb(98, 183, 218);
+
+    --Border_color: #888;
+    --Body_background_color: #010101;
+    --Sections_background_color: #222;
+    --Default_text_color: var(--SL_Gernal_color);
+
+    /* User settings (WIP) */
+
+}

@@ -1,12 +1,26 @@
+
+@media screen and (max-width: 2000px){
+  :root {
+    --SL_Gernal_color: orange;
+  }
+
+  .TC-Header h1 {
+    margin: 10px 0 0px 0;
+    font-size: 1.6rem;
+}
+
+}
+
+
 @media screen and (max-width: 600px) {
 
     html, body {
         margin: 0;
         padding: 0;
         height: 100vh;
-        background-color: #010101;
+        background-color: var( --Body_background_color);
         font-family: Arial, Helvetica, sans-serif;
-        color: #a7a6a2;
+        color: var(--Default_text_color);
         overflow: auto;
     }
 
@@ -27,7 +41,7 @@
         grid-template-rows: 160px 1fr 80px 1fr 1fr 1fr 1fr 1fr 1fr;
       }
       .container > div {
-        border: 1px dashed #888;
+        border: 1px dashed var( --Border_color);
       }
       
       .header {

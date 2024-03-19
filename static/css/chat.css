@@ -1,0 +1,56 @@
+
+.chat-username {
+    color: var(--SL_Green);
+    font-weight: bold;
+}
+
+.system-username {
+    color: var(--SL_Yellow);
+}
+
+.chat-wrapper{
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.chat-header {
+    text-align: center;
+    height: auto;
+}
+
+.chat-header h2 {
+margin: 5px;
+color: var(--Default_text_color);
+}
+
+.chat-messages {
+    flex-grow: 1;
+    overflow: auto;
+    background-color: var(--Sections_background_color);
+    margin: 0 5px 0 5px;
+}
+
+.chat-message-containter{
+    margin: 5px 0 5px 0;
+}
+
+.chat-footer {
+
+}
+
+.chat-footer input {
+    width: 100%;
+    border: 1px solid #000; 
+    border-radius: 5px; 
+    background-color: transparent; 
+    padding: 8px;
+    color: #ffffff; 
+}
+
+.chat-footer input:focus {
+    outline: none; 
+}
+
+

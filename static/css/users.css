@@ -3,8 +3,8 @@
     flex-grow: 1;
     overflow: auto;
 
-    border: 1px solid #888;
-    background-color: #222222;
+    border: 1px solid var( --Border_color);
+    background-color: var(--Sections_background_color);
     
 }
 
@@ -16,7 +16,7 @@
     display: flex;
     align-items: center;
     margin-bottom: 10px;
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid var(--Border_color);
     padding: 0 10px 5px 10px;
 } h3 {
     margin: 0 0 5px 5px;
@@ -32,3 +32,76 @@
     border-radius: 50%;
     margin: 0 5px 0 5px;
 }
+
+/* CSS for list items */
+.list-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid var(--Border_color);
+}
+
+/* CSS for icon */
+.icon {
+    margin-right: 10px;
+    width: 30px; 
+    height: 30px; 
+} 
+
+.icon img {
+    height: 100%;
+    width: 100%;
+
+    margin: 0;
+}
+
+/* CSS for name */
+.name {
+    flex: 1;
+}
+
+/* CSS for status */
+.status {
+    font-style:normal ;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    user-select: none;
+}
+
+.status:hover{
+    cursor: pointer;
+}
+
+.status-text-online {
+    color: var(--SL_Green);
+}
+
+.status-text-offline {
+    color: var(--SL_Red);
+}
+
+.status-text-noSig {
+    color: var(--SL_Grey);
+}
+
+#queue-time-header{
+    display:none;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* #main_chat{
+    position: relative;
+    height: 100%;
+}
+
+#send_box{
+    position: absolute;
+    bottom: 0;
+}
+
+.trackDiv:hover{
+    cursor: pointer;
+} */
