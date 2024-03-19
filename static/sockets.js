@@ -169,15 +169,15 @@ document.getElementById('time-queue').innerHTML = displayText;
             var listItem = document.createElement('li');
             listItem.classList.add('user-item');
             listItem.setAttribute('id', steamId);
-    
+        
             // profile pic
             var img = document.createElement('img');
             img.setAttribute('src', member.url);
             img.setAttribute('alt', 'Profile Picture');
             listItem.appendChild(img);
-    
+        
             var div = document.createElement('div');
-    
+        
             // name
             var h3 = document.createElement('h3');
             var spanName = document.createElement('a');
@@ -192,28 +192,37 @@ document.getElementById('time-queue').innerHTML = displayText;
             }
             h3.appendChild(spanName);
             div.appendChild(h3);
-    
+            
             // online status
+            var statusSpan = document.createElement('span');
+            statusSpan.textContent = getStateText(member.state);
+            if (member.state === 1) {
+                // #8cbb55 in-game green
+                statusSpan.style.color = '#62b7da'; // Blue for Online
+            } else {
+                statusSpan.style.color = 'gray'; // Gray for Offline and other states
+            }
             var p = document.createElement('p');
-            p.textContent = 'Status: ' + getStateText(member.state);
+            p.textContent = 'Status: ';
+            p.appendChild(statusSpan);
             div.appendChild(p);
-    
+        
             listItem.appendChild(div);
             userList.appendChild(listItem);
-
+        
             // Create and append the trackDiv
             var trackDiv = document.createElement('div');
-            trackDiv.classList.add('trackDiv');
+            trackDiv.classList.add('track-div');
             var crosshairIcon = document.createElement('i');
             crosshairIcon.classList.add('fas', 'fa-crosshairs');
             trackDiv.appendChild(crosshairIcon);
             listItem.appendChild(trackDiv);
-
+        
             // Position the trackDiv at the bottom right of the listItem
             trackDiv.style.position = 'relative';
             trackDiv.style.bottom = '10px';
             trackDiv.style.right = '10px';
-
+        
             // Add click event listener for tracking
             trackDiv.addEventListener('click', function(event) {
                 var steamId = event.currentTarget.parentNode.id;
@@ -222,7 +231,7 @@ document.getElementById('time-queue').innerHTML = displayText;
                     event.currentTarget.querySelector('i').style.color = 'gray';
                 } else {
                     if (player_to_track) {
-                        var previousTrackDiv = document.getElementById(player_to_track).querySelector('.trackDiv');
+                        var previousTrackDiv = document.getElementById(player_to_track).querySelector('.track-div');
                         if (previousTrackDiv) {
                             previousTrackDiv.querySelector('i').style.color = 'gray';
                         }
@@ -232,7 +241,8 @@ document.getElementById('time-queue').innerHTML = displayText;
                 }
                 console.log(player_to_track)
             });
-            }
+        }
+        
     });
     
     socket.on('update_time', function(rust_time) {

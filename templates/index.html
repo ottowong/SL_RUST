@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="../static/css/mobile.css">
     <link rel="stylesheet" type="text/css" href="../static/css/chat.css">
     <link rel="stylesheet" type="text/css" href="../static/css/items.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/more.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
     <script src="../static/sockets.js"></script>
@@ -23,7 +24,7 @@
         <div class="header">
             <h1 id="server_name">
                 <!-- #region PLACEHOLDER -->
-                    SERVER NAME - 7 days since wipe - 14 days until wipe
+                    <!-- SERVER NAME - 7 days since wipe - 14 days until wipe -->
                 <!-- #endregion PLACEHOLDER -->
             </h1>
         </div>
@@ -35,7 +36,7 @@
                     <h1>Total Players</h1>
                     <h2 id="player-count">
                         <!-- #region PLACEHOLDER -->
-                            250/250 (18)
+                            <!-- 250/250 (18) -->
                         <!-- #endregion PLACEHOLDER -->
                     </h2>
                     <h4 >Estimated Queue Time: <span id="time-queue"></span></h4>
@@ -47,10 +48,9 @@
                 <div class="Player-list">
                     <ul class="user-list">
                         <!-- #region PLACEHOLDER -->
-                        <li class="user-item"><img src="https://avatars.steamstatic.com/3687c50a8b476a9ca6a7d3208f236a0c9a3eb7d6.jpg" alt="Profile Picture"><div><h3><a href="https://steamcommunity.com/id/PartyTrumpet/" target="_blank" style="color: rgb(98, 183, 218);">Otto</a></h3><p>Status: Online</p></div></li>
-                        <li class="user-item"><img src="https://avatars.akamai.steamstatic.com/96155fc2b7a4f44d38a2448ad947cf3e089c0386_full.jpg" alt="Profile Picture"><div><h3><a href="https://steamcommunity.com/id/PartyTrumpet/" target="_blank" style="color: #c8f699;">Harry</a></h3><p>Status: In Base</p></div></li>
-                        <li class="user-item"><img src="https://avatars.akamai.steamstatic.com/a5944660c00faf21dd7732f4abe4da561c006d09_full.jpg" alt="Profile Picture"><div><h3><a href="https://steamcommunity.com/id/PartyTrumpet/" target="_blank" style="color: rgb(75, 75, 75);">Joop</a></h3><p>Status: Offline</p></div></li>
-                       
+                            <!-- <li class="user-item"><img src="https://avatars.steamstatic.com/3687c50a8b476a9ca6a7d3208f236a0c9a3eb7d6.jpg" alt="Profile Picture"><div><h3><a href="https://steamcommunity.com/id/PartyTrumpet/" target="_blank" style="color: rgb(98, 183, 218);">Otto</a></h3><p>Status: Online</p></div></li>
+                            <li class="user-item"><img src="https://avatars.akamai.steamstatic.com/96155fc2b7a4f44d38a2448ad947cf3e089c0386_full.jpg" alt="Profile Picture"><div><h3><a href="https://steamcommunity.com/id/PartyTrumpet/" target="_blank" style="color: #c8f699;">Harry</a></h3><p>Status: In Base</p></div></li>
+                            <li class="user-item"><img src="https://avatars.akamai.steamstatic.com/a5944660c00faf21dd7732f4abe4da561c006d09_full.jpg" alt="Profile Picture"><div><h3><a href="https://steamcommunity.com/id/PartyTrumpet/" target="_blank" style="color: rgb(75, 75, 75);">Joop</a></h3><p>Status: Offline</p></div></li> -->
                         <!-- #endregion PLACEHOLDER -->
                     </ul>  
                 </div>
@@ -76,8 +76,8 @@
         <div class="container-right-left">
             <div id="device_list" class="container-right-left-content-wrapper">
                 <!-- #region PLACEHOLDER -->
-                    <div class="list-item"><div class="icon"><img src="../static/img/switch.png" alt="Icon"></div><div class="name">Lights</div><div class="status" id="1084947" data-device-id="1084947" style="color: green;">Online</div></div>
-                    <div class="list-item"><div class="icon"><img src="../static/img/switch.png" alt="Icon"></div><div class="name">Doors</div><div class="status" id="2272821" data-device-id="2272821" style="color: red;">Offline</div></div>
+                    <!-- <div class="list-item"><div class="icon"><img src="../static/img/switch.png" alt="Icon"></div><div class="name">Lights</div><div class="status" id="1084947" data-device-id="1084947" style="color: green;">Online</div></div>
+                    <div class="list-item"><div class="icon"><img src="../static/img/switch.png" alt="Icon"></div><div class="name">Doors</div><div class="status" id="2272821" data-device-id="2272821" style="color: red;">Offline</div></div> -->
                 <!-- #endregion PLACEHOLDER -->
             </div>
         </div>
@@ -87,116 +87,83 @@
                     <h2>Live chat</h2>
                 </div>
                 <div id="messages" class="chat-messages">
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Harry</span>: <span class="Chat-message"> Damn! there's so many nodes! </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Otto</span>: <span class="Chat-message"> I love nodes! </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Joop</span>: <span class="Chat-message"> We must secure the existence of our people and a future for white children. </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Harry</span>: <span class="Chat-message"> WE ARE BEING RAIDED!</span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="system-username">DEATH:</span>: <span class="Chat-message"> Joop has died </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="system-username">DEATH:</span>: <span class="Chat-message"> Otto has died </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Harry</span>: <span class="Chat-message"> oh wait, nvm</span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Joop</span>: <span class="Chat-message"> cunt</span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Otto</span>: <span class="Chat-message"> cunt</span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Harry</span>: <span class="Chat-message"> Damn! there's so many nodes! </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Otto</span>: <span class="Chat-message"> I love nodes! </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Joop</span>: <span class="Chat-message"> We must secure the existence of our people and a future for white children. </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Harry</span>: <span class="Chat-message"> WE ARE BEING RAIDED!</span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="system-username">DEATH:</span>: <span class="Chat-message"> Joop has died </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="system-username">DEATH:</span>: <span class="Chat-message"> Otto has died </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Harry</span>: <span class="Chat-message"> oh wait, nvm</span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Joop</span>: <span class="Chat-message"> cunt</span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Otto</span>: <span class="Chat-message"> cunt</span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Harry</span>: <span class="Chat-message"> Damn! there's so many nodes! </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Otto</span>: <span class="Chat-message"> I love nodes! </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Joop</span>: <span class="Chat-message"> We must secure the existence of our people and a future for white children. </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Harry</span>: <span class="Chat-message"> WE ARE BEING RAIDED!</span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="system-username">DEATH:</span>: <span class="Chat-message"> Joop has died </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="system-username">DEATH:</span>: <span class="Chat-message"> Otto has died </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Harry</span>: <span class="Chat-message"> oh wait, nvm</span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Joop</span>: <span class="Chat-message"> cunt</span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Otto</span>: <span class="Chat-message"> cunt</span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Harry</span>: <span class="Chat-message"> Damn! there's so many nodes! </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Otto</span>: <span class="Chat-message"> I love nodes! </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Joop</span>: <span class="Chat-message"> We must secure the existence of our people and a future for white children. </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Harry</span>: <span class="Chat-message"> WE ARE BEING RAIDED!</span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="system-username">DEATH:</span>: <span class="Chat-message"> Joop has died </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="system-username">DEATH:</span>: <span class="Chat-message"> Otto has died </span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Harry</span>: <span class="Chat-message"> oh wait, nvm</span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Joop</span>: <span class="Chat-message"> cunt</span>
-                    </div>
-                    <div class="chat-message-containter">
-                        <span class="chat-username">Otto</span>: <span class="Chat-message"> cunt</span>
-                    </div>
-
-
+                    <!-- #region PLACEHOLDER -->
+                        <!-- <div class="chat-message-containter">
+                            <span class="chat-username">Harry</span>: <span class="Chat-message"> Damn! there's so many nodes! </span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="chat-username">Otto</span>: <span class="Chat-message"> I love nodes! </span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="chat-username">Harry</span>: <span class="Chat-message"> WE ARE BEING RAIDED!</span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="system-username">DEATH:</span>: <span class="Chat-message"> Joop has died </span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="system-username">DEATH:</span>: <span class="Chat-message"> Otto has died </span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="chat-username">Harry</span>: <span class="Chat-message"> oh wait, nvm</span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="chat-username">Harry</span>: <span class="Chat-message"> Damn! there's so many nodes! </span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="chat-username">Otto</span>: <span class="Chat-message"> I love nodes! </span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="chat-username">Harry</span>: <span class="Chat-message"> WE ARE BEING RAIDED!</span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="system-username">DEATH:</span>: <span class="Chat-message"> Joop has died </span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="system-username">DEATH:</span>: <span class="Chat-message"> Otto has died </span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="chat-username">Harry</span>: <span class="Chat-message"> oh wait, nvm</span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="chat-username">Harry</span>: <span class="Chat-message"> Damn! there's so many nodes! </span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="chat-username">Otto</span>: <span class="Chat-message"> I love nodes! </span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="chat-username">Harry</span>: <span class="Chat-message"> WE ARE BEING RAIDED!</span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="system-username">DEATH:</span>: <span class="Chat-message"> Joop has died </span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="system-username">DEATH:</span>: <span class="Chat-message"> Otto has died </span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="chat-username">Harry</span>: <span class="Chat-message"> oh wait, nvm</span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="chat-username">Harry</span>: <span class="Chat-message"> Damn! there's so many nodes! </span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="chat-username">Otto</span>: <span class="Chat-message"> I love nodes! </span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="chat-username">Joop</span>: <span class="Chat-message"> We must secure the existence of our people and a future for white children. </span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="chat-username">Harry</span>: <span class="Chat-message"> WE ARE BEING RAIDED!</span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="system-username">DEATH:</span>: <span class="Chat-message"> Joop has died </span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="system-username">DEATH:</span>: <span class="Chat-message"> Otto has died </span>
+                        </div>
+                        <div class="chat-message-containter">
+                            <span class="chat-username">Harry</span>: <span class="Chat-message"> oh wait, nvm</span>
+                        </div> -->
+                    <!-- #endregion PLACEHOLDER -->
                 </div>
                 <div id="send_box" class="chat-footer">
                     <form>
@@ -392,19 +359,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
                 </div>
             </div>
         </div>
@@ -420,7 +374,7 @@
 
 
     </div>
-    <div class="Beyond-container">
+    <div id="storage-info" class="Beyond-container">
         <div class="Beyond-body">
             <h1>Heloooo!?</h1>
         </div>

@@ -1,0 +1,23 @@
+.track-div{
+    color:gray;
+}
+
+.track-div:hover{
+    cursor: pointer;
+}
+
+#queue-time-header{
+    display:none;
+}
+
+.status:hover{
+    cursor: pointer;
+}
+
+.status-text-online {
+    color: #45ff45;
+}
+
+.status-text-offline {
+    color: red;
+}
