@@ -11,26 +11,29 @@
     <link rel="stylesheet" type="text/css" href="../static/css/chat.css">
     <link rel="stylesheet" type="text/css" href="../static/css/items.css">
     <link rel="stylesheet" type="text/css" href="../static/css/more.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
+
+    <link rel="stylesheet" href="../static/css/libraries/leaflet.css"/>
+    <script src="../static/js/libraries/leaflet.js"></script>
+
+    <script type="module" src="../static/js/libraries/rotatedMarker.js"></script>
+
+    <script src="../static/js/libraries/jquery.min.js"></script>
+    <script src="../static/js/libraries/socket.io.js"></script>
     <script src="../static/js/sockets.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="stylesheet" href="../static/js/libraries/font-awesome.all.min.css"/>
     <link rel="icon" type="image/x-icon" href="../static/favicon.ico">
 </head>
 <body>
     <div class="container">
-
+        
         <div class="header">
             <h1 id="server_name">
                 <!-- #region PLACEHOLDER -->
-                    <!-- SERVER NAME - 7 days since wipe - 14 days until wipe -->
+                <!-- SERVER NAME - 7 days since wipe - 14 days until wipe -->
                 <!-- #endregion PLACEHOLDER -->
             </h1>
         </div>
-
+        
         <div class="container-left">
             <div class="container-left-main-content">
                 
@@ -38,57 +41,58 @@
                     <h1>Total Players</h1>
                     <h2 id="player-count">
                         <!-- #region PLACEHOLDER -->
-                            <!-- 250/250 (18) -->
+                        <!-- 250/250 (18) -->
                         <!-- #endregion PLACEHOLDER -->
                     </h2>
                     <h4 id="queue-time-header">Estimated Queue Time: <span id="time-queue"></span></h4>
                 </div>
-
+                
                 <span>Last updated: <span id="time-last-updated"></span></span>
-
+                
                 <div class="Player-list">
                     <ul class="user-list">
                         <!-- #region PLACEHOLDER -->
-                            <!-- <li class="user-item"><img src="https://avatars.steamstatic.com/3687c50a8b476a9ca6a7d3208f236a0c9a3eb7d6.jpg" alt="Profile Picture"><div><h3><a href="https://steamcommunity.com/id/PartyTrumpet/" target="_blank" style="color: rgb(98, 183, 218);">Otto</a></h3><p>Status: Online</p></div></li>
+                        <!-- <li class="user-item"><img src="https://avatars.steamstatic.com/3687c50a8b476a9ca6a7d3208f236a0c9a3eb7d6.jpg" alt="Profile Picture"><div><h3><a href="https://steamcommunity.com/id/PartyTrumpet/" target="_blank" style="color: rgb(98, 183, 218);">Otto</a></h3><p>Status: Online</p></div></li>
                             <li class="user-item"><img src="https://avatars.akamai.steamstatic.com/96155fc2b7a4f44d38a2448ad947cf3e089c0386_full.jpg" alt="Profile Picture"><div><h3><a href="https://steamcommunity.com/id/PartyTrumpet/" target="_blank" style="color: #c8f699;">Harry</a></h3><p>Status: In Base</p></div></li>
                             <li class="user-item"><img src="https://avatars.akamai.steamstatic.com/a5944660c00faf21dd7732f4abe4da561c006d09_full.jpg" alt="Profile Picture"><div><h3><a href="https://steamcommunity.com/id/PartyTrumpet/" target="_blank" style="color: rgb(75, 75, 75);">Joop</a></h3><p>Status: Offline</p></div></li> -->
-                        <!-- #endregion PLACEHOLDER -->
-                    </ul>  
+                            <!-- #endregion PLACEHOLDER -->
+                        </ul>  
+                    </div>
+                    
                 </div>
-
             </div>
-        </div>
-
-        <div class="main">
-            <div class="content-main-header">
-                <img src="../static/img/logo-ph.png">
+            
+            <div class="main">
+                <div class="content-main-header">
+                    <img src="../static/img/logo-ph.png">
+                </div>
+                
+                <div id="map-wrapper">
+                    <div id="map-canvas"></div>
+                </div>
+                <script src="../static/js/canvas.js"></script>
+                
+                
+                <div class="content-main-footer">
+                    Time:   <span id="server-time"></span>
+                </div>
             </div>
-
-            <div id="map-wrapper">
-                <div id="map-canvas"></div>
-            </div>
-            <script src="../static/js/canvas.js"></script>
-
-            <div class="content-main-footer">
-                Time:   <span id="server-time"></span>
-            </div>
-        </div>
-
-        <div class="container-right-left">
-            <div id="device_list" class="container-right-left-content-wrapper">
-                <!-- #region PLACEHOLDER -->
+            
+            <div class="container-right-left">
+                <div id="device_list" class="container-right-left-content-wrapper">
+                    <!-- #region PLACEHOLDER -->
                     <!-- <div class="list-item"><div class="icon"><img src="../static/img/switch.png" alt="Icon"></div><div class="name">Lights</div><div class="status" id="1084947" data-device-id="1084947" style="color: green;">Online</div></div>
                     <div class="list-item"><div class="icon"><img src="../static/img/switch.png" alt="Icon"></div><div class="name">Doors</div><div class="status" id="2272821" data-device-id="2272821" style="color: red;">Offline</div></div> -->
-                <!-- #endregion PLACEHOLDER -->
-            </div>
-        </div>
-        <div class="container-right-right">
-            <div id="main_chat" class="chat-wrapper">
-                <div class="chat-header">
-                    <h2>Live chat</h2>
+                    <!-- #endregion PLACEHOLDER -->
                 </div>
-                <div id="messages" class="chat-messages">
-                    <!-- #region PLACEHOLDER -->
+            </div>
+            <div class="container-right-right">
+                <div id="main_chat" class="chat-wrapper">
+                    <div class="chat-header">
+                        <h2>Live chat</h2>
+                    </div>
+                    <div id="messages" class="chat-messages">
+                        <!-- #region PLACEHOLDER -->
                         <!-- <div class="chat-message-containter">
                             <span class="chat-username">Harry</span>: <span class="Chat-message"> Damn! there's so many nodes! </span>
                         </div>
