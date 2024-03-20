@@ -184,24 +184,20 @@ document.getElementById('time-queue').innerHTML = displayText;
             spanName.textContent = member.name;
             spanName.setAttribute('href', member.profile_url);
             spanName.setAttribute('target', '_blank');
-            if (member.state === 1) {
-                // #8cbb55 in-game green
-                spanName.style.color = '#62b7da'; // Blue for Online
-            } else {
-                spanName.style.color = 'gray'; // Gray for Offline and other states
-            }
-            h3.appendChild(spanName);
-            div.appendChild(h3);
-            
-            // online status
+
             var statusSpan = document.createElement('span');
             statusSpan.textContent = getStateText(member.state);
             if (member.state === 1) {
                 // #8cbb55 in-game green
+                spanName.style.color = '#62b7da'; // Blue for Online
                 statusSpan.style.color = '#62b7da'; // Blue for Online
             } else {
+                spanName.style.color = 'gray'; // Gray for Offline and other states
                 statusSpan.style.color = 'gray'; // Gray for Offline and other states
             }
+            h3.appendChild(spanName);
+            div.appendChild(h3);
+
             var p = document.createElement('p');
             p.textContent = 'Status: ';
             p.appendChild(statusSpan);
