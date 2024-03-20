@@ -1,37 +1,27 @@
-var map = L.map('map-canvas').setView([0, 0], 0);
+var map = L.map('map-canvas',{ 
+    crs: L.CRS.Simple, // use px coords
+    zoom: -2,
+    minZoom: -2,
+    maxZoom: 5
+}).setView([1000, 1000], -2);
 
-var imageUrl = 'https://i.imgur.com/s1NGZQY.png';
-// Determine the aspect ratio of your image
-var imageWidth = 2000; // Width of your image in pixels
-var imageHeight = 2000; // Height of your image in pixels
-var aspectRatio = imageWidth / imageHeight;
+var imageUrl = '../static/map.png';
+let width = 2000
+let height = 2000
+let boundPadding = 1000
 
-// Set bounds with the correct aspect ratio
-var latitudeSpan = 360; // Total latitude span (-90 to 90)
-var longitudeSpan = 360; // Total longitude span (-180 to 180)
-var latitudeCenter = 0; // Center latitude
-var longitudeCenter = 0; // Center longitude
+let halfwidth = width / 2
+let halfheight = height / 2
 
-var latitudeHalfSpan = latitudeSpan / 2;
-var longitudeHalfSpan = latitudeHalfSpan * aspectRatio;
-
-var imageBounds = [
-    [latitudeCenter - latitudeHalfSpan, longitudeCenter - longitudeHalfSpan], // Southwest corner
-    [latitudeCenter + latitudeHalfSpan, longitudeCenter + longitudeHalfSpan]  // Northeast corner
-];
+var imageSize = [height, width];
+var imageBounds = [[0, 0], imageSize];
 
 L.imageOverlay(imageUrl, imageBounds).addTo(map);
 
+let marko = L.marker([0, 0]).addTo(map);
 
-
-
-map.on('zoomend', function(event) {
-    // Get the current center coordinates and zoom level
-    var center = map.getCenter();
-    var zoom = map.getZoom();
-
-    // Log the x, y (latitude, longitude), and zoom level
-    console.log('Center X (latitude):', center.lat);
-    console.log('Center Y (longitude):', center.lng);
-    console.log('Zoom level:', zoom);
-});
+var maxBounds = L.latLngBounds([
+    [0 - boundPadding, 0 - boundPadding], 
+    [height + boundPadding, width + boundPadding]
+]);
+map.setMaxBounds(maxBounds);
