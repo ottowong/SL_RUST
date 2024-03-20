@@ -11,6 +11,8 @@
     <link rel="stylesheet" type="text/css" href="../static/css/chat.css">
     <link rel="stylesheet" type="text/css" href="../static/css/items.css">
     <link rel="stylesheet" type="text/css" href="../static/css/more.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
     <script src="../static/js/sockets.js"></script>
@@ -62,8 +64,8 @@
                 <img src="../static/img/logo-ph.png">
             </div>
 
-            <div id="map-canvas">
-                <canvas id="map_canvas"></canvas>
+            <div id="map-wrapper">
+                <div id="map-canvas"></div>
             </div>
             <script src="../static/js/canvas.js"></script>
 

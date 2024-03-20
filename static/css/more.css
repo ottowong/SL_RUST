@@ -21,3 +21,13 @@
 .status-text-offline {
     color: red;
 }
+
+#map-canvas {
+    height:100%;
+    width:100%;
+    background-color: #0b3a4a;
+}
+
+.leaflet-control-attribution {
+    display: none;
+}
