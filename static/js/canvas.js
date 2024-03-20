@@ -4,7 +4,7 @@ function createImage(url) {
     return img;
 }
 
-var canvas = document.getElementById('map_canvas');
+var canvas = document.getElementById('map-canvas');
 canvas.style.background = "#0b3a4a"
 var ctx = canvas.getContext('2d');
 var img = new Image();
