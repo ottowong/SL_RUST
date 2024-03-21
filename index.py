@@ -19,7 +19,7 @@ conn = sqlite3.connect(database_name)
 cur = conn.cursor()
 cur.execute("CREATE TABLE IF NOT EXISTS tbl_switches (id INTEGER PRIMARY KEY, name TEXT, status INTEGER)")
 cur.execute("CREATE TABLE IF NOT EXISTS tbl_alarms   (id INTEGER PRIMARY KEY, name TEXT)")
-cur.execute("CREATE TABLE IF NOT EXISTS tbl_monitors (id INTEGER PRIMARY KEY, name TEXT, combine INTEGER)")
+cur.execute("CREATE TABLE IF NOT EXISTS tbl_monitors (id INTEGER PRIMARY KEY, name TEXT)")
 cur.close()
 conn.close()
 
@@ -40,6 +40,10 @@ team_leader = []
 steam_members = {}
 
 message_log = []
+
+alarm_ids = []
+monitor_ids = []
+switch_ids = []
 
 monuments = []
 
@@ -123,7 +127,7 @@ async def get_monitors():
 async def get_alarms():
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
-    cur.execute("SELECT id, name, description FROM tbl_alarms")
+    cur.execute("SELECT id, name FROM tbl_alarms")
     alarms = cur.fetchall()
     cur.close()
     conn.close()
@@ -156,8 +160,7 @@ def add_device():
     elif(device_type == "2"):
         cur.execute("INSERT INTO tbl_alarms (id, name) VALUES (?, ?)", (device_id, device_name))
     elif(device_type == "3"):
-        combine = 1 # temporary - add an option in /admin
-        cur.execute("INSERT INTO tbl_monitors (id, name, combine) VALUES (?, ?, ?)", (device_id, device_name, combine))
+        cur.execute("INSERT INTO tbl_monitors (id, name) VALUES (?, ?)", (device_id, device_name))
     else:
         return redirect("/admin")
     conn.commit()
@@ -472,27 +475,39 @@ async def Main():
         value = "On" if event.value else "Off"
         print(f"{event.entity_id} - {str(event.type)} has been turned {value}")
 
-    async def storage_event(event):
+    async def monitor_event(event):
         print(event)
 
     async def switch_event(event):
         print(event)
 
-    alarm_ids = [1104152]
-    storage_ids = [1084938,1100931,1101140,5422914]
-    switch_ids = [1084947]
+    async def init_entities(): # get the server time every 10s or something.
+        global switch_ids
+        global alarm_ids
+        global monitor_ids
+        switches = await get_switches()
+        alarms = await get_alarms()
+        monitors = await get_monitors()
+        for switch in switches:
+            switch_ids.append(switch[0])
+        for alarm in alarms:
+            alarm_ids.append(alarm[0])
+        for monitor in monitors:
+            monitor_ids.append(monitor[0])
+
+    asyncio.create_task(init_entities())
 
     for alarm_id in alarm_ids: # need a way to add them if an alarm is added later on too
         @rust_socket.entity_event(alarm_id)
         async def alarm_event_wrapper(event, entity_id=alarm_id):
             await alarm_event(event)
 
-    for storage_id in storage_ids: # need a way to add them if an alarm is added later on too
-        @rust_socket.entity_event(storage_id)
-        async def storage_event_wrapper(event, entity_id=storage_id):
-            await storage_event(event)
+    for monitor_id in monitor_ids: # ''
+        @rust_socket.entity_event(monitor_id)
+        async def monitor_event_wrapper(event, entity_id=monitor_id):
+            await monitor_event(event)
 
-    for switch_id in switch_ids: # need a way to add them if an alarm is added later on too
+    for switch_id in switch_ids: # ''
         @rust_socket.entity_event(switch_id)
         async def switch_event_wrapper(event, entity_id=switch_id):
             await switch_event(event)
@@ -528,15 +543,14 @@ async def Main():
 
     await get_server_info()
     await update_time()
-    
 
-    # start the update loop
+    # start the update loops
     asyncio.create_task(update_loop())
     asyncio.create_task(medium_loop())
     asyncio.create_task(long_loop())
     asyncio.create_task(switch_loop())
     asyncio.create_task(time_loop())
-    asyncio.create_task(monitor_loop())
+    # asyncio.create_task(monitor_loop())
 
     
 
