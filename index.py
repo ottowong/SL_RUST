@@ -14,7 +14,6 @@ import string
 import logging
 from datetime import timedelta
 
-
 database_name = "database.db"
 conn = sqlite3.connect(database_name)
 cur = conn.cursor()
@@ -467,6 +466,36 @@ async def Main():
                 print("failed")
         cur.close()
         conn.close()
+
+
+    async def alarm_event(event):
+        value = "On" if event.value else "Off"
+        print(f"{event.entity_id} - {str(event.type)} has been turned {value}")
+
+    async def storage_event(event):
+        print(event)
+
+    async def switch_event(event):
+        print(event)
+
+    alarm_ids = [1104152]
+    storage_ids = [1084938,1100931,1101140,5422914]
+    switch_ids = [1084947]
+
+    for alarm_id in alarm_ids: # need a way to add them if an alarm is added later on too
+        @rust_socket.entity_event(alarm_id)
+        async def alarm_event_wrapper(event, entity_id=alarm_id):
+            await alarm_event(event)
+
+    for storage_id in storage_ids: # need a way to add them if an alarm is added later on too
+        @rust_socket.entity_event(storage_id)
+        async def storage_event_wrapper(event, entity_id=storage_id):
+            await storage_event(event)
+
+    for switch_id in switch_ids: # need a way to add them if an alarm is added later on too
+        @rust_socket.entity_event(switch_id)
+        async def switch_event_wrapper(event, entity_id=switch_id):
+            await switch_event(event)
 
     async def update_time():
         global server_time
