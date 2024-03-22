@@ -95,10 +95,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     socket.on('update_markers', function(markers) {
-        all_markers = markers // update global variable
+        updateMarkers(markers)
     });
     socket.on('update_notes', function(notes) {
-        all_notes = notes // update global variable
+        updateNotes(notes)
     });
     socket.on('update_server_info', function(server_info) {
         document.getElementById('server_name').innerHTML = server_info.name;
