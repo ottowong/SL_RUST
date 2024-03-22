@@ -230,16 +230,11 @@ async def Main():
         try:
             device = await get_switch(id)
             if(device[1]==1):
-                value = 0
                 await turn_off_switch(id)
             elif(device[1]==0):
                 await turn_on_switch(id)
-                value = 1
             else:
                 await turn_on_switch(id)
-                value = None
-            await update_switch(id, value)
-            socketio.emit('update_switch', [id, value])
         except Exception as e:
             socketio.emit('update_switch', [id, None])
             print("sent failed update", e)
@@ -484,11 +479,14 @@ async def Main():
         print(event.has_protection)
         print(event.protection_expiry)
         print(event.items)
-
+            
     async def switch_event(event):
-        print(event.type) # should be 1
-        print(event.entity_id)
-        print(event.value) # true/false if on/off
+        type = event.type # should be 1 - do some validation?
+        switch_id = event.entity_id
+        value = event.value
+        await update_switch(switch_id, value)
+        socketio.emit('update_switch', [switch_id, value])
+
 
     async def init_entities(): # get a list of all entities
         global switch_ids
