@@ -31,3 +31,9 @@
 .leaflet-control-attribution {
     display: none;
 }
+
+svg text {
+    font-family: FontAwesome;
+    dominant-baseline: middle;
+    text-anchor: middle;
+}

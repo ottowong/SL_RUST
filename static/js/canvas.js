@@ -1,3 +1,8 @@
+const shopGreen = "#aaef35"
+
+const mainRed = "#ae3534"
+const secondRed = "#371210"
+
 var all_markers;
 
 window.onload = function () {
@@ -8,11 +13,16 @@ window.onload = function () {
         maxZoom: 5
     }).setView([1000, 1000], -2);
 
-    var shopIcon = L.icon({
-        iconUrl: '../static/shop.png',
-        iconSize: [25, 25],
+    const shopIcon = L.divIcon({
+        html: `<svg width="26" height="26">
+        <circle cx="13" cy="13" r="13" fill="black" />
+        <circle cx="13" cy="13" r="11"  fill="#aaef35" />
+        <text x="13" y="15" class="fas" font-size="13" fill="black">
+        &#xf07a;
+        </text></svg>`,
+        className: "",
+        iconSize: [26, 26],
         iconAnchor: [0, 0],
-        popupAnchor: [0, 0],
     });
 
     var imageUrl = '../static/map.png';
@@ -24,13 +34,6 @@ window.onload = function () {
     var imageBounds = [[0, 0], imageSize];
 
     L.imageOverlay(imageUrl, imageBounds).addTo(map);
-
-    // rotated marker example
-    // let marko = L.rotatedMarker([0,0], {
-    //     icon: shopIcon,
-    //     rotationAngle: 90,
-    // }).addTo(map);
-    // marko.setRotationAngle(180)
 
     var maxBounds = L.latLngBounds([
         [0 - boundPadding, 0 - boundPadding], 
@@ -48,11 +51,99 @@ window.onload = function () {
         });
 
         // Add markers from the coordinates array
-        all_markers.forEach(function(coord) {
-            var y = coord[1] / 4500 * 2000
-            var x = coord[2] / 4500 * 2000
-            L.marker([x,y], {icon: shopIcon}).addTo(map);
+        all_markers.forEach(function(marker) {
+            var y = marker[1] / 4500 * 2000
+            var x = marker[2] / 4500 * 2000
+            var rot = (marker[3] * Math.PI / 180) * -1 // double check the rotation is correct
+            var icon;
+            switch (marker[0]) {
+                case 1: // player
+                    console.log(marker[4])
+                    
+                    icon = createPlayerIcon(marker[4].is_alive, marker[4].is_online, marker[4].steam_id, marker[4].name, marker[4].profile_url)
+                    break;
+                case 2: // explosion
+                    // currently removed
+                    break;
+                case 3: // shop
+                    icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a", "black")
+                    break;
+                case 4: // CH47
+                    icon = createCustomIcon(shopGreen,shopGreen,"f07a", "black")
+                    break;
+                case 5: // cargo ship
+                    icon = createCustomIcon(shopGreen,shopGreen,"f07a", "black")
+                    break;
+                case 6: // crate
+                    // currently removed
+                    break;
+                case 7: // generic radius (whats that???)
+                    break;
+                case 8: // patrol helicopter
+                    icon = createCustomIcon(shopGreen,shopGreen,"f07a", "black")
+                    break;
+                default:
+                    icon = createCustomIcon(shopGreen,shopGreen,"f07a", "black")
+            }
+
+
+            L.rotatedMarker([x,y], {icon: icon, rotationAngle: rot}).on('click', onClick).addTo(map);
         });
+    }
+
+    function createPlayerIcon(isalive, isonline, steamid, name, url){ // show name on hover and open url on click
+        let onlineColour;
+        let dead = ""
+        if(isonline){
+            onlineColour= "green"
+        } else {
+            onlineColour= "gray"
+        }
+        if(!isalive){
+            dead = `<circle cx="13" cy="13" r="11" fill="red" fill-opacity="0.3"/>`
+        }
+        return L.divIcon({
+            html: `
+            <svg width="26" height="26">
+                <defs>
+                    <clipPath id="circleClip">
+                        <circle cx="13" cy="13" r="11" />
+                    </clipPath>
+                </defs>
+                <circle cx="13" cy="13" r="14" fill="${onlineColour}"/>
+                <image href="../static/profilepics/${steamid}.jpg" x="2" y="2" width="22" height="22" clip-path="url(#circleClip)" />
+                ${dead}
+            </svg>`,
+            className: "",
+            iconSize: [26, 26],
+            iconAnchor: [0, 0],
+        });
+    }
+
+    function createCustomIcon(primary_colour, secondary_colour, icon, text_colour=primary_colour) {
+        if(primary_colour == secondary_colour){
+            fontSize = 13
+        } else {
+            fontSize = 11
+        }
+        return L.divIcon({
+            html: `
+            <svg width="26" height="26">
+                <circle cx="13" cy="13" r="13" fill="black" />
+                <circle cx="13" cy="13" r="11"  fill="${primary_colour}" />
+                <circle cx="13" cy="13" r="9"  fill="${secondary_colour}" />
+                <text x="13" y="15" class="fas" font-size="${fontSize}" fill="${text_colour}">
+                ${icon};
+                </text>
+            </svg>`,
+            className: "",
+            iconSize: [26, 26],
+            iconAnchor: [0, 0],
+        });
+    }
+
+    function onClick(e) {
+        console.log(this.getLatLng());
     }
 
     setInterval(updateMarkers, 1000);
