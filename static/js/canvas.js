@@ -4,6 +4,7 @@ const mainRed = "#ae3534"
 const secondRed = "#371210"
 
 var all_markers;
+var map_markers = [];
 
 window.onload = function () {
     var map = L.map('map-canvas',{ 
@@ -23,6 +24,7 @@ window.onload = function () {
         className: "",
         iconSize: [26, 26],
         iconAnchor: [0, 0],
+        popupAnchor: [0, 0]
     });
 
     var imageUrl = '../static/map.png';
@@ -49,31 +51,36 @@ window.onload = function () {
                 map.removeLayer(layer);
             }
         });
-
         // Add markers from the coordinates array
         all_markers.forEach(function(marker) {
             var y = marker[1] / 4500 * 2000
             var x = marker[2] / 4500 * 2000
             var rot = marker[3] // double check the rotation is correct
             var icon;
+            var current_marker = L.rotatedMarker([x,y], {rotationAngle: rot})
             switch (marker[0]) {
                 case 1: // player
                     console.log(marker[4])
                     
-                    icon = createPlayerIcon(marker[4].is_alive, marker[4].is_online, marker[4].steam_id, marker[4].name, marker[4].profile_url)
-                    L.rotatedMarker([x,y], {icon: icon, rotationAngle: rot}).on('click', onClick).addTo(map).on('click', function(e) { window.open(marker[4].profile_url) });
+                    icon = createPlayerIcon(marker[4].is_alive, marker[4].is_online, marker[4].steam_id)
+                    current_marker.setIcon(icon)
+                    current_marker.bindPopup(`${marker[4].name}<br><a href="${marker[4].url}">steam page</a>`)
+                    // current_marker.on('click', onClick).on('click', function(e) { window.open(marker[4].profile_url) });
                     break;
                 case 2: // explosion
                     // currently removed
                     break;
                 case 3: // shop
                     icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a", "black")
+                    current_marker.setIcon(icon)
                     break;
                 case 4: // CH47
                     icon = createCustomIcon(shopGreen,shopGreen,"f07a", "black")
+                    current_marker.setIcon(icon)
                     break;
                 case 5: // cargo ship
-                    icon = createCustomIcon(shopGreen,shopGreen,"f07a", "black")
+                    icon = createCustomIcon(shopGreen,shopGreen,"f21a", "black")
+                    current_marker.setIcon(icon)
                     break;
                 case 6: // crate
                     // currently removed
@@ -81,19 +88,20 @@ window.onload = function () {
                 case 7: // generic radius (whats that???)
                     break;
                 case 8: // patrol helicopter
-                console.log(rot)
-                    icon = createCustomIcon(shopGreen,shopGreen,"<", "black")
+                    icon = createCustomIcon(shopGreen,shopGreen,"f533", "black")
+                    current_marker.setIcon(icon)
                     break;
-                default:
+                default: // this should never happen
                     icon = createCustomIcon(shopGreen,shopGreen,"f07a", "black")
+                    current_marker.setIcon(icon)
             }
 
-
+            current_marker.addTo(map)
             // L.rotatedMarker([x,y], {icon: icon, rotationAngle: rot}).on('click', onClick).addTo(map);
         });
     }
 
-    function createPlayerIcon(isalive, isonline, steamid, name, url){ // show name on hover and open url on click
+    function createPlayerIcon(isalive, isonline, steamid){ // show name on hover and open url on click
         let onlineColour;
         let dead = ""
         if(isonline){
