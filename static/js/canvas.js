@@ -31,33 +31,25 @@ function updateMarkers(socket_markers) {
             map.removeLayer(pin); // DELETE pins from the map
             map_pins.splice(index, 1); // remove from the global variable
         } 
-        // these will be removed if they no longer exist
-        else if (index !== -1 && [2, 3, 6, 7].includes(pin.options.rust_type)) { // Explosion, Shop, Crate, GenericRadius
+        // these will be removed if they no longer exist. Players will be updated if they still exist
+        else if (index !== -1 && [1, 2, 3, 6, 7].includes(pin.options.rust_type)) { // Player, Explosion, Shop, Crate, GenericRadius
             for (var j = socket_markers.length - 1; j >= 0; j--){
                 let current_marker = socket_markers[j]
                 let pinLatLng = pin.getLatLng()
-                // if an exact match exists in both
-                if(pin.options.rust_type == current_marker[0]
-                && (current_marker[1] / mapHeight * pixelHeight) == pinLatLng.lng
-                && (current_marker[2] / mapWidth * pixelWidth) == pinLatLng.lat)
-                {
-                    // remove from the NEW list so that it is not re-added
-                    socket_markers.splice(j,1)
-                }
-            }
-        } 
-        else if (index !== -1 && [1].includes(pin.options.rust_type)) { // Player
-            // move players around
-            for (var k = socket_markers.length - 1; k >= 0; k--){
-                let current_marker = socket_markers[k]
-                if(pin.options.rust_type == current_marker[0]) {
-                    socket_markers.splice(j,1)
+                let temp_x = current_marker[2] / mapWidth * pixelWidth
+                let temp_y = current_marker[1] / mapHeight * pixelHeight
+                if(pin.options.rust_type == current_marker[0] && temp_y == pinLatLng.lng && temp_x == pinLatLng.lat)
+                { // if an exact match exists in both
+                    socket_markers.splice(j,1) // remove from the NEW list so that it is not re-added
+                } else if(pin.options.rust_type == 1) { // if it exists in pins but not the new data (e.g. a shop is destroyed)
+                    pin.setLatLng([temp_x, temp_y])
+                } else {
+                    map.removeLayer(pin); // DELETE pins from the map
+                    map_pins.splice(index, 1); // remove from the global variable
                 }
             }
         }
     }
-
-    // add new markers
     for (var k = socket_markers.length - 1; k >= 0; k--){
         let newMarker = socket_markers[k]
         var y = newMarker[1] / mapHeight * pixelHeight
@@ -72,6 +64,9 @@ function updateMarkers(socket_markers) {
         // } else if (true) { // ACTUALLY SHOULD JUST BE ABLE TO ADD THEM ALL! (if we remove them above)
         // }
     }
+}
+
+    // add new markers
     // console.log("map_pins",map_pins)
 
     // console.log("map_pins",map_pins)
@@ -134,7 +129,7 @@ function updateMarkers(socket_markers) {
         // marker.addTo(map)
         // L.rotatedMarker([x,y], {icon: icon, rotationAngle: rot}).on('click', onClick).addTo(map);
     // });
-}
+
 
 function createPlayerIcon(isalive, isonline, steamid){ // show name on hover and open url on click
     let onlineColour;
