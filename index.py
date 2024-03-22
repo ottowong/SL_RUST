@@ -355,6 +355,7 @@ async def Main():
                     map_notes.append([note.type,note.x,note.y,note.icon,note.colour_index,note.label,1])
                 socketio.emit('update_notes', map_notes)
                 socketio.emit('update_steam_members', steam_members)
+                await init_entities() # update list of entities (lazy - do this in the admin page when they are created?) - this wont even work? will try recreate existing ones
             except Exception as e:
                 print("failed to update steam members/notes :-(\n", e)
             await asyncio.sleep(3)  # Wait for an amount of time
@@ -399,7 +400,7 @@ async def Main():
                         socketio.emit('update_switch', [device[0], value])
                 except Exception as e:
                     print(f"Request error occurred: {e}")
-                await asyncio.sleep(4)
+                await asyncio.sleep(60) # check every 60s since this isnt very important
             await asyncio.sleep(1)
 
     async def monitor_loop():
@@ -440,6 +441,8 @@ async def Main():
         print("toggling device", id)
         asyncio.run(toggle_switch(id))
 
+    #region events
+
     @rust_socket.team_event
     async def team(event : TeamEvent):
         print(f"The team leader's steamId is: {event.team_info.leader_steam_id}")
@@ -470,21 +473,30 @@ async def Main():
         cur.close()
         conn.close()
 
-
     async def alarm_event(event):
         value = "On" if event.value else "Off"
         print(f"{event.entity_id} - {str(event.type)} has been turned {value}")
 
     async def monitor_event(event):
-        print(event)
+        print(event.type) # should be 3
+        print(event.entity_id)
+        print(event.capacity)
+        print(event.has_protection)
+        print(event.protection_expiry)
+        print(event.items)
 
     async def switch_event(event):
-        print(event)
+        print(event.type) # should be 1
+        print(event.entity_id)
+        print(event.value) # true/false if on/off
 
-    async def init_entities(): # get the server time every 10s or something.
+    async def init_entities(): # get a list of all entities
         global switch_ids
         global alarm_ids
         global monitor_ids
+        switch_ids = []
+        alarm_ids = []
+        monitor_ids = []
         switches = await get_switches()
         alarms = await get_alarms()
         monitors = await get_monitors()
@@ -494,8 +506,11 @@ async def Main():
             alarm_ids.append(alarm[0])
         for monitor in monitors:
             monitor_ids.append(monitor[0])
+        # print(switch_ids)
+        # print(alarm_ids)
+        # print(monitor_ids)
 
-    asyncio.create_task(init_entities())
+    await init_entities() # run on startup
 
     for alarm_id in alarm_ids: # need a way to add them if an alarm is added later on too
         @rust_socket.entity_event(alarm_id)
@@ -512,13 +527,15 @@ async def Main():
         async def switch_event_wrapper(event, entity_id=switch_id):
             await switch_event(event)
 
+    #endregion events
+
     async def update_time():
         global server_time
         global real_time
         server_time = await get_time()
         real_time = time.time()
 
-    async def get_in_game_time():
+    async def get_in_game_time(): # TO IMPROVE
         # Do some shitty maths to figure out what the time is
         current_real_time = time.time()
         elapsed_real_time_seconds = current_real_time - real_time
