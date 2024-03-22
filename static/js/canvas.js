@@ -54,13 +54,14 @@ window.onload = function () {
         all_markers.forEach(function(marker) {
             var y = marker[1] / 4500 * 2000
             var x = marker[2] / 4500 * 2000
-            var rot = (marker[3] * Math.PI / 180) * -1 // double check the rotation is correct
+            var rot = marker[3] // double check the rotation is correct
             var icon;
             switch (marker[0]) {
                 case 1: // player
                     console.log(marker[4])
                     
                     icon = createPlayerIcon(marker[4].is_alive, marker[4].is_online, marker[4].steam_id, marker[4].name, marker[4].profile_url)
+                    L.rotatedMarker([x,y], {icon: icon, rotationAngle: rot}).on('click', onClick).addTo(map).on('click', function(e) { window.open(marker[4].profile_url) });
                     break;
                 case 2: // explosion
                     // currently removed
@@ -80,14 +81,15 @@ window.onload = function () {
                 case 7: // generic radius (whats that???)
                     break;
                 case 8: // patrol helicopter
-                    icon = createCustomIcon(shopGreen,shopGreen,"f07a", "black")
+                console.log(rot)
+                    icon = createCustomIcon(shopGreen,shopGreen,"<", "black")
                     break;
                 default:
                     icon = createCustomIcon(shopGreen,shopGreen,"f07a", "black")
             }
 
 
-            L.rotatedMarker([x,y], {icon: icon, rotationAngle: rot}).on('click', onClick).addTo(map);
+            // L.rotatedMarker([x,y], {icon: icon, rotationAngle: rot}).on('click', onClick).addTo(map);
         });
     }
 
