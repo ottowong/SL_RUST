@@ -18,38 +18,48 @@ function updateNotes(newNotes) {
 }
 
 function updateMarkers(socket_markers) {
-    // console.log("updateMarkers")
-    console.log(socket_markers)
+    // let old_markers = map_pins // so we can remove from it
     // Remove existing pins from the map
     for (var i = map_pins.length - 1; i >= 0; i--) { // iterate backwards because removing stuff breaks it otherwise
         let pin = map_pins[i]
         var index = map_pins.indexOf(pin);
-        // console.log("type",pin.options.rust_type)
+        // in case we want to attempt keeping these as markers
+        // if (index !== -1 && [4, 5, 8].includes(pin.options.rust_type)) { // CH47; Cargo; Heli
 
-        // these will be removed regardless
-        if (index !== -1 && [4, 5, 8].includes(pin.options.rust_type)) { // CH47; Cargo; Heli
-            map.removeLayer(pin); // DELETE pins from the map
-            map_pins.splice(index, 1); // remove from the global variable
-        } 
-        // these will be removed if they no longer exist. Players will be updated if they still exist
-        else if (index !== -1 && [1, 2, 3, 6, 7].includes(pin.options.rust_type)) { // Player, Explosion, Shop, Crate, GenericRadius
-            for (var j = socket_markers.length - 1; j >= 0; j--){
+        // these will be removed if they no longer exist.
+        if (index !== -1 && [2, 3, 6, 7].includes(pin.options.rust_type)) { // Explosion, Shop, Crate, GenericRadius
+            for (var j = socket_markers.length - 1; j >= 0; j--){ // check new data one by one
                 let current_marker = socket_markers[j]
                 let pinLatLng = pin.getLatLng()
                 let temp_x = current_marker[2] / mapWidth * pixelWidth
                 let temp_y = current_marker[1] / mapHeight * pixelHeight
-                if(pin.options.rust_type == current_marker[0] && temp_y == pinLatLng.lng && temp_x == pinLatLng.lat)
-                { // if an exact match exists in both
+                // if an exact match exists in both
+                if(pin.options.rust_type == current_marker[0] && temp_y == pinLatLng.lng && temp_x == pinLatLng.lat ){ 
                     socket_markers.splice(j,1) // remove from the NEW list so that it is not re-added
-                } else if(pin.options.rust_type == 1) { // if it exists in pins but not the new data (e.g. a shop is destroyed)
-                    pin.setLatLng([temp_x, temp_y])
-                } else {
-                    map.removeLayer(pin); // DELETE pins from the map
-                    map_pins.splice(index, 1); // remove from the global variable
                 }
             }
         }
+        // Players will be updated if they still exist
+        else if (index !== -1 && [1].includes(pin.options.rust_type)) { // Player
+            for (var j = socket_markers.length - 1; j >= 0; j--){
+                let current_marker = socket_markers[j]
+                let temp_x = current_marker[2] / mapWidth * pixelWidth
+                let temp_y = current_marker[1] / mapHeight * pixelHeight
+                if(pin.options.rust_type == 1 && pin.options.steam_id == current_marker[4].steam_id) { 
+                    pin.setLatLng([temp_x, temp_y])
+                    socket_markers.splice(j,1)
+                }
+            }
+        // remove everything else
+        } else {
+            map.removeLayer(pin);
+            map_pins.splice(index, 1);
+        }
     }
+        //
+
+    // remove the remainder of socket_markers from the map
+
     for (var k = socket_markers.length - 1; k >= 0; k--){
         let newMarker = socket_markers[k]
         var y = newMarker[1] / mapHeight * pixelHeight
@@ -58,24 +68,53 @@ function updateMarkers(socket_markers) {
         let icon;
         icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a", "black")
         // if([4, 5, 8].includes(newMarker[0])){ // these will be added regardless
-        let current_pin = L.rotatedMarker([x,y], {rotationAngle: rot, icon: icon, rust_type: newMarker[0]}).addTo(map)
-        current_pin.bindPopup(`${newMarker[0]}<br>${rot}`)
+        let steamId;
+        if(newMarker[0] == 1){
+            steamId = newMarker[4].steam_id
+        }
+        let current_pin = L.rotatedMarker([x,y], {rotationAngle: rot, icon: icon, rust_type: newMarker[0], steam_id: steamId})
+
+        switch (newMarker[0]) {
+        case 1: // player
+            console.log(newMarker[4])
+            
+            icon = createPlayerIcon(newMarker[4].is_alive, newMarker[4].is_online, newMarker[4].steam_id)
+            current_pin.setIcon(icon)
+            current_pin.bindPopup(`${newMarker[4].name}<br><a href="${newMarker[4].url}">steam page</a>`)
+            break;
+        case 2: // explosion
+            // currently removed
+            break;
+        case 3: // shop
+            icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a", "black")
+            current_pin.setIcon(icon)
+            break;
+        case 4: // CH47
+            icon = createCustomIcon(shopGreen,shopGreen,"CH47", "black")
+            current_pin.setIcon(icon)
+            break;
+        case 5: // cargo ship
+            icon = createCustomIcon(shopGreen,shopGreen,"cargo", "black")
+            current_pin.setIcon(icon)
+            break;
+        case 6: // crate
+            // currently removed
+            break;
+        case 7: // generic radius (whats that???)
+            break;
+        case 8: // patrol helicopter
+            icon = createCustomIcon(shopGreen,shopGreen,"HELI", "black")
+            current_pin.setIcon(icon)
+            break;
+        default: // this should never happen
+            icon = createCustomIcon(shopGreen,shopGreen,"?", "red")
+            current_pin.setIcon(icon)
+    }
+
+        current_pin.addTo(map)
         map_pins.push(current_pin)
-        // } else if (true) { // ACTUALLY SHOULD JUST BE ABLE TO ADD THEM ALL! (if we remove them above)
-        // }
     }
 }
-
-    // add new markers
-    // console.log("map_pins",map_pins)
-
-    // console.log("map_pins",map_pins)
-    // console.log("all",socket_markers)
-
-    // socket_markers.forEach(function(marker){
-        
-    //     let icon;
-    //     var current_marker = L.rotatedMarker([x,y], {rotationAngle: rot, rust_type: marker[0]})
 
 
     //     // switch (marker[0]) {
