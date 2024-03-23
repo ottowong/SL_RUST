@@ -4,6 +4,7 @@ const mapWidth = 4500
 
 const pixelHeight = 2000
 const pixelWidth = 2000
+let boundPadding = 3000
 
 const shopGreen = "#aaef35"
 
@@ -88,7 +89,7 @@ function updateMarkers(socket_markers) {
             
             icon = createPlayerIcon(newMarker[4].is_alive, newMarker[4].is_online, newMarker[4].steam_id)
             current_pin.setIcon(icon)
-            current_pin.bindPopup(`${newMarker[4].name}<br><a href="${newMarker[4].url}">steam page</a>`)
+            current_pin.bindPopup(`${newMarker[4].name}<br><a href="${newMarker[4].profile_url}">steam page</a>`)
             break;
         case 2: // explosion
             // currently removed
@@ -196,18 +197,15 @@ window.onload = function () {
     });
 
     var imageUrl = '../static/map.png';
-    let width = 2000
-    let height = 2000
-    let boundPadding = 1000
 
-    var imageSize = [height, width];
+    var imageSize = [pixelHeight, pixelWidth];
     var imageBounds = [[0, 0], imageSize];
 
     L.imageOverlay(imageUrl, imageBounds).addTo(map);
 
     var maxBounds = L.latLngBounds([
         [0 - boundPadding, 0 - boundPadding], 
-        [height + boundPadding, width + boundPadding]
+        [pixelHeight + boundPadding, pixelWidth + boundPadding]
     ]);
     map.setMaxBounds(maxBounds);
     // setInterval(updateMarkers, 2000);
