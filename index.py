@@ -14,13 +14,12 @@ import string
 import logging
 from datetime import timedelta
 
-
 database_name = "database.db"
 conn = sqlite3.connect(database_name)
 cur = conn.cursor()
 cur.execute("CREATE TABLE IF NOT EXISTS tbl_switches (id INTEGER PRIMARY KEY, name TEXT, status INTEGER)")
 cur.execute("CREATE TABLE IF NOT EXISTS tbl_alarms   (id INTEGER PRIMARY KEY, name TEXT)")
-cur.execute("CREATE TABLE IF NOT EXISTS tbl_monitors (id INTEGER PRIMARY KEY, name TEXT, combine INTEGER)")
+cur.execute("CREATE TABLE IF NOT EXISTS tbl_monitors (id INTEGER PRIMARY KEY, name TEXT)")
 cur.close()
 conn.close()
 
@@ -41,6 +40,10 @@ team_leader = []
 steam_members = {}
 
 message_log = []
+
+alarm_ids = []
+monitor_ids = []
+switch_ids = []
 
 monuments = []
 
@@ -124,7 +127,7 @@ async def get_monitors():
 async def get_alarms():
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
-    cur.execute("SELECT id, name, description FROM tbl_alarms")
+    cur.execute("SELECT id, name FROM tbl_alarms")
     alarms = cur.fetchall()
     cur.close()
     conn.close()
@@ -157,8 +160,7 @@ def add_device():
     elif(device_type == "2"):
         cur.execute("INSERT INTO tbl_alarms (id, name) VALUES (?, ?)", (device_id, device_name))
     elif(device_type == "3"):
-        combine = 1 # temporary - add an option in /admin
-        cur.execute("INSERT INTO tbl_monitors (id, name, combine) VALUES (?, ?, ?)", (device_id, device_name, combine))
+        cur.execute("INSERT INTO tbl_monitors (id, name) VALUES (?, ?)", (device_id, device_name))
     else:
         return redirect("/admin")
     conn.commit()
@@ -228,16 +230,11 @@ async def Main():
         try:
             device = await get_switch(id)
             if(device[1]==1):
-                value = 0
                 await turn_off_switch(id)
             elif(device[1]==0):
                 await turn_on_switch(id)
-                value = 1
             else:
                 await turn_on_switch(id)
-                value = None
-            await update_switch(id, value)
-            socketio.emit('update_switch', [id, value])
         except Exception as e:
             socketio.emit('update_switch', [id, None])
             print("sent failed update", e)
@@ -353,6 +350,7 @@ async def Main():
                     map_notes.append([note.type,note.x,note.y,note.icon,note.colour_index,note.label,1])
                 socketio.emit('update_notes', map_notes)
                 socketio.emit('update_steam_members', steam_members)
+                await init_entities() # update list of entities (lazy - do this in the admin page when they are created?) - this wont even work? will try recreate existing ones
             except Exception as e:
                 print("failed to update steam members/notes :-(\n", e)
             await asyncio.sleep(3)  # Wait for an amount of time
@@ -397,7 +395,7 @@ async def Main():
                         socketio.emit('update_switch', [device[0], value])
                 except Exception as e:
                     print(f"Request error occurred: {e}")
-                await asyncio.sleep(4)
+                await asyncio.sleep(60) # check every 60s since this isnt very important
             await asyncio.sleep(1)
 
     async def monitor_loop():
@@ -438,6 +436,8 @@ async def Main():
         print("toggling device", id)
         asyncio.run(toggle_switch(id))
 
+    #region events
+
     @rust_socket.team_event
     async def team(event : TeamEvent):
         print(f"The team leader's steamId is: {event.team_info.leader_steam_id}")
@@ -468,13 +468,72 @@ async def Main():
         cur.close()
         conn.close()
 
+    async def alarm_event(event):
+        value = "On" if event.value else "Off"
+        print(f"{event.entity_id} - {str(event.type)} has been turned {value}")
+
+    async def monitor_event(event):
+        print(event.type) # should be 3
+        print(event.entity_id)
+        print(event.capacity)
+        print(event.has_protection)
+        print(event.protection_expiry)
+        print(event.items)
+            
+    async def switch_event(event):
+        type = event.type # should be 1 - do some validation?
+        switch_id = event.entity_id
+        value = event.value
+        await update_switch(switch_id, value)
+        socketio.emit('update_switch', [switch_id, value])
+
+
+    async def init_entities(): # get a list of all entities
+        global switch_ids
+        global alarm_ids
+        global monitor_ids
+        switch_ids = []
+        alarm_ids = []
+        monitor_ids = []
+        switches = await get_switches()
+        alarms = await get_alarms()
+        monitors = await get_monitors()
+        for switch in switches:
+            switch_ids.append(switch[0])
+        for alarm in alarms:
+            alarm_ids.append(alarm[0])
+        for monitor in monitors:
+            monitor_ids.append(monitor[0])
+        # print(switch_ids)
+        # print(alarm_ids)
+        # print(monitor_ids)
+
+    await init_entities() # run on startup
+
+    for alarm_id in alarm_ids: # need a way to add them if an alarm is added later on too
+        @rust_socket.entity_event(alarm_id)
+        async def alarm_event_wrapper(event, entity_id=alarm_id):
+            await alarm_event(event)
+
+    for monitor_id in monitor_ids: # ''
+        @rust_socket.entity_event(monitor_id)
+        async def monitor_event_wrapper(event, entity_id=monitor_id):
+            await monitor_event(event)
+
+    for switch_id in switch_ids: # ''
+        @rust_socket.entity_event(switch_id)
+        async def switch_event_wrapper(event, entity_id=switch_id):
+            await switch_event(event)
+
+    #endregion events
+
     async def update_time():
         global server_time
         global real_time
         server_time = await get_time()
         real_time = time.time()
 
-    async def get_in_game_time():
+    async def get_in_game_time(): # TO IMPROVE
         # Do some shitty maths to figure out what the time is
         current_real_time = time.time()
         elapsed_real_time_seconds = current_real_time - real_time
@@ -499,15 +558,14 @@ async def Main():
 
     await get_server_info()
     await update_time()
-    
 
-    # start the update loop
+    # start the update loops
     asyncio.create_task(update_loop())
     asyncio.create_task(medium_loop())
     asyncio.create_task(long_loop())
     asyncio.create_task(switch_loop())
     asyncio.create_task(time_loop())
-    asyncio.create_task(monitor_loop())
+    # asyncio.create_task(monitor_loop())
 
     
 

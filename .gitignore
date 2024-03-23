@@ -163,3 +163,4 @@ rustplus.config.json
 static/map.png
 static/profilepics/*
 !static/profilepics/.gitkeep
+*.db
