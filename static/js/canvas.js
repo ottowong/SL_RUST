@@ -105,7 +105,13 @@ function updateMarkers(socket_markers) {
         if(newMarker[0] == 1){
             steamId = newMarker[4].steam_id
         }
-        let current_pin = L.rotatedMarker([x,y], {rotationAngle: rot, icon: icon, rust_type: newMarker[0], steam_id: steamId})
+        let current_pin = L.rotatedMarker([x,y], {
+            rotationAngle: rot, 
+            rotationOrigin: "center",
+            icon: icon, 
+            rust_type: newMarker[0], 
+            steam_id: steamId
+        })
 
         switch (newMarker[0]) {
         case 1: // player
