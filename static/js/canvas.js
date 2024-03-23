@@ -7,8 +7,23 @@ const pixelWidth = 2000
 
 const shopGreen = "#aaef35"
 
+const mainYellow = "#b9bb4c"
+const secondYellow = "#454619"
+
+const mainBlue = "#2e6bb8"
+const secondBlue = "#12243f"
+
+const mainGreen = "#72a137"
+const secondGreen = "#243510"
+
 const mainRed = "#ae3534"
 const secondRed = "#371210"
+
+const mainMagenta = "#9b4fa6"
+const secondMagenta = "#351a39"
+
+const mainCyan = "#0ae8be"
+const secondCyan = "#08493a"
 
 var map_pins = [];
 var map;
