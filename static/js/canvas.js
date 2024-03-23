@@ -85,14 +85,12 @@ var note_pins = [];
 var monument_pins = [];
 
 function updateMonuments(newMonuments) {
-    console.log(newMonuments)
     // remove all pins
     for(var i = monument_pins.length - 1; i >= 0; i--){
         map.removeLayer(monument_pins[i])
         monument_pins.splice(i,1)
     }
     for(var monument of newMonuments){
-        console.log(monument)
         var y = monument[1] / mapHeight * pixelHeight
         var x = monument[2] / mapWidth * pixelWidth
         var text = monument[0]
@@ -118,7 +116,7 @@ function updateMonuments(newMonuments) {
                     className: 'text-label',
                     html: '<div>' + text + '</div>',
                     iconSize: [50, 20],
-                    iconAnchor:   [0, 0]
+                    iconAnchor:   [25, 10]
                 });
                 var textMarker = L.marker([x,y], {icon: textIcon, interactive: false}).addTo(map);
                 monument_pins.push(textMarker);
@@ -233,6 +231,7 @@ function updateMarkers(socket_markers) {
             // currently removed
             break;
         case 3: // shop
+            console.log(newMarker[5])
             icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a;", "black",true)
             current_pin.setIcon(icon)
             current_pin.options.interactive = true;

@@ -324,9 +324,13 @@ async def Main():
                 markers = []
                 for marker in initial_markers:
                     steam_member = {}
+                    sell_orders = []
                     if marker.type == 1:
                         steam_member = get_steam_member(marker.steam_id) # for profile pics on player markers
-                    current_marker = [marker.type, marker.x, marker.y, marker.rotation, steam_member]
+                    if marker.type == 3:
+                        for order in marker.sell_orders:
+                            sell_orders.append([order.item_id, order.quantity, order.currency_id, order.cost_per_item, order.item_is_blueprint, order.currency_is_blueprint, order.amount_in_stock])
+                    current_marker = [marker.type, marker.x, marker.y, marker.rotation, steam_member, sell_orders]
                     markers.append(current_marker)
                 socketio.emit('update_markers', markers)
             except Exception as e:
