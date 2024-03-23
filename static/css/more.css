@@ -37,3 +37,9 @@ svg text {
     dominant-baseline: middle;
     text-anchor: middle;
 }
+
+.text-label {
+    color: #202020;
+    font-family: "Comic Sans MS";
+    font-weight: bold;
+}

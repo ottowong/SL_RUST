@@ -26,6 +26,9 @@ const secondMagenta = "#351a39"
 const mainCyan = "#0ae8be"
 const secondCyan = "#08493a"
 
+const trainWhite = "#d4cac1"
+const trainBlack = "#282828"
+
 var cargoIcon = L.icon({
     iconUrl: '../static/cargo.png',
     iconSize:     [50, 50],
@@ -79,6 +82,49 @@ var map;
 var player_to_track = "";
 var map_pins = [];
 var note_pins = [];
+var monument_pins = [];
+
+function updateMonuments(newMonuments) {
+    console.log(newMonuments)
+    // remove all pins
+    for(var i = monument_pins.length - 1; i >= 0; i--){
+        map.removeLayer(monument_pins[i])
+        monument_pins.splice(i,1)
+    }
+    for(var monument of newMonuments){
+        console.log(monument)
+        var y = monument[1] / mapHeight * pixelHeight
+        var x = monument[2] / mapWidth * pixelWidth
+        var text = monument[0]
+        switch (text.toLowerCase()) {
+            case "dungeonbase":
+                // Do nothing, no marker for Dungeonbase
+                break;
+            case "train tunnel":
+                // Show an image icon for Train Tunnel
+                var trainTunnelIcon = createCustomIcon(trainWhite,trainWhite,"&#xf238;",trainBlack)
+                var trainTunnelMarker = L.marker([x,y], {icon: trainTunnelIcon}).addTo(map);
+                monument_pins.push(trainTunnelMarker);
+                break;
+            case "train tunnel link":
+                // Show an image icon for Train Tunnel Link
+                var trainTunnelLinkIcon = createCustomIcon(trainWhite,trainWhite,"&#xf557;",trainBlack)
+                var trainTunnelLinkMarker = L.marker([x,y], {icon: trainTunnelLinkIcon}).addTo(map);
+                monument_pins.push(trainTunnelLinkMarker);
+                break;
+            default:
+                // For all other cases, just show the text
+                var textIcon = L.divIcon({
+                    className: 'text-label',
+                    html: '<div>' + text + '</div>',
+                    iconSize: [50, 20],
+                    iconAnchor:   [0, 0]
+                });
+                var textMarker = L.marker([x,y], {icon: textIcon}).addTo(map);
+                monument_pins.push(textMarker);
+        }
+    }
+}
 
 function updateNotes(newNotes) {
     // remove all pins
@@ -87,7 +133,6 @@ function updateNotes(newNotes) {
         note_pins.splice(i,1)
     }
     for(var note of newNotes){
-        console.log(note)
         var y = note[1] / mapHeight * pixelHeight
         var x = note[2] / mapWidth * pixelWidth
         let icon = createCustomIcon(shopGreen,shopGreen,"?", "red")
@@ -177,8 +222,6 @@ function updateMarkers(socket_markers) {
 
         switch (newMarker[0]) {
         case 1: // player
-            console.log(newMarker[4])
-            
             icon = createPlayerIcon(newMarker[4].is_alive, newMarker[4].is_online, newMarker[4].steam_id)
             current_pin.setIcon(icon)
             current_pin.bindPopup(`${newMarker[4].name}<br><a href="${newMarker[4].profile_url}">steam page</a>`)

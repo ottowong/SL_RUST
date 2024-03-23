@@ -100,6 +100,9 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.on('update_notes', function(notes) {
         updateNotes(notes)
     });
+    socket.on('monuments', function(monuments) {
+        updateMonuments(monuments) // update global variable
+    });
     socket.on('update_server_info', function(server_info) {
         document.getElementById('server_name').innerHTML = server_info.name;
         let queueTimeHeader = document.getElementById('queue-time-header');
@@ -145,10 +148,6 @@ document.getElementById('time-queue').innerHTML = displayText;
         if (isScrolledToBottom) {
             chatMessages.scrollTop(chatMessages[0].scrollHeight);
         }
-    });
-
-    socket.on('monuments', function(monuments) {
-        all_monuments = monuments // update global variable
     });
 
     socket.on('update_steam_members', function(steam_members) {
