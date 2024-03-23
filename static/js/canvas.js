@@ -26,6 +26,24 @@ const secondMagenta = "#351a39"
 const mainCyan = "#0ae8be"
 const secondCyan = "#08493a"
 
+var cargoIcon = L.icon({
+    iconUrl: '../static/cargo.png',
+    iconSize:     [50, 50],
+    iconAnchor:   [0, 0],
+});
+
+var heliIcon = L.icon({
+    iconUrl: '../static/patrol.png',
+    iconSize:     [50, 50],
+    iconAnchor:   [0, 0],
+});
+
+var chinookIcon = L.icon({
+    iconUrl: '../static/ch47.png',
+    iconSize:     [50, 50],
+    iconAnchor:   [0, 0],
+});
+
 var map;
 
 var player_to_track = "";
@@ -60,7 +78,6 @@ function updateMarkers(socket_markers) {
                 let temp_x = current_marker[2] / mapWidth * pixelWidth
                 let temp_y = current_marker[1] / mapHeight * pixelHeight
                 if(pin.options.rust_type == 1 && pin.options.steam_id == current_marker[4].steam_id) { 
-                    console.log(pin.options.steam_id,"ASD", player_to_track)
                     // Player tracking
                     if (pin.options.steam_id == player_to_track){
                         map.panTo(new L.LatLng(temp_x, temp_y));
@@ -106,12 +123,10 @@ function updateMarkers(socket_markers) {
             current_pin.setIcon(icon)
             break;
         case 4: // CH47
-            icon = createCustomIcon(shopGreen,shopGreen,"CH47", "black")
-            current_pin.setIcon(icon)
+            current_pin.setIcon(chinookIconIcon)
             break;
         case 5: // cargo ship
-            icon = createCustomIcon(shopGreen,shopGreen,"cargo", "black")
-            current_pin.setIcon(icon)
+            current_pin.setIcon(cargoIcon)
             break;
         case 6: // crate
             // currently removed
@@ -119,8 +134,7 @@ function updateMarkers(socket_markers) {
         case 7: // generic radius (whats that???)
             break;
         case 8: // patrol helicopter
-            icon = createCustomIcon(shopGreen,shopGreen,"HELI", "black")
-            current_pin.setIcon(icon)
+            current_pin.setIcon(heliIcon)
             break;
         default: // this should never happen
             icon = createCustomIcon(shopGreen,shopGreen,"?", "red")
@@ -186,7 +200,7 @@ window.onload = function () {
     map = L.map('map-canvas',{ 
         crs: L.CRS.Simple, // use px coords
         zoom: -2,
-        minZoom: -2,
+        minZoom: -4,
         maxZoom: 5
     }).setView([1000, 1000], -2);
     map.addControl(new L.Control.Fullscreen());

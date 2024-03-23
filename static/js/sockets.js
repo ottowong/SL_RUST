@@ -126,7 +126,6 @@ document.addEventListener('DOMContentLoaded', function() {
 document.getElementById('time-queue').innerHTML = displayText;
 
         } else {
-            console.log("hide thing")
             queueTimeHeader.style.display = 'none';
         }
         document.getElementById('player-count').innerHTML = playerStr
