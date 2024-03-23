@@ -48,9 +48,72 @@ var map;
 
 var player_to_track = "";
 var map_pins = [];
+var note_pins = [];
 
 function updateNotes(newNotes) {
-    // TO DO
+    // remove all pins
+    for(var i = note_pins.length - 1; i >= 0; i--){
+        map.removeLayer(note_pins[i])
+        note_pins.splice(i,1)
+    }
+    for(var note of newNotes){
+        console.log(note)
+        var y = note[1] / mapHeight * pixelHeight
+        var x = note[2] / mapWidth * pixelWidth
+        let icon = createCustomIcon(shopGreen,shopGreen,"?", "red")
+        let colour = "white";
+        let colour2 = "black";
+        const colourMap = {
+            0: { main: "black", second: "white" },
+            1: {
+                0: { main: mainYellow, second: secondYellow },
+                1: { main: mainBlue, second: secondBlue },
+                2: { main: mainGreen, second: secondGreen },
+                3: { main: mainRed, second: secondRed },
+                4: { main: mainMagenta, second: secondMagenta },
+                5: { main: mainCyan, second: secondCyan }
+            }
+        };
+
+        const textMap = {
+            0: "",
+            1: {
+                0: "",
+                1: "&#xf155;",
+                2: "&#xf015;",
+                3: "&#xf4cd;",
+                4: "&#xf05b;",
+                5: "&#xf132;",
+                6: "&#xf54c;",
+                7: "&#xf236;",
+                8: "Z",
+                9: "&#xf19b;",
+                10: "&#xf6fc;",
+                11: "&#xf03e;"
+            }
+        };
+
+        switch (note[0]) {
+            case 0: // death marker
+                break;
+            case 1: // normal marker
+                const colors = colourMap[1][note[4]] || colourMap[0]; // Default to black and white if note[4] is invalid
+                const { main, second } = colors;
+                const text = textMap[1][note[3]] || textMap[0]; // Default text
+                icon = createCustomIcon(main, second, text);
+                let current_pin = L.rotatedMarker([x, y], {
+                    icon: icon
+                });
+                current_pin.addTo(map);
+                note_pins.push(current_pin);
+                break;
+            default:
+                break;
+        }
+
+
+        
+    }
 }
 
 function updateMarkers(socket_markers) {
@@ -100,7 +163,7 @@ function updateMarkers(socket_markers) {
         var x = newMarker[2] / mapWidth * pixelWidth
         var rot = newMarker[3] * -1
         let icon;
-        icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a", "black")
+        icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a;", "black")
         let steamId;
         if(newMarker[0] == 1){
             steamId = newMarker[4].steam_id
@@ -125,7 +188,7 @@ function updateMarkers(socket_markers) {
             // currently removed
             break;
         case 3: // shop
-            icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a", "black")
+            icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a;", "black")
             current_pin.setIcon(icon)
             break;
         case 4: // CH47
@@ -193,7 +256,7 @@ function createCustomIcon(primary_colour, secondary_colour, icon, text_colour=pr
             <circle cx="13" cy="13" r="11"  fill="${primary_colour}" />
             <circle cx="13" cy="13" r="9"  fill="${secondary_colour}" />
             <text x="13" y="15" class="fas" font-size="${fontSize}" fill="${text_colour}">
-            ${icon};
+            ${icon}
             </text>
         </svg>`,
         className: "",
@@ -210,19 +273,6 @@ window.onload = function () {
         maxZoom: 5
     }).setView([1000, 1000], -2);
     map.addControl(new L.Control.Fullscreen());
-
-    const shopIcon = L.divIcon({
-        html: `<svg width="26" height="26">
-        <circle cx="13" cy="13" r="13" fill="black" />
-        <circle cx="13" cy="13" r="11"  fill="#aaef35" />
-        <text x="13" y="15" class="fas" font-size="13" fill="black">
-        &#xf07a;
-        </text></svg>`,
-        className: "",
-        iconSize: [26, 26],
-        iconAnchor: [0, 0],
-        popupAnchor: [0, 0]
-    });
 
     var imageUrl = '../static/map.png';
 
