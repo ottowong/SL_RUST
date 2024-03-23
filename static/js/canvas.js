@@ -26,8 +26,10 @@ const secondMagenta = "#351a39"
 const mainCyan = "#0ae8be"
 const secondCyan = "#08493a"
 
-var map_pins = [];
 var map;
+
+var player_to_track = "";
+var map_pins = [];
 
 function updateNotes(newNotes) {
     // TO DO
@@ -58,6 +60,11 @@ function updateMarkers(socket_markers) {
                 let temp_x = current_marker[2] / mapWidth * pixelWidth
                 let temp_y = current_marker[1] / mapHeight * pixelHeight
                 if(pin.options.rust_type == 1 && pin.options.steam_id == current_marker[4].steam_id) { 
+                    console.log(pin.options.steam_id,"ASD", player_to_track)
+                    // Player tracking
+                    if (pin.options.steam_id == player_to_track){
+                        map.panTo(new L.LatLng(temp_x, temp_y));
+                    }
                     pin.setLatLng([temp_x, temp_y])
                     socket_markers.splice(j,1)
                 }
