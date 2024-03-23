@@ -77,6 +77,8 @@ const textMap = {
     }
 };
 
+let all_items;
+
 var map;
 
 var player_to_track = "";
@@ -231,7 +233,11 @@ function updateMarkers(socket_markers) {
             // currently removed
             break;
         case 3: // shop
-            console.log(newMarker[5])
+            // console.log(newMarker[5])
+            for (shop_item of newMarker[5]){
+                let item_data = findSectionById(shop_item[0].toString())
+                console.log(item_data)
+            }
             icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a;", "black",true)
             current_pin.setIcon(icon)
             current_pin.options.interactive = true;
@@ -310,7 +316,25 @@ function createCustomIcon(primary_colour, secondary_colour, icon, text_colour=pr
     });
 }
 
+function findSectionById(idToFind) {
+    for (const section in all_items) {
+        if (Array.isArray(all_items[section])) {
+            for (const item of all_items[section]) {
+                if (item.id && item.id === idToFind) {
+                    return item;
+                }
+            }
+        }
+    }
+    return null;
+}
+
 window.onload = function () {
+    $.getJSON('../static/json/items.json', function(data) {
+        // JSON result in `data` variable
+        console.log("DATA",data)
+        all_items=data
+    });
     map = L.map('map-canvas',{ 
         crs: L.CRS.Simple, // use px coords
         zoom: -2,
