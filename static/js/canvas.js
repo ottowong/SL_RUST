@@ -224,7 +224,7 @@ function updateMarkers(socket_markers) {
         case 1: // player
             icon = createPlayerIcon(newMarker[4].is_alive, newMarker[4].is_online, newMarker[4].steam_id)
             current_pin.setIcon(icon)
-            current_pin.bindPopup(`${newMarker[4].name}<br><a href="${newMarker[4].profile_url}">steam page</a>`)
+            current_pin.bindPopup(`${newMarker[4].name}<br><a href="${newMarker[4].profile_url}" target="_blank">steam page</a>`)
             break;
         case 2: // explosion
             // currently removed
