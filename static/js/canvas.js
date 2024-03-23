@@ -234,7 +234,7 @@ function updateMarkers(socket_markers) {
             current_pin.setIcon(icon)
             break;
         case 4: // CH47
-            current_pin.setIcon(chinookIconIcon)
+            current_pin.setIcon(chinookIcon)
             break;
         case 5: // cargo ship
             current_pin.setIcon(cargoIcon)
