@@ -18,14 +18,10 @@ function updateNotes(newNotes) {
 }
 
 function updateMarkers(socket_markers) {
-    // let old_markers = map_pins // so we can remove from it
     // Remove existing pins from the map
     for (var i = map_pins.length - 1; i >= 0; i--) { // iterate backwards because removing stuff breaks it otherwise
         let pin = map_pins[i]
         var index = map_pins.indexOf(pin);
-        // in case we want to attempt keeping these as markers
-        // if (index !== -1 && [4, 5, 8].includes(pin.options.rust_type)) { // CH47; Cargo; Heli
-
         // these will be removed if they no longer exist.
         if (index !== -1 && [2, 3, 6, 7].includes(pin.options.rust_type)) { // Explosion, Shop, Crate, GenericRadius
             for (var j = socket_markers.length - 1; j >= 0; j--){ // check new data one by one
@@ -56,18 +52,15 @@ function updateMarkers(socket_markers) {
             map_pins.splice(index, 1);
         }
     }
-        //
 
-    // remove the remainder of socket_markers from the map
-
+    // create new icons
     for (var k = socket_markers.length - 1; k >= 0; k--){
         let newMarker = socket_markers[k]
         var y = newMarker[1] / mapHeight * pixelHeight
         var x = newMarker[2] / mapWidth * pixelWidth
-        var rot = newMarker[3] * -1 // double check the rotation is correct
+        var rot = newMarker[3] * -1
         let icon;
         icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a", "black")
-        // if([4, 5, 8].includes(newMarker[0])){ // these will be added regardless
         let steamId;
         if(newMarker[0] == 1){
             steamId = newMarker[4].steam_id
@@ -110,65 +103,10 @@ function updateMarkers(socket_markers) {
             icon = createCustomIcon(shopGreen,shopGreen,"?", "red")
             current_pin.setIcon(icon)
     }
-
         current_pin.addTo(map)
         map_pins.push(current_pin)
     }
 }
-
-
-    //     // switch (marker[0]) {
-    //     //     case 1: // player
-    //     //         console.log(marker[4])
-                
-    //     //         icon = createPlayerIcon(marker[4].is_alive, marker[4].is_online, marker[4].steam_id)
-    //     //         current_marker.setIcon(icon)
-    //     //         current_marker.bindPopup(`${marker[4].name}<br><a href="${marker[4].url}">steam page</a>`)
-    //     //         // current_marker.on('click', onClick).on('click', function(e) { window.open(marker[4].profile_url) });
-    //     //         break;
-    //     //     case 2: // explosion
-    //     //         // currently removed
-    //     //         break;
-    //     //     case 3: // shop
-    //     //         icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a", "black")
-    //     //         current_marker.setIcon(icon)
-    //     //         break;
-    //     //     case 4: // CH47
-    //     //         icon = createCustomIcon(shopGreen,shopGreen,"CH47", "black")
-    //     //         current_marker.setIcon(icon)
-    //     //         break;
-    //     //     case 5: // cargo ship
-    //     //         icon = createCustomIcon(shopGreen,shopGreen,"cargo", "black")
-    //     //         current_marker.setIcon(icon)
-    //     //         break;
-    //     //     case 6: // crate
-    //     //         // currently removed
-    //     //         break;
-    //     //     case 7: // generic radius (whats that???)
-    //     //         break;
-    //     //     case 8: // patrol helicopter
-    //     //         icon = createCustomIcon(shopGreen,shopGreen,"HELI", "black")
-    //     //         current_marker.setIcon(icon)
-    //     //         break;
-    //     //     default: // this should never happen
-    //     //         icon = createCustomIcon(shopGreen,shopGreen,"?", "red")
-    //     //         current_marker.setIcon(icon)
-    //     // }
-
-        
-    //     current_marker.addTo(map)
-    //     map_pins.push(current_marker)
-    // });
-
-    // Add markers from the coordinates array
-    // map_pins.forEach(function(marker) {
-        
-        // icon = createCustomIcon(shopGreen,shopGreen,"?", "red")
-        // marker.setIcon(icon)
-        // marker.addTo(map)
-        // L.rotatedMarker([x,y], {icon: icon, rotationAngle: rot}).on('click', onClick).addTo(map);
-    // });
-
 
 function createPlayerIcon(isalive, isonline, steamid){ // show name on hover and open url on click
     let onlineColour;
@@ -221,8 +159,6 @@ function createCustomIcon(primary_colour, secondary_colour, icon, text_colour=pr
     });
 }
 
-
-
 window.onload = function () {
     map = L.map('map-canvas',{ 
         crs: L.CRS.Simple, // use px coords
@@ -259,14 +195,5 @@ window.onload = function () {
         [height + boundPadding, width + boundPadding]
     ]);
     map.setMaxBounds(maxBounds);
-
-    
-
-    
-
-    function onClick(e) {
-        console.log(this.getLatLng());
-    }
-
     // setInterval(updateMarkers, 2000);
 };
