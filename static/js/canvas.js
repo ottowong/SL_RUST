@@ -103,13 +103,13 @@ function updateMonuments(newMonuments) {
             case "train tunnel":
                 // Show an image icon for Train Tunnel
                 var trainTunnelIcon = createCustomIcon(trainWhite,trainWhite,"&#xf238;",trainBlack)
-                var trainTunnelMarker = L.marker([x,y], {icon: trainTunnelIcon}).addTo(map);
+                var trainTunnelMarker = L.marker([x,y], {icon: trainTunnelIcon,interactive: false}).addTo(map);
                 monument_pins.push(trainTunnelMarker);
                 break;
             case "train tunnel link":
                 // Show an image icon for Train Tunnel Link
                 var trainTunnelLinkIcon = createCustomIcon(trainWhite,trainWhite,"&#xf557;",trainBlack)
-                var trainTunnelLinkMarker = L.marker([x,y], {icon: trainTunnelLinkIcon}).addTo(map);
+                var trainTunnelLinkMarker = L.marker([x,y], {icon: trainTunnelLinkIcon,interactive: false}).addTo(map);
                 monument_pins.push(trainTunnelLinkMarker);
                 break;
             default:
@@ -120,7 +120,7 @@ function updateMonuments(newMonuments) {
                     iconSize: [50, 20],
                     iconAnchor:   [0, 0]
                 });
-                var textMarker = L.marker([x,y], {icon: textIcon}).addTo(map);
+                var textMarker = L.marker([x,y], {icon: textIcon, interactive: false}).addTo(map);
                 monument_pins.push(textMarker);
         }
     }
@@ -148,7 +148,8 @@ function updateNotes(newNotes) {
                 const text = textMap[1][note[3]] || textMap[0];
                 icon = createCustomIcon(main, second, text);
                 let current_pin = L.rotatedMarker([x, y], {
-                    icon: icon
+                    icon: icon,
+                    interactive: false
                 });
                 current_pin.addTo(map);
                 note_pins.push(current_pin);
@@ -217,7 +218,8 @@ function updateMarkers(socket_markers) {
             rotationOrigin: "center",
             icon: icon, 
             rust_type: newMarker[0], 
-            steam_id: steamId
+            steam_id: steamId,
+            interactive: false
         })
 
         switch (newMarker[0]) {
@@ -225,13 +227,15 @@ function updateMarkers(socket_markers) {
             icon = createPlayerIcon(newMarker[4].is_alive, newMarker[4].is_online, newMarker[4].steam_id)
             current_pin.setIcon(icon)
             current_pin.bindPopup(`${newMarker[4].name}<br><a href="${newMarker[4].profile_url}" target="_blank">steam page</a>`)
+            current_pin.options.interactive = true;
             break;
         case 2: // explosion
             // currently removed
             break;
         case 3: // shop
-            icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a;", "black")
+            icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a;", "black",true)
             current_pin.setIcon(icon)
+            current_pin.options.interactive = true;
             break;
         case 4: // CH47
             current_pin.setIcon(chinookIcon)
@@ -303,7 +307,7 @@ function createCustomIcon(primary_colour, secondary_colour, icon, text_colour=pr
         </svg>`,
         className: "",
         iconSize: [26, 26],
-        iconAnchor: [0, 0],
+        iconAnchor: [0, 0]
     });
 }
 
