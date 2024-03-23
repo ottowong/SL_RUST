@@ -124,7 +124,7 @@ function updateMarkers(socket_markers) {
     }
 }
 
-function createPlayerIcon(isalive, isonline, steamid){ // show name on hover and open url on click
+function createPlayerIcon(isalive, isonline, steamid){
     let onlineColour;
     let dead = ""
     if(isonline){
@@ -182,6 +182,7 @@ window.onload = function () {
         minZoom: -2,
         maxZoom: 5
     }).setView([1000, 1000], -2);
+    map.addControl(new L.Control.Fullscreen());
 
     const shopIcon = L.divIcon({
         html: `<svg width="26" height="26">
