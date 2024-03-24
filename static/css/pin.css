@@ -55,14 +55,13 @@ body{
     box-sizing: border-box;
     font-weight: bold;
 }
-.submit-button {
-    grid-column: span 3;
-}
+
 .zero-button {
     grid-column: span 2;
 }
 
 .password-input {
+    pointer-events: none;
     height:60px;
     width:100%;
     margin-bottom: 15px;
