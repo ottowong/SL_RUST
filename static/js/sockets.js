@@ -144,11 +144,11 @@ document.getElementById('time-queue').innerHTML = displayText;
     });
 
     socket.on('chat_message', function(message) {
-        let chatMessages = $('#chatmessages');
+        let chatMessages = $('#messages');
         let messageCount = chatMessages.children().length;
         let isScrolledToBottom = chatMessages.scrollTop() + chatMessages.innerHeight() >= chatMessages[0].scrollHeight;
         
-        chatMessages.append('<div><b>' + message[0] + ':</b> ' + message[1] + '</div>');
+        chatMessages.append('<div class="chat-message-containter"><span class="chat-username">' + message[0] + ':</span><span class="chat-message"> ' + message[1] + '</span></div>');
         if (messageCount > 50) {
             chatMessages.children().first().remove();
         }
