@@ -1,5 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
+<!-- ###################SADLADS################### -->
+
+    <!-- This website is a product of SADLADS.  -->
+            <!-- for use with RUST -->
+            <!-- SADLADS 2023 -->
+
+<!-- ###################SADLADS################### -->
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -13,7 +22,7 @@
     <link rel="stylesheet" type="text/css" href="../static/css/more.css">
     <link rel="stylesheet" type="text/css" href="../static/css/map.css">
 
-    <link rel="stylesheet" href="../static/css/libraries/leaflet.css"/>
+    <link rel="stylesheet" href="../static/css/libraries/leaflet.css" />
     <script src="../static/js/libraries/leaflet.js"></script>
 
     <script type="module" src="../static/js/libraries/rotatedMarker.js"></script>
@@ -26,355 +35,432 @@
     <link href='../static/css/libraries/leaflet.fullscreen.css' rel='stylesheet' />
     <link rel="icon" type="image/x-icon" href="../static/favicon.ico">
 </head>
+
 <body>
     <div class="container">
-        
+
         <div class="header">
             <h1 id="server_name">
                 <!-- #region PLACEHOLDER -->
-                <!-- SERVER NAME - 7 days since wipe - 14 days until wipe -->
+                SERVER NAME - 7 days since wipe - 14 days until wipe
                 <!-- #endregion PLACEHOLDER -->
             </h1>
         </div>
-        
+
         <div class="container-left">
             <div class="container-left-main-content">
-                
+
                 <div class="container-left-head">
                     <h1>Total Players</h1>
                     <h2 id="player-count">
                         <!-- #region PLACEHOLDER -->
-                        <!-- 250/250 (18) -->
+                        250/250 (18)
                         <!-- #endregion PLACEHOLDER -->
                     </h2>
                     <h4 id="queue-time-header">Estimated Queue Time: <span id="time-queue"></span></h4>
                 </div>
-                
+
                 <span>Last updated: <span id="time-last-updated"></span></span>
-                
+
                 <div class="Player-list">
                     <ul class="user-list">
                         <!-- #region PLACEHOLDER -->
-                        <!-- <li class="user-item"><img src="https://avatars.steamstatic.com/3687c50a8b476a9ca6a7d3208f236a0c9a3eb7d6.jpg" alt="Profile Picture"><div><h3><a href="https://steamcommunity.com/id/PartyTrumpet/" target="_blank" style="color: rgb(98, 183, 218);">Otto</a></h3><p>Status: Online</p></div></li>
-                            <li class="user-item"><img src="https://avatars.akamai.steamstatic.com/96155fc2b7a4f44d38a2448ad947cf3e089c0386_full.jpg" alt="Profile Picture"><div><h3><a href="https://steamcommunity.com/id/PartyTrumpet/" target="_blank" style="color: #c8f699;">Harry</a></h3><p>Status: In Base</p></div></li>
-                            <li class="user-item"><img src="https://avatars.akamai.steamstatic.com/a5944660c00faf21dd7732f4abe4da561c006d09_full.jpg" alt="Profile Picture"><div><h3><a href="https://steamcommunity.com/id/PartyTrumpet/" target="_blank" style="color: rgb(75, 75, 75);">Joop</a></h3><p>Status: Offline</p></div></li> -->
-                            <!-- #endregion PLACEHOLDER -->
-                        </ul>  
-                    </div>
-                    
+                        <li class="user-item"><img
+                                src="https://avatars.steamstatic.com/3687c50a8b476a9ca6a7d3208f236a0c9a3eb7d6.jpg"
+                                alt="Profile Picture">
+                            <div>
+                                <h3><a href="https://steamcommunity.com/id/PartyTrumpet/" target="_blank"
+                                        style="color: rgb(98, 183, 218);">Otto</a></h3>
+                                <p>Status: Online</p>
+                            </div>
+                        </li>
+                        <li class="user-item"><img
+                                src="https://avatars.akamai.steamstatic.com/96155fc2b7a4f44d38a2448ad947cf3e089c0386_full.jpg"
+                                alt="Profile Picture">
+                            <div>
+                                <h3><a href="https://steamcommunity.com/id/PartyTrumpet/" target="_blank"
+                                        style="color: #c8f699;">Harry</a></h3>
+                                <p>Status: In Base</p>
+                            </div>
+                        </li>
+                        <li class="user-item"><img
+                                src="https://avatars.akamai.steamstatic.com/a5944660c00faf21dd7732f4abe4da561c006d09_full.jpg"
+                                alt="Profile Picture">
+                            <div>
+                                <h3><a href="https://steamcommunity.com/id/PartyTrumpet/" target="_blank"
+                                        style="color: rgb(75, 75, 75);">Joop</a></h3>
+                                <p>Status: Offline</p>
+                            </div>
+                        </li>
+                        <!-- #endregion PLACEHOLDER -->
+                    </ul>
                 </div>
+
             </div>
-            
-            <div class="main">
-                <div class="content-main-header">
-                    <img src="../static/img/logo-ph.png">
-                </div>
-                
-                <div id="map-wrapper">
-                    <div id="map-canvas"></div>
-                </div>
-                <script src="../static/js/canvas.js"></script>
-                
-                
-                <div class="content-main-footer">
-                    Time:   <span id="server-time"></span>
-                </div>
+        </div>
+
+        <div class="main">
+            <div class="content-main-header">
+                <img src="../static/img/logo-ph.png">
             </div>
-            
-            <div class="container-right-left">
-                <div id="device_list" class="container-right-left-content-wrapper">
+
+            <div id="map-wrapper">
+                <div id="map-canvas"></div>
+            </div>
+            <script src="../static/js/canvas.js"></script>
+
+
+            <div class="content-main-footer">
+                Time: <span id="server-time"></span>
+            </div>
+        </div>
+
+        <div class="container-right-left">
+            <div id="main_chat" class="feed-wrapper">
+                <div class="section-header">
+                    <h2>Live chat</h2>
+                </div>
+                <div id="messages" class="chat-messages">
                     <!-- #region PLACEHOLDER -->
-                    <!-- <div class="list-item"><div class="icon"><img src="../static/img/switch.png" alt="Icon"></div><div class="name">Lights</div><div class="status" id="1084947" data-device-id="1084947" style="color: green;">Online</div></div>
-                    <div class="list-item"><div class="icon"><img src="../static/img/switch.png" alt="Icon"></div><div class="name">Doors</div><div class="status" id="2272821" data-device-id="2272821" style="color: red;">Offline</div></div> -->
-                    <!-- #endregion PLACEHOLDER -->
-                </div>
-            </div>
-            <div class="container-right-right">
-                <div id="main_chat" class="chat-wrapper">
-                    <div class="chat-header">
-                        <h2>Live chat</h2>
+                    <div class="chat-message-containter">
+                        <span class="chat-username">Harry</span>: <span class="Chat-message"> Damn! there's so many
+                            nodes! </span>
                     </div>
-                    <div id="messages" class="chat-messages">
-                        <!-- #region PLACEHOLDER -->
-                        <!-- <div class="chat-message-containter">
-                            <span class="chat-username">Harry</span>: <span class="Chat-message"> Damn! there's so many nodes! </span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="chat-username">Otto</span>: <span class="Chat-message"> I love nodes! </span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="chat-username">Harry</span>: <span class="Chat-message"> WE ARE BEING RAIDED!</span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="system-username">DEATH:</span>: <span class="Chat-message"> Joop has died </span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="system-username">DEATH:</span>: <span class="Chat-message"> Otto has died </span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="chat-username">Harry</span>: <span class="Chat-message"> oh wait, nvm</span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="chat-username">Harry</span>: <span class="Chat-message"> Damn! there's so many nodes! </span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="chat-username">Otto</span>: <span class="Chat-message"> I love nodes! </span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="chat-username">Harry</span>: <span class="Chat-message"> WE ARE BEING RAIDED!</span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="system-username">DEATH:</span>: <span class="Chat-message"> Joop has died </span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="system-username">DEATH:</span>: <span class="Chat-message"> Otto has died </span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="chat-username">Harry</span>: <span class="Chat-message"> oh wait, nvm</span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="chat-username">Harry</span>: <span class="Chat-message"> Damn! there's so many nodes! </span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="chat-username">Otto</span>: <span class="Chat-message"> I love nodes! </span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="chat-username">Harry</span>: <span class="Chat-message"> WE ARE BEING RAIDED!</span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="system-username">DEATH:</span>: <span class="Chat-message"> Joop has died </span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="system-username">DEATH:</span>: <span class="Chat-message"> Otto has died </span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="chat-username">Harry</span>: <span class="Chat-message"> oh wait, nvm</span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="chat-username">Harry</span>: <span class="Chat-message"> Damn! there's so many nodes! </span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="chat-username">Otto</span>: <span class="Chat-message"> I love nodes! </span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="chat-username">Joop</span>: <span class="Chat-message"> We must secure the existence of our people and a future for white children. </span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="chat-username">Harry</span>: <span class="Chat-message"> WE ARE BEING RAIDED!</span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="system-username">DEATH:</span>: <span class="Chat-message"> Joop has died </span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="system-username">DEATH:</span>: <span class="Chat-message"> Otto has died </span>
-                        </div>
-                        <div class="chat-message-containter">
-                            <span class="chat-username">Harry</span>: <span class="Chat-message"> oh wait, nvm</span>
-                        </div> -->
+                    <div class="chat-message-containter">
+                        <span class="chat-username">Otto</span>: <span class="Chat-message"> I love nodes! </span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="chat-username">Harry</span>: <span class="Chat-message"> WE ARE BEING
+                            RAIDED!</span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="system-username">DEATH:</span>: <span class="Chat-message"> Joop has died </span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="system-username">DEATH:</span>: <span class="Chat-message"> Otto has died </span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="chat-username">Harry</span>: <span class="Chat-message"> oh wait, nvm</span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="chat-username">Harry</span>: <span class="Chat-message"> Damn! there's so many
+                            nodes! </span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="chat-username">Otto</span>: <span class="Chat-message"> I love nodes! </span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="chat-username">Harry</span>: <span class="Chat-message"> WE ARE BEING
+                            RAIDED!</span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="system-username">DEATH:</span>: <span class="Chat-message"> Joop has died </span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="system-username">DEATH:</span>: <span class="Chat-message"> Otto has died </span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="chat-username">Harry</span>: <span class="Chat-message"> oh wait, nvm</span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="chat-username">Harry</span>: <span class="Chat-message"> Damn! there's so many
+                            nodes! </span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="chat-username">Otto</span>: <span class="Chat-message"> I love nodes! </span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="chat-username">Harry</span>: <span class="Chat-message"> WE ARE BEING
+                            RAIDED!</span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="system-username">DEATH:</span>: <span class="Chat-message"> Joop has died </span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="system-username">DEATH:</span>: <span class="Chat-message"> Otto has died </span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="chat-username">Harry</span>: <span class="Chat-message"> oh wait, nvm</span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="chat-username">Harry</span>: <span class="Chat-message"> Damn! there's so many
+                            nodes! </span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="chat-username">Otto</span>: <span class="Chat-message"> I love nodes! </span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="chat-username">Joop</span>: <span class="Chat-message"> aaaaaaaaa </span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="chat-username">Harry</span>: <span class="Chat-message"> WE ARE BEING
+                            RAIDED!</span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="system-username">DEATH:</span>: <span class="Chat-message"> Joop has died </span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="system-username">DEATH:</span>: <span class="Chat-message"> Otto has died </span>
+                    </div>
+                    <div class="chat-message-containter">
+                        <span class="chat-username">Harry</span>: <span class="Chat-message"> oh wait, nvm</span>
+                    </div>
                     <!-- #endregion PLACEHOLDER -->
                 </div>
                 <div id="send_box" class="chat-footer">
                     <form>
-                        <input id="chat_input" type="text" name="message" placeholder="Send a message..." autocomplete="off">
+                        <input id="chat_input" type="text" name="message" placeholder="Send a message..."
+                            autocomplete="off">
                     </form>
                 </div>
             </div>
+
+        </div>
+        <div class="container-right-right">
+            <div class="feed-wrapper">
+                <div class="section-header">
+                    <h2>Alarm Feed</h2>
+                </div>
+            </div>
+
+
         </div>
 
         <div class="container-right-main">
             <div class="container-right-main-wrapper">
                 <div class="containter-right-left-tabs">
                     <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab1')">Tool Cupboards</button>
-                    <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab2')">Boxes</button>
-                    <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab2')">Bunkers</button>
+                    <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab3')">Base Inventory</button>
+                    <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab4')">Switches</button>
                     <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab2')" style="font-style: italic; color: var(--SL_Yellow);">Boom</button>
                 </div>
-                <div id="tab1" class="tabcontent" style="display: flex;" >
+
+                <!-- TCs -->
+                <div id="tab1" class="tabcontent">
                     <!-- #region PLACEHOLDER -->
-                    <!-- <div class="TC-Header">
+                    <div class="TC-Header">
                         <h1>Main tool cupboard</h1>
                         <div class="TC-sum-wrapper">
-                        <div class="TC-header-image-container">
-                            <img src="../static/img/upkeep/stone.webp" alt="Image 1">
-                            <div class="TC-header-upkeep-count">
-                            <p>450/200.</p>
+                            <div class="TC-header-image-container">
+                                <img src="../static/img/upkeep/stone.webp" alt="Image 1">
+                                <div class="TC-header-upkeep-count">
+                                    <p>450/200.</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="TC-header-image-container">
-                            <img src="../static/img/upkeep/metal-frags.webp" alt="Image 2">
-                            <div class="TC-header-upkeep-count">
-                            <p>54,000/600.</p>
+                            <div class="TC-header-image-container">
+                                <img src="../static/img/upkeep/metal-frags.webp" alt="Image 2">
+                                <div class="TC-header-upkeep-count">
+                                    <p>54,000/600.</p>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="TC-header-image-container">
-                            <img src="../static/img/upkeep/HQ-Metal.webp" alt="Image 3">
-                            <div class="TC-header-upkeep-count">
-                            <p>500/500</p>
+
+                            <div class="TC-header-image-container">
+                                <img src="../static/img/upkeep/HQ-Metal.webp" alt="Image 3">
+                                <div class="TC-header-upkeep-count">
+                                    <p>500/500</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="TC-header-image-container">
-                            <img src="../static/img/upkeep/wood.webp" alt="Image 3">
-                            <div class="TC-header-upkeep-count">
-                            <p>500/500</p>
+                            <div class="TC-header-image-container">
+                                <img src="../static/img/upkeep/wood.webp" alt="Image 3">
+                                <div class="TC-header-upkeep-count">
+                                    <p>500/500</p>
+                                </div>
                             </div>
-                        </div>
                         </div>
                         <h2>Protected for 10d 14h 35m 19s</h2>
                     </div>
                     <div class="TC-List">
                         <ul>
                             <li class="TC-list-item">
-                            <img src="../static/img/upkeep/TC.png" alt="Icon 1" width="50" height="50">
-                            <h3 class="TC-list-item-title">Farm Base</h3>
-                            <span class="live">7 Days</span>
+                                <img src="../static/img/upkeep/TC.png" alt="Icon 1" width="50" height="50">
+                                <h3 class="TC-list-item-title">Farm Base</h3>
+                                <span class="live">7 Days</span>
                             </li>
                             <li class="TC-list-item">
-                            <img src="../static/img/upkeep/TC.png" alt="Icon 1" width="50" height="50">
-                            <h3 class="TC-list-item-title">Bunker North East</h3>
-                            <span class="live">1 Day</span>
+                                <img src="../static/img/upkeep/TC.png" alt="Icon 1" width="50" height="50">
+                                <h3 class="TC-list-item-title">Bunker North East</h3>
+                                <span class="live">1 Day</span>
                             </li>
                             <li class="TC-list-item">
-                            <img src="../static/img/upkeep/TC.png" alt="Icon 2" width="50" height="50">
-                            <h3 class="TC-list-item-title">Bunker South West</h3>
-                            <span class="live">5 Hours</span>
+                                <img src="../static/img/upkeep/TC.png" alt="Icon 2" width="50" height="50">
+                                <h3 class="TC-list-item-title">Bunker South West</h3>
+                                <span class="live">5 Hours</span>
                             </li>
                             <li class="TC-list-item">
-                            <img src="../static/img/upkeep/TC.png" alt="Icon 2" width="50" height="50">
-                            <h3 class="TC-list-item-title">Boat House</h3>
-                            <span class="live">5 Hours</span>
+                                <img src="../static/img/upkeep/TC.png" alt="Icon 2" width="50" height="50">
+                                <h3 class="TC-list-item-title">Boat House</h3>
+                                <span class="live">5 Hours</span>
                             </li>
                             <li class="TC-list-item">
                                 <img src="../static/img/upkeep/TC.png" alt="Icon 1" width="50" height="50">
                                 <h3 class="TC-list-item-title">Farm Base</h3>
                                 <span class="live">7 Days</span>
-                                </li>
-                                <li class="TC-list-item">
+                            </li>
+                            <li class="TC-list-item">
                                 <img src="../static/img/upkeep/TC.png" alt="Icon 1" width="50" height="50">
                                 <h3 class="TC-list-item-title">Bunker North East</h3>
                                 <span class="live">1 Day</span>
-                                </li>
-                                <li class="TC-list-item">
+                            </li>
+                            <li class="TC-list-item">
                                 <img src="../static/img/upkeep/TC.png" alt="Icon 2" width="50" height="50">
                                 <h3 class="TC-list-item-title">Bunker South West</h3>
                                 <span class="live">5 Hours</span>
-                                </li>
-                                <li class="TC-list-item">
+                            </li>
+                            <li class="TC-list-item">
                                 <img src="../static/img/upkeep/TC.png" alt="Icon 2" width="50" height="50">
                                 <h3 class="TC-list-item-title">Boat House</h3>
                                 <span class="live">5 Hours</span>
-                                </li>
-                                <li class="TC-list-item">
-                                    <img src="../static/img/upkeep/TC.png" alt="Icon 1" width="50" height="50">
-                                    <h3 class="TC-list-item-title">Farm Base</h3>
-                                    <span class="live">7 Days</span>
-                                    </li>
-                                    <li class="TC-list-item">
-                                    <img src="../static/img/upkeep/TC.png" alt="Icon 1" width="50" height="50">
-                                    <h3 class="TC-list-item-title">Bunker North East</h3>
-                                    <span class="live">1 Day</span>
-                                    </li>
-                                    <li class="TC-list-item">
-                                    <img src="../static/img/upkeep/TC.png" alt="Icon 2" width="50" height="50">
-                                    <h3 class="TC-list-item-title">Bunker South West</h3>
-                                    <span class="live">5 Hours</span>
-                                    </li>
-                                    <li class="TC-list-item">
-                                    <img src="../static/img/upkeep/TC.png" alt="Icon 2" width="50" height="50">
-                                    <h3 class="TC-list-item-title">Boat House</h3>
-                                    <span class="live">5 Hours</span>
-                                    </li>
-                                    <li class="TC-list-item">
-                                        <img src="../static/img/upkeep/TC.png" alt="Icon 1" width="50" height="50">
-                                        <h3 class="TC-list-item-title">Farm Base</h3>
-                                        <span class="live">7 Days</span>
-                                        </li>
-                                        <li class="TC-list-item">
-                                        <img src="../static/img/upkeep/TC.png" alt="Icon 1" width="50" height="50">
-                                        <h3 class="TC-list-item-title">Bunker North East</h3>
-                                        <span class="live">1 Day</span>
-                                        </li>
-                                        <li class="TC-list-item">
-                                        <img src="../static/img/upkeep/TC.png" alt="Icon 2" width="50" height="50">
-                                        <h3 class="TC-list-item-title">Bunker South West</h3>
-                                        <span class="live">5 Hours</span>
-                                        </li>
-                                        <li class="TC-list-item">
-                                        <img src="../static/img/upkeep/TC.png" alt="Icon 2" width="50" height="50">
-                                        <h3 class="TC-list-item-title">Boat House</h3>
-                                        <span class="live">5 Hours</span>
-                                        </li>
+                            </li>
+                            <li class="TC-list-item">
+                                <img src="../static/img/upkeep/TC.png" alt="Icon 1" width="50" height="50">
+                                <h3 class="TC-list-item-title">Farm Base</h3>
+                                <span class="live">7 Days</span>
+                            </li>
+                            <li class="TC-list-item">
+                                <img src="../static/img/upkeep/TC.png" alt="Icon 1" width="50" height="50">
+                                <h3 class="TC-list-item-title">Bunker North East</h3>
+                                <span class="live">1 Day</span>
+                            </li>
+                            <li class="TC-list-item">
+                                <img src="../static/img/upkeep/TC.png" alt="Icon 2" width="50" height="50">
+                                <h3 class="TC-list-item-title">Bunker South West</h3>
+                                <span class="live">5 Hours</span>
+                            </li>
+                            <li class="TC-list-item">
+                                <img src="../static/img/upkeep/TC.png" alt="Icon 2" width="50" height="50">
+                                <h3 class="TC-list-item-title">Boat House</h3>
+                                <span class="live">5 Hours</span>
+                            </li>
+                            <li class="TC-list-item">
+                                <img src="../static/img/upkeep/TC.png" alt="Icon 1" width="50" height="50">
+                                <h3 class="TC-list-item-title">Farm Base</h3>
+                                <span class="live">7 Days</span>
+                            </li>
+                            <li class="TC-list-item">
+                                <img src="../static/img/upkeep/TC.png" alt="Icon 1" width="50" height="50">
+                                <h3 class="TC-list-item-title">Bunker North East</h3>
+                                <span class="live">1 Day</span>
+                            </li>
+                            <li class="TC-list-item">
+                                <img src="../static/img/upkeep/TC.png" alt="Icon 2" width="50" height="50">
+                                <h3 class="TC-list-item-title">Bunker South West</h3>
+                                <span class="live">5 Hours</span>
+                            </li>
+                            <li class="TC-list-item">
+                                <img src="../static/img/upkeep/TC.png" alt="Icon 2" width="50" height="50">
+                                <h3 class="TC-list-item-title">Boat House</h3>
+                                <span class="live">5 Hours</span>
+                            </li>
                         </ul>
-                    </div> -->
+                    </div>
                     <!-- #endregion PLACEHOLDER -->
                 </div>
-                
+
+                <!-- Boom Calulator -->
                 <div id="tab2" class="tabcontent">
                     <div class="Boom-stock">
-                    <!-- #region PLACEHOLDER -->
-                    <!-- <div class="image-container">
-                        <h3>c4</h3>
-                        <img src="../static/img/BOOM/C4.png" alt="Image 1">
-                        <div class="overlay">
-                            5
+                        <!-- #region PLACEHOLDER -->
+                        <div class="image-container">
+                            <h3>c4</h3>
+                            <img src="../static/img/BOOM/C4.png" alt="Image 1">
+                            <div class="overlay">
+                                5
+                            </div>
                         </div>
+                        <div class="image-container">
+                            <h3>c4</h3>
+                            <img src="../static/img/BOOM/C4.png" alt="Image 1">
+                            <div class="overlay">
+                                5
+                            </div>
+                        </div>
+                        <div class="image-container">
+                            <h3>c4</h3>
+                            <img src="../static/img/BOOM/C4.png" alt="Image 1">
+                            <div class="overlay">
+                                5
+                            </div>
+                        </div>
+                        <div class="image-container">
+                            <h3>c4</h3>
+                            <img src="../static/img/BOOM/C4.png" alt="Image 1">
+                            <div class="overlay">
+                                5
+                            </div>
+                        </div>
+                        <div class="image-container">
+                            <h3>c4</h3>
+                            <img src="../static/img/BOOM/C4.png" alt="Image 1">
+                            <div class="overlay">
+                                5
+                            </div>
+                        </div>
+                        <div class="image-container">
+                            <h3>c4</h3>
+                            <img src="../static/img/BOOM/C4.png" alt="Image 1">
+                            <div class="overlay">
+                                5
+                            </div>
+                        </div>
+                        <div class="image-container">
+                            <h3>c4</h3>
+                            <img src="../static/img/BOOM/C4.png" alt="Image 1">
+                            <div class="overlay">
+                                5
+                            </div>
+                        </div>
+                        <div class="image-container">
+                            <h3>c4</h3>
+                            <img src="../static/img/BOOM/C4.png" alt="Image 1">
+                            <div class="overlay">
+                                5
+                            </div>
+                        </div>
+                        <!-- #endregion PLACEHOLDER -->
                     </div>
-                    <div class="image-container">
-                        <h3>c4</h3>
-                        <img src="../static/img/BOOM/C4.png" alt="Image 1">
-                        <div class="overlay">
-                            5
-                        </div>
-                    </div>
-                    <div class="image-container">
-                        <h3>c4</h3>
-                        <img src="../static/img/BOOM/C4.png" alt="Image 1">
-                        <div class="overlay">
-                            5
-                        </div>
-                    </div>
-                    <div class="image-container">
-                        <h3>c4</h3>
-                        <img src="../static/img/BOOM/C4.png" alt="Image 1">
-                        <div class="overlay">
-                            5
-                        </div>
-                    </div>
-                    <div class="image-container">
-                        <h3>c4</h3>
-                        <img src="../static/img/BOOM/C4.png" alt="Image 1">
-                        <div class="overlay">
-                            5
-                        </div>
-                    </div>
-                    <div class="image-container">
-                        <h3>c4</h3>
-                        <img src="../static/img/BOOM/C4.png" alt="Image 1">
-                        <div class="overlay">
-                            5
-                        </div>
-                    </div>
-                    <div class="image-container">
-                        <h3>c4</h3>
-                        <img src="../static/img/BOOM/C4.png" alt="Image 1">
-                        <div class="overlay">
-                            5
-                        </div>
-                    </div>
-                    <div class="image-container">
-                        <h3>c4</h3>
-                        <img src="../static/img/BOOM/C4.png" alt="Image 1">
-                        <div class="overlay">
-                            5
-                        </div>
-                    </div> -->
-                    <!-- #endregion PLACEHOLDER -->
                 </div>
+                
+                <!-- Full Base inventory -->
+                <div id="tab3" class="tabcontent" style="display: flex;">
+                    <div class="Base-inventory">
+                        <div class="section-header">
+                            <h1>Inventory overview</h1>
+                        </div>
+                        <!-- #region PLACEHOLDER -->
+                        <div class="image-list">
+                            <div class="image-item">
+                                <img src="../static/img/upkeep/metal-frags.webp" alt="Image 1">
+                                <div class="number">1</div>
+                            </div>
+                            <div class="image-item">
+                                <img src="../static/img/upkeep/stone.webp" alt="Image 2">
+                                <div class="number">x10,000</div>
+                            </div>
+                            <div class="image-item">
+                                <img src="../static/img/upkeep/wood.webp" alt="Image 3">
+                                <div class="number">x300</div>
+                            </div>
+                            <!-- Add more image items here -->
+                        </div>
+                        <!-- #endregion PLACEHOLDER -->
+                    </div>
                 </div>
+
+                <!-- Switches overview -->
+                <div id="tab4" class="tabcontent">
+                    <div class="alarms-overview-wrapper">
+                        <div class="section-header">
+                            <h1>Switches overview</h1>
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
         </div>
 
         <div class="footer-left">
+            <h1>RAID!</h1>
         </div>
 
         <div class="footer-main">
@@ -389,8 +475,23 @@
         </div>
     </div>
 
-<!-- #################################################### -->
+    <!-- #################################################### -->
 
-<script src="../static/js/tabs.js"></script>        
+    <script>
+        function changeTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("containter-right-left-tabs-links");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "flex";
+            evt.currentTarget.className += " active";
+        }
+    </script>
 </body>
+
 </html>
