@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 let deviceId = $(this).data('device-id');
                 toggle(deviceId);
             });
-    
+
             listItemDiv.appendChild(iconDiv);
             listItemDiv.appendChild(nameDiv);
             listItemDiv.appendChild(statusDiv);
@@ -60,16 +60,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    socket.on('sent_monitors', function(monitors) {
-        monitors.forEach(device => {
-            monitor_id = device[0]
-            monitor_name = device[1]
-            // make monitor div stuff here
-        });
+    socket.on('all_monitors', function(monitors) {
+        let all_monitors = monitors;
+        console.log("monitors",monitors)
+        let all_items = combineMonitors(all_monitors)
+
+        for (const itemId in all_items.items) {
+            const item = all_items.items[itemId];
+            add_inventory_item_to_overview(itemId, item, false)
+        }
+        
+        for (const bpId in all_items.bps) {
+            const bp = all_items.bps[bpId];
+            add_inventory_item_to_overview(itemId, item, true)
+        }
     });
+    
 
     socket.on('update_monitor', function(monitor) {
-        console.log(monitor)
+        console.log("monitor",monitor.id)
     });
 
     // if some switch data is wrong, update it here.

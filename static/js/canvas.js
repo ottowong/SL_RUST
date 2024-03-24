@@ -78,7 +78,7 @@ const textMap = {
     }
 };
 
-let all_items;
+let all_rust_items;
 
 var map;
 
@@ -337,9 +337,9 @@ function createCustomIcon(primary_colour, secondary_colour, icon, text_colour=pr
 }
 
 function findSectionById(idToFind) {
-    for (const section in all_items) {
-        if (Array.isArray(all_items[section])) {
-            for (const item of all_items[section]) {
+    for (const section in all_rust_items) {
+        if (Array.isArray(all_rust_items[section])) {
+            for (const item of all_rust_items[section]) {
                 if (item.id && item.id === idToFind) {
                     return item;
                 }
@@ -352,7 +352,7 @@ function findSectionById(idToFind) {
 window.onload = function () {
     // set list of all items
     $.getJSON('../static/json/items.json', function(data) {
-        all_items=data
+        all_rust_items=data
     });
     map = L.map('map-canvas',{ 
         crs: L.CRS.Simple, // use px coords

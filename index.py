@@ -1,3 +1,5 @@
+import traceback # for debugging
+
 import os
 import asyncio
 from rustplus import RustSocket, EntityEvent, TeamEvent, ChatEvent, CommandOptions, Command
@@ -45,6 +47,7 @@ alarm_ids = []
 monitor_ids = []
 switch_ids = []
 
+all_monitors = []
 monuments = []
 
 server_name=""
@@ -74,7 +77,9 @@ def get_steam_member(steam_id, update=False):
     url = f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={SteamApiKey}&steamids={steam_id}'
     try:
         response = requests.get(url)
+        print("response",response)
         data = response.json()
+        print("data",data)
         if len(data['response']['players']) > 0:
             profile_pic = data['response']['players'][0]['avatar']
             state = data['response']['players'][0]['personastate']
@@ -91,7 +96,7 @@ def get_steam_member(steam_id, update=False):
         else:
             return None
     except Exception as e:
-        print(f"An error occurred trying to get steam profile pic: {e}")
+        print(f"An error occurred trying to get steam profile pic: {traceback.format_exc()}")
         return None
     
 async def get_switch(id):
@@ -288,14 +293,28 @@ async def Main():
                 name = item.name
                 quantity = item.quantity
                 is_blueprint = item.is_blueprint
-                items.append([item_id, name, quantity, is_blueprint])
+                items.append({
+                    "id": item_id, 
+                    "name": name, 
+                    "quantity": quantity, 
+                    "is_blueprint": is_blueprint}
+                )
                 # make a total list
                 if(item_id in temp_combined):
                     temp_combined[item_id]['quantity'] += quantity
                 else:
-                    temp_combined[item_id] = {'name': name, 'quantity': quantity, 'is_blueprint': is_blueprint}
+                    temp_combined[item_id] = {
+                        'name': name, 
+                        'quantity': quantity, 
+                        'is_blueprint': is_blueprint
+                    }
             for item_id, details in temp_combined.items():
-                combined_items.append([item_id, details['name'], details['quantity'], details['is_blueprint']])
+                combined_items.append({
+                    "id": item_id, 
+                    "name": details['name'], 
+                    "quantity": details['quantity'], 
+                    "is_blueprint": details['is_blueprint']
+                })
             monitor_dict = {
                 "id": id,
                 "items": items,
@@ -408,7 +427,7 @@ async def Main():
                 await init_entities() # update list of entities (lazy - do this in the admin page when they are created?) - this wont even work? will try recreate existing ones
             except Exception as e:
                 print("failed to update steam members/notes :-(\n", e)
-            await asyncio.sleep(3)  # Wait for an amount of time
+            await asyncio.sleep(8)  # Wait for an amount of time
 
     async def long_loop():
         print("starting long loop...")
@@ -462,7 +481,15 @@ async def Main():
                 print(monitor_name)
                 print(monitor_info)
                 print()
-                socketio.emit("update_monitor", monitor_info)
+                if(monitor_info):
+                    monitor_exists = False
+                    for i in range(0,len(all_monitors)):
+                        if(all_monitors[i]["id"] == monitor_id):
+                            monitor_exists = True
+                            all_monitors[i] = monitor_info
+                    if(not monitor_exists):
+                        all_monitors.append(monitor_info)
+                socketio.emit("all_monitors", all_monitors)
                 await asyncio.sleep(4)
             await asyncio.sleep(1)
 
@@ -549,7 +576,6 @@ async def Main():
         await update_switch(switch_id, value)
         socketio.emit('update_switch', [switch_id, value])
 
-
     async def init_entities(): # get a list of all entities
         global switch_ids
         global alarm_ids
@@ -627,7 +653,7 @@ async def Main():
     asyncio.create_task(long_loop())
     asyncio.create_task(switch_loop())
     asyncio.create_task(time_loop())
-    # asyncio.create_task(monitor_loop())
+    asyncio.create_task(monitor_loop())
 
     
 

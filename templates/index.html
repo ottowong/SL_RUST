@@ -326,13 +326,12 @@
                 
                 <!-- Full Base inventory -->
                 <div id="tab3" class="tabcontent" style="display: flex;">
-           
                         <div class="section-header">
                             <h1>Inventory overview</h1>
                         </div>
-                        <!-- #region PLACEHOLDER -->
-                        <div class="base-inventory-list">
-                            <div class="base-inventory-item">
+                        <div id="base-inventory-list" class="base-inventory-list">
+                            <!-- #region PLACEHOLDER -->
+                            <!-- <div class="base-inventory-item">
                                 <img src="../static/img/upkeep/metal-frags.webp" alt="Image 1">
                                 <div class="base-inventory-item-count">1</div>
                             </div>
@@ -343,10 +342,9 @@
                             <div class="base-inventory-item">
                                 <img src="../static/img/upkeep/wood.webp" alt="Image 3">
                                 <div class="base-inventory-item-count">x300</div>
-                            </div>
-
+                            </div> -->
+                            <!-- #endregion PLACEHOLDER -->
                         </div>
-                        <!-- #endregion PLACEHOLDER -->
         
                 </div>
 
@@ -395,6 +393,7 @@
             evt.currentTarget.className += " active";
         }
     </script>
+    <script src="../static/js/monitors.js"></script>
     <script src="../static/js/sockets.js"></script>
 </body>
 
