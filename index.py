@@ -429,7 +429,7 @@ async def Main():
                 # {'url': '', 'name': 'SADLADS TEST SERVER', 'map': 'Procedural Map', 'size': 4500, 'players': 1, 'max_players': 500, 'queued_players': 0, 'seed': 1337}                
                 socketio.emit('update_server_info', server_info)
                 await update_time() # update the time so that we stay on track
-                emit("monuments", monuments)
+                socketio.emit("monuments", monuments)
             except Exception as e:
                 print("failed to update server info :-(\n", e)
             await asyncio.sleep(30)  # Wait for an amount of time
