@@ -8,22 +8,14 @@
     color: var(--SL_Yellow);
 }
 
-.chat-wrapper{
+.feed-wrapper{
     overflow: hidden;
     display: flex;
     flex-direction: column;
     height: 100%;
 }
 
-.chat-header {
-    text-align: center;
-    height: auto;
-}
 
-.chat-header h2 {
-margin: 5px;
-color: var(--Default_text_color);
-}
 
 .chat-messages {
     flex-grow: 1;
@@ -42,7 +34,7 @@ color: var(--Default_text_color);
 
 .chat-footer input {
     width: 100%;
-    border: 1px solid #000; 
+    border: var(--Border-style);
     border-radius: 5px; 
     background-color: transparent; 
     padding: 8px;

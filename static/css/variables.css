@@ -7,8 +7,9 @@
     --Steam_Blue:  rgb(98, 183, 218);
 
     --Border_color: #888;
-    --Body_background_color: #010101;
-    --Sections_background_color: #222;
+    --Border-style: 1px solid var(--Border_color);
+    --Body_background_color: #23231b;
+    --Sections_background_color: #191914;
     --Default_text_color: var(--SL_Gernal_color);
 
     /* User settings (WIP) */

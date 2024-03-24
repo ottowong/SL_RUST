@@ -3,7 +3,7 @@
     flex-grow: 1;
     overflow: auto;
 
-    border: 1px solid var( --Border_color);
+    border: var(--Border-style);
     background-color: var(--Sections_background_color);
     
 }
@@ -16,7 +16,7 @@
     display: flex;
     align-items: center;
     margin-bottom: 10px;
-    border-bottom: 1px solid var(--Border_color);
+    border-bottom: var(--Border-style);
     padding: 0 10px 5px 10px;
 } h3 {
     margin: 0 0 5px 5px;
@@ -38,7 +38,7 @@
     display: flex;
     align-items: center;
     padding: 10px;
-    border-bottom: 1px solid var(--Border_color);
+    border-bottom: var(--Border-style);
 }
 
 /* CSS for icon */

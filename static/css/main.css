@@ -1,31 +1,46 @@
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     height: 100vh;
-    background-color: var( --Body_background_color);
+    background-color: var(--Body_background_color);
     font-family: Arial, Helvetica, sans-serif;
     color: var(--Default_text_color);
-    user-select: none; /* disable highlighting anything. may want to re/move later. */
-    overflow-x: hidden;
+    user-select: none;
+    /* disable highlighting anything. may want to re/move later. */
+    overflow: hidden;
 }
 
-::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:#2f2f2f;border-radius:0px}::-webkit-scrollbar-thumb{background:#cccccc;border-radius:0px}
+::-webkit-scrollbar {
+    width: 10px
+}
+
+::-webkit-scrollbar-track {
+    background: #2f2f2f;
+    border-radius: 0px
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cccccc;
+    border-radius: 0px
+}
 
 .container {
     height: 100vh;
     display: grid;
     width: 100%;
     grid-template-areas: "header header header header"
-    "container-left main container-right-left container-right-right"
-    "container-left main container-right-main container-right-main"
-    "footer-left footer-main container-right-main container-right-main";
+        "container-left main container-right-left container-right-right"
+        "container-left main container-right-main container-right-main"
+        "footer-left footer-main container-right-main container-right-main";
     grid-template-columns: 1fr 4fr 1fr 1fr;
     grid-template-rows: 56px 644px 1fr 80px;
     box-sizing: border-box;
     overflow: hidden;
 }
-.container > div {
-    border: 1px solid var(--Border_color);
+
+.container>div {
+    border: var(--Border-style);
     background-color: var(--Sections_background_color);
     margin: 4px;
 }
@@ -53,24 +68,30 @@ html, body {
 .container-right-left {
     grid-area: container-right-left;
 }
+
 .container-right-right {
     grid-area: container-right-right;
     overflow: hidden;
     height: 1fr;
 }
+
 .container-right-main {
     grid-area: container-right-main;
     overflow: hidden;
 }
+
 .footer-left {
     grid-area: footer-left;
-}
-.footer-main {
-    grid-area: footer-main;
-    
+    text-align: center;
+    color: red;
 }
 
-#map-wrapper{
+.footer-main {
+    grid-area: footer-main;
+
+}
+
+#map-wrapper {
     overflow: hidden;
     width: 100%;
     height: 100%;
@@ -82,26 +103,45 @@ html, body {
 .container-left-head {
     /* background-color: antiquewhite; */
     text-align: center;
-    border: 1px solid var(--Border_color);
-    background-color: var( --Sections_background_color);
-} h2 {
+    border: var(--Border-style);
+    background-color: var(--Sections_background_color);
+}
+
+.container-left-head h2 {
     color: var(--SL_Red);
-} h4 {
+}
+
+
+
+.section-header {
+    text-align: center;
+    height: auto;
+    border-bottom: var(--Border-style);
+}
+
+.section-header h2 {
+    margin: 5px;
+    color: var(--Default_text_color);
+}
+
+.section-header h1 {
+    margin: 5px;
+    color: var(--Default_text_color);
 
 }
 
 .content-main-header {
     position: absolute;
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0)); 
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0));
     padding: 10px;
     text-align: center;
-    pointer-events:none;
+    pointer-events: none;
     user-select: none;
-} 
-    
+}
+
 img {
     vertical-align: middle;
     margin-top: 10px;
@@ -109,12 +149,12 @@ img {
 
 .content-main-footer {
     position: absolute;
-    bottom: 0; 
-    left: 0; 
-    width: 100%; 
+    bottom: 0;
+    left: 0;
+    width: 100%;
     padding: 10px;
     text-align: center;
-    pointer-events:none;
+    pointer-events: none;
     user-select: none;
 }
 
@@ -141,7 +181,7 @@ img {
 
 /* .Beyond {
     background-color: var(--Sections_background_color);
-    border: 1px solid var(--Border_color);
+    border: var(--Border-style);
     width: 100%;
     margin: 5px;
 } */
@@ -153,16 +193,17 @@ img {
     grid-template-areas: "Beyond-body";
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
-  }
-  .Beyond-container > div {
+}
+
+.Beyond-container>div {
     border: 1px dashed #888;
     margin: 4px;
-  }
-  
-  .Beyond-body {
+}
+
+.Beyond-body {
     grid-area: Beyond-body;
     background-color: var(--Sections_background_color);
-  }
+}
 
 
 /* Header */
@@ -170,4 +211,3 @@ img {
 .header h1 {
     margin: 5px 0 0 20px;
 }
-
