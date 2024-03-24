@@ -235,9 +235,20 @@ function updateMarkers(socket_markers) {
                 let item_data = findSectionById(shop_item.id.toString())
                 let currency_data = findSectionById(shop_item.currency_id.toString())
                 // shop_item.amount_in_stock
-                shop_popup_text = shop_popup_text + `<img width="25px" src="${item_data.image}"/>x${shop_item.quantity}`
+
+                let item_bp = "";
+                let currency_bp = "";
+                if(shop_item.item_is_blueprint){
+                    item_bp = `<img style="position:absolute;" width="25px" src="../static/img/blueprint.png"/>`
+                }
+                if(shop_item.currency_is_blueprint){
+                    currency_bp = `<img style="position:absolute;" width="25px" src="../static/img/blueprint.png"/>`
+                }
+                shop_popup_text = shop_popup_text + item_bp
+                shop_popup_text = shop_popup_text + `<img style="position:relative;" width="25px" src="${item_data.image}"/>x${shop_item.quantity}`
                 shop_popup_text = shop_popup_text + " : "
-                shop_popup_text = shop_popup_text + `<img width="25px" src="${currency_data.image}"/> x${shop_item.cost_per_item}<br>`
+                shop_popup_text = shop_popup_text + currency_bp
+                shop_popup_text = shop_popup_text + `<img style="position:relative;" width="25px" src="${currency_data.image}"/> x${shop_item.cost_per_item}<br>`
             }
             if(newMarker.sell_orders.length == 0){
                 icon = createCustomIcon(shopOrange,shopOrange,"&#xf07a;", "black",true)
