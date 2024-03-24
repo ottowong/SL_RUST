@@ -22,6 +22,7 @@
     overflow: auto;
     background-color: var(--Sections_background_color);
     margin: 0 5px 0 5px;
+    font-size: var(--font_size_content_small);
 }
 
 .chat-message-containter{
@@ -34,11 +35,12 @@
 
 .chat-footer input {
     width: 100%;
-    border: var(--Border-style);
+    border-top: var(--Border-style);
     border-radius: 5px; 
     background-color: transparent; 
     padding: 8px;
     color: #ffffff; 
+    font-size: var(--font_size_input_text);
 }
 
 .chat-footer input:focus {

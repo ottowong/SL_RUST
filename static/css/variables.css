@@ -5,12 +5,31 @@
     --SL_Yellow: #d3d02c;
     --SL_Grey: #5b5b5b;
     --Steam_Blue:  rgb(98, 183, 218);
+    --SL_counter_color: white;
 
     --Border_color: #888;
     --Border-style: 1px solid var(--Border_color);
     --Body_background_color: #23231b;
     --Sections_background_color: #191914;
     --Default_text_color: var(--SL_Gernal_color);
+
+
+
+
+    --font_size_title: 1.5em;
+    --font_size_sub_title: 1em;
+    --font_size_section_header: 1.125em;
+    --font_size_section_sub_header: 0.875em;
+    --font_size_content: 1em;
+    --font_size_content_small: 0.875em;
+
+    --font_size_button: 1em;
+    --font_size_input_text: 0.675em;
+
+    --font_size_counter: 0.675em;
+    
+
+
 
     /* User settings (WIP) */
 
