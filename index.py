@@ -2,7 +2,7 @@ import os
 import asyncio
 from rustplus import RustSocket, EntityEvent, TeamEvent, ChatEvent, CommandOptions, Command
 from dotenv import load_dotenv
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_socketio import SocketIO, emit
 import sqlite3
 from PIL import Image, ImageDraw, ImageFont
@@ -29,10 +29,10 @@ port = os.environ.get("PORT")
 steamId = int(os.environ.get("STEAMID"))
 playerToken = int(os.environ.get("PLAYERTOKEN"))
 SteamApiKey = os.environ.get("STEAMAPIKEY")
+correct_pin = os.environ.get("PIN")
 
 options = CommandOptions(prefix="!")
 rust_socket = RustSocket(ip, port, steamId, playerToken, command_options=options)
-
 
 RUST_SECONDS_PER_MINUTE = 5
 
@@ -141,9 +141,24 @@ async def update_switch(id, status):
     cur.close()
     conn.close()
 
-@app.route("/")
+@app.route('/codelock', methods=['GET', 'POST'])
+def codelock():
+    if request.method == 'POST':
+        entered_pin = request.form['pin']
+        if entered_pin == correct_pin:
+            session['authenticated'] = True
+            return redirect(url_for('index'))
+        else:
+            error = "Incorrect PIN. Please try again."
+            return render_template('pin.html', error=error)
+    return render_template('pin.html', error=None)
+
+@app.route('/')
 def index():
-    return render_template("index.html")
+    if session.get('authenticated'):
+        return render_template("index.html")
+    else:
+        return redirect(url_for('codelock'))
 
 @app.route("/add_device", methods=["POST"]) # use sockets for this instead
 def add_device():

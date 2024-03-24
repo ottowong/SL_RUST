@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../static/css/numpad.css">
+    <title>Enter PIN</title>
+</head>
+<body>
+    <div id="numpad_main">
+        
+        <div class="numpad">
+            <form id="pinForm" method="POST">
+                <input class="password-input" type="password" id="pinInput" name="pin" placeholder="" readonly maxlength="4">
+            </form>
+            <button onclick="addPin(7)">7</button>
+            <button onclick="addPin(8)">8</button>
+            <button onclick="addPin(9)">9</button>
+            <button onclick="addPin(4)">4</button>
+            <button onclick="addPin(5)">5</button>
+            <button onclick="addPin(6)">6</button>
+            <button onclick="addPin(1)">1</button>
+            <button onclick="addPin(2)">2</button>
+            <button onclick="addPin(3)">3</button>
+            <button class="zero-button" onclick="addPin(0)">0</button>
+            <button class="clear-button" onclick="clearPin()">C</button>
+            <button class="submit-button" onclick="submitForm()">Submit</button>
+        </div>
+
+        <audio id="beepAudio">
+            <source src="../static/audio/beep.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+
+    <script>
+        function addPin(number) {
+            var pinInput = document.getElementById("pinInput");
+            if(pinInput.value.length < 4){
+                pinInput.value += number;
+                var audio = document.getElementById("beepAudio");
+                audio.play();
+            }
+        }
+
+        function clearPin() {
+            var pinInput = document.getElementById("pinInput");
+            pinInput.value = "";
+        }
+
+        function submitForm() {
+            document.getElementById("pinForm").submit();
+        }
+
+        document.addEventListener("keydown", function(event) {
+            // Check if the pressed key is a number key (from 0 to 9)
+            if (event.key >= '0' && event.key <= '9') {
+                addPin(parseInt(event.key));
+            } else if (event.key === 'Enter') {
+                // If Enter key is pressed, submit the form
+                submitForm();
+            }
+        });
+    </script>
+</body>
+</html>
