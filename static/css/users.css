@@ -18,14 +18,18 @@
     margin-bottom: 10px;
     border-bottom: var(--Border-style);
     padding: 0 10px 5px 10px;
-} h3 {
+} 
+
+.user-item h3 {
     margin: 0 0 5px 5px;
-    font-size: medium;
+    font-size: var(--font_size_sub_title);
     text-align: left;
-} p {
+} 
+.user-item p {
     margin: 0 0 0 5px;
-    font-size: small;
+    font-size: var(--font_size_content_small);
 }
+
 .user-item img {
     width: 30px;
     height: 30px;

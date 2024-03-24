@@ -1,15 +1,37 @@
 
 @media screen and (max-width: 2000px){
   :root {
-    --SL_Gernal_color: orange;
+    /* --SL_Gernal_color: orange; */
   }
 
-  .TC-Header h1 {
+  /* .TC-Header h1 {
     margin: 10px 0 0px 0;
     font-size: 1.6rem;
+} */
+
+.container {
+  height: 100vh;
+  display: grid;
+  width: 100%;
+  grid-template-areas: 
+      "header header header header"
+      "container-left main container-right-left container-right-right"
+      "container-left main container-right-main container-right-main"
+      "footer-left footer-main container-right-main container-right-main";
+  grid-template-columns: 1fr 4fr 1fr 1fr;
+  grid-template-rows: 56px 444px 1fr 48px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
+/* .chat-messages {
+  font-size: smaller;
+} */
+
+
 }
+
+
 
 
 @media screen and (max-width: 600px) {

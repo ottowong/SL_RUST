@@ -8,7 +8,7 @@ body {
     color: var(--Default_text_color);
     user-select: none;
     /* disable highlighting anything. may want to re/move later. */
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 ::-webkit-scrollbar {
@@ -122,13 +122,15 @@ body {
 .section-header h2 {
     margin: 5px;
     color: var(--Default_text_color);
+    font-size: var(--font_size_section_header);
 }
 
 .section-header h1 {
     margin: 5px;
     color: var(--Default_text_color);
-
+    font-size: var(--font_size_section_header);
 }
+
 
 .content-main-header {
     position: absolute;
@@ -210,4 +212,5 @@ img {
 
 .header h1 {
     margin: 5px 0 0 20px;
+    font-size: var(--font_size_title);
 }

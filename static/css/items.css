@@ -13,6 +13,7 @@
 .containter-right-left-tabs button {
     background-color: transparent;
     color: var(--Default_text_color);
+    font-size: var(--font_size_button);
 }
 
 .TC-Header {
@@ -24,11 +25,12 @@
 
 .TC-Header h1 {
     margin: 10px 0 0px 0;
-    font-size: 1.6rem;
+    font-size: var(--font_size_section_header);
 }
 
 .TC-Header h2 {
     color: var(--SL_Green);
+    font-size: var(--font_size_section_sub_header);
 }
 
 .TC-sum-wrapper {
@@ -49,6 +51,12 @@
   }
   .TC-header-upkeep-count {
     margin-top: 10px;
+  }
+
+  .TC-header-upkeep-count p {
+    font-size: var(--font_size_counter);
+    color: var(--SL_counter_color);
+    font-weight: bold;
   }
 
 
@@ -76,10 +84,12 @@
   .TC-list-item-title {
     text-align: center;
     flex-grow: 1;
+    font-size: var(--font_size_section_sub_header);
   }
-  .live {
+  .TC-list-item-upkeep {
     font-weight: bold;
     color: var(--SL_Green);
+    font-size: var(--font_size_section_sub_header);
   }
 
 
@@ -118,25 +128,31 @@
 
   /* base inmventory */
 
-  .image-list {
+  .base-inventory {
+    
+  }
+
+  .base-inventory-list {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     padding: 10px;
+    overflow: auto;
   }
-  .image-item {
+  .base-inventory-item {
     position: relative;
-    width: 75px; 
+    width: 60px; 
     background-color: #3c3934;
+    border-radius: 2px;
   }
-  .image-item img {
-    max-width: 75px;
+  .base-inventory-item img {
+    max-width: 60px;
     height: auto;
     display: block;
     border-radius: 5px;
     margin: 0;
   }
-  .image-item .number {
+  .base-inventory-item .base-inventory-item-count {
     position: absolute;
     bottom: 5px;
     right: 5px;
@@ -145,5 +161,5 @@
     color: #fff;
     padding: 5px;
     border-radius: 50%;
-    font-size: 15px;
+    font-size: var(--font_size_counter);
   }
