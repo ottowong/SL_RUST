@@ -38,6 +38,7 @@
             if(pinInput.value.length < 4){
                 pinInput.value += number;
                 var audio = document.getElementById("beepAudio");
+                audio.currentTime = 0;
                 audio.play();
             }
         }
