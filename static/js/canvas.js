@@ -7,6 +7,7 @@ const pixelWidth = 2000
 let boundPadding = 3000
 
 const shopGreen = "#aaef35"
+const shopOrange = "#de6e12"
 
 const mainYellow = "#b9bb4c"
 const secondYellow = "#454619"
@@ -206,7 +207,6 @@ function updateMarkers(socket_markers) {
         var y = newMarker.y / mapHeight * pixelHeight
         var rot = newMarker.rotation * -1
         let icon;
-        icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a;", "black")
         let steamId;
         if(newMarker.type == 1){
             steamId = newMarker.steam.steam_id
@@ -214,7 +214,6 @@ function updateMarkers(socket_markers) {
         let current_pin = L.rotatedMarker([y,x], {
             rotationAngle: rot, 
             rotationOrigin: "center",
-            icon: icon, 
             rust_type: newMarker.type,
             steam_id: steamId,
             interactive: false
@@ -240,7 +239,11 @@ function updateMarkers(socket_markers) {
                 shop_popup_text = shop_popup_text + " : "
                 shop_popup_text = shop_popup_text + `<img width="25px" src="${currency_data.image}"/> x${shop_item.cost_per_item}<br>`
             }
-            icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a;", "black",true)
+            if(newMarker.sell_orders.length == 0){
+                icon = createCustomIcon(shopOrange,shopOrange,"&#xf07a;", "black",true)
+            } else {
+                icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a;", "black",true)
+            }
             current_pin.setIcon(icon)
             var shop_popup = L.popup({
                 className: 'shop-popup'
