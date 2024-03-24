@@ -93,9 +93,9 @@ function updateMonuments(newMonuments) {
         monument_pins.splice(i,1)
     }
     for(var monument of newMonuments){
-        var y = monument[1] / mapHeight * pixelHeight
-        var x = monument[2] / mapWidth * pixelWidth
-        var text = monument[0]
+        var x = monument.x / mapWidth * pixelWidth
+        var y = monument.y / mapHeight * pixelHeight
+        var text = monument.text
         switch (text.toLowerCase()) {
             case "dungeonbase":
                 // Do nothing, no marker for Dungeonbase
@@ -103,13 +103,13 @@ function updateMonuments(newMonuments) {
             case "train tunnel":
                 // Show an image icon for Train Tunnel
                 var trainTunnelIcon = createCustomIcon(trainWhite,trainWhite,"&#xf238;",trainBlack)
-                var trainTunnelMarker = L.marker([x,y], {icon: trainTunnelIcon,interactive: false}).addTo(map);
+                var trainTunnelMarker = L.marker([y,x], {icon: trainTunnelIcon,interactive: false}).addTo(map);
                 monument_pins.push(trainTunnelMarker);
                 break;
             case "train tunnel link":
                 // Show an image icon for Train Tunnel Link
                 var trainTunnelLinkIcon = createCustomIcon(trainWhite,trainWhite,"&#xf557;",trainBlack)
-                var trainTunnelLinkMarker = L.marker([x,y], {icon: trainTunnelLinkIcon,interactive: false}).addTo(map);
+                var trainTunnelLinkMarker = L.marker([y,x], {icon: trainTunnelLinkIcon,interactive: false}).addTo(map);
                 monument_pins.push(trainTunnelLinkMarker);
                 break;
             default:
@@ -120,34 +120,33 @@ function updateMonuments(newMonuments) {
                     iconSize: [50, 20],
                     iconAnchor:   [25, 10]
                 });
-                var textMarker = L.marker([x,y], {icon: textIcon, interactive: false}).addTo(map);
+                var textMarker = L.marker([y,x], {icon: textIcon, interactive: false}).addTo(map);
                 monument_pins.push(textMarker);
         }
     }
 }
 
 function updateNotes(newNotes) {
+    console.log(newNotes)
     // remove all pins
     for(var i = note_pins.length - 1; i >= 0; i--){
         map.removeLayer(note_pins[i])
         note_pins.splice(i,1)
     }
     for(var note of newNotes){
-        var y = note[1] / mapHeight * pixelHeight
-        var x = note[2] / mapWidth * pixelWidth
+        var x = note.x / mapHeight * pixelHeight
+        var y = note.y / mapWidth * pixelWidth
         let icon = createCustomIcon(shopGreen,shopGreen,"?", "red")
-        let colour = "white";
-        let colour2 = "black";
 
-        switch (note[0]) {
+        switch (note.type) {
             case 0: // death marker
                 break;
             case 1: // normal marker
-                const colors = colourMap[1][note[4]] || colourMap[0]; // Default to black and white if note[4] is invalid
+                const colors = colourMap[1][note.colour_index] || colourMap[0]; // Default to black and white if note.colour_index is invalid
                 const { main, second } = colors;
-                const text = textMap[1][note[3]] || textMap[0];
+                const text = textMap[1][note.icon] || textMap[0];
                 icon = createCustomIcon(main, second, text);
-                let current_pin = L.rotatedMarker([x, y], {
+                let current_pin = L.rotatedMarker([y, x], {
                     icon: icon,
                     interactive: false
                 });
@@ -171,10 +170,10 @@ function updateMarkers(socket_markers) {
             for (var j = socket_markers.length - 1; j >= 0; j--){ // check new data one by one
                 let current_marker = socket_markers[j]
                 let pinLatLng = pin.getLatLng()
-                let temp_x = current_marker[2] / mapWidth * pixelWidth
-                let temp_y = current_marker[1] / mapHeight * pixelHeight
+                let temp_x = current_marker.x / mapWidth * pixelWidth
+                let temp_y = current_marker.y / mapHeight * pixelHeight
                 // if an exact match exists in both
-                if(pin.options.rust_type == current_marker[0] && temp_y == pinLatLng.lng && temp_x == pinLatLng.lat ){ 
+                if(pin.options.rust_type == current_marker.type && temp_y == pinLatLng.lat && temp_x == pinLatLng.lng ){
                     socket_markers.splice(j,1) // remove from the NEW list so that it is not re-added
                 }
             }
@@ -183,14 +182,14 @@ function updateMarkers(socket_markers) {
         else if (index !== -1 && [1].includes(pin.options.rust_type)) { // Player
             for (var j = socket_markers.length - 1; j >= 0; j--){
                 let current_marker = socket_markers[j]
-                let temp_x = current_marker[2] / mapWidth * pixelWidth
-                let temp_y = current_marker[1] / mapHeight * pixelHeight
-                if(pin.options.rust_type == 1 && pin.options.steam_id == current_marker[4].steam_id) { 
+                let temp_x = current_marker.x / mapWidth * pixelWidth
+                let temp_y = current_marker.y / mapHeight * pixelHeight
+                if(pin.options.rust_type == 1 && pin.options.steam_id == current_marker.steam.steam_id) { 
                     // Player tracking
                     if (pin.options.steam_id == player_to_track){
-                        map.panTo(new L.LatLng(temp_x, temp_y));
+                        map.panTo(new L.LatLng(temp_y, temp_x));
                     }
-                    pin.setLatLng([temp_x, temp_y])
+                    pin.setLatLng([temp_y, temp_x])
                     socket_markers.splice(j,1)
                 }
             }
@@ -204,29 +203,29 @@ function updateMarkers(socket_markers) {
     // create new icons
     for (var k = socket_markers.length - 1; k >= 0; k--){
         let newMarker = socket_markers[k]
-        var y = newMarker[1] / mapHeight * pixelHeight
-        var x = newMarker[2] / mapWidth * pixelWidth
-        var rot = newMarker[3] * -1
+        var x = newMarker.x / mapWidth * pixelWidth
+        var y = newMarker.y / mapHeight * pixelHeight
+        var rot = newMarker.rotation * -1
         let icon;
         icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a;", "black")
         let steamId;
-        if(newMarker[0] == 1){
-            steamId = newMarker[4].steam_id
+        if(newMarker.type == 1){
+            steamId = newMarker.steam.steam_id
         }
-        let current_pin = L.rotatedMarker([x,y], {
+        let current_pin = L.rotatedMarker([y,x], {
             rotationAngle: rot, 
             rotationOrigin: "center",
             icon: icon, 
-            rust_type: newMarker[0], 
+            rust_type: newMarker.type,
             steam_id: steamId,
             interactive: false
         })
 
-        switch (newMarker[0]) {
+        switch (newMarker.type) {
         case 1: // player
-            icon = createPlayerIcon(newMarker[4].is_alive, newMarker[4].is_online, newMarker[4].steam_id)
+            icon = createPlayerIcon(newMarker.steam.is_alive, newMarker.steam.is_online, newMarker.steam.steam_id)
             current_pin.setIcon(icon)
-            current_pin.bindPopup(`${newMarker[4].name}<br><a href="${newMarker[4].profile_url}" target="_blank">steam page</a>`)
+            current_pin.bindPopup(`${newMarker.steam.name}<br><a href="${newMarker.steam.profile_url}" target="_blank">steam page</a>`)
             current_pin.options.interactive = true;
             break;
         case 2: // explosion
@@ -234,9 +233,10 @@ function updateMarkers(socket_markers) {
             break;
         case 3: // shop
             // console.log(newMarker[5])
-            for (shop_item of newMarker[5]){
-                let item_data = findSectionById(shop_item[0].toString())
-                console.log(item_data)
+            let shop_popup_text = ""
+            for (shop_item of newMarker.sell_orders){
+                let item_data = findSectionById(shop_item.id.toString())
+                // console.log(item_data)
             }
             icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a;", "black",true)
             current_pin.setIcon(icon)

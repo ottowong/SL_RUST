@@ -303,7 +303,11 @@ async def Main():
             newtext = newtext.replace("Abandonedmilitarybase","Abandoned Military Base")
             newtext = newtext.replace("Launchsite","Launch Site")
             newtext = newtext.replace("Hqm","HQM")
-            monuments.append([newtext,monument.x,monument.y])
+            monuments.append({
+                "text": newtext,
+                "x": monument.x,
+                "y": monument.y
+                })
         return rust_map
     
     async def get_entity_info(id):
@@ -329,8 +333,24 @@ async def Main():
                         steam_member = get_steam_member(marker.steam_id) # for profile pics on player markers
                     if marker.type == 3:
                         for order in marker.sell_orders:
-                            sell_orders.append([order.item_id, order.quantity, order.currency_id, order.cost_per_item, order.item_is_blueprint, order.currency_is_blueprint, order.amount_in_stock])
-                    current_marker = [marker.type, marker.x, marker.y, marker.rotation, steam_member, sell_orders]
+                            sell_orders.append({
+                                "id": order.item_id, 
+                                "quantity": order.quantity, 
+                                "currency_id": order.currency_id, 
+                                "cost_per_item": order.cost_per_item, 
+                                "item_is_blueprint": order.item_is_blueprint, 
+                                "currency_is_blueprint": order.currency_is_blueprint, 
+                                "amount_in_stock": order.amount_in_stock
+                            })
+                    current_marker = {
+                        "type": marker.type, 
+                        "x": marker.x, 
+                        "y": marker.y, 
+                        "rotation": marker.rotation, 
+                        "steam": steam_member, 
+                        "sell_orders": sell_orders, 
+                        "name": marker.name
+                        }
                     markers.append(current_marker)
                 socketio.emit('update_markers', markers)
             except Exception as e:
@@ -349,9 +369,25 @@ async def Main():
                     steam_members[member.steam_id]["is_leader"] = (member.steam_id==team_info.leader_steam_id)
                 map_notes = []
                 for note in team_info.map_notes:
-                    map_notes.append([note.type,note.x,note.y,note.icon,note.colour_index,note.label,0])
+                    map_notes.append({
+                        "type": note.type,
+                        "x": note.x,
+                        "y": note.y,
+                        "icon": note.icon,
+                        "colour_index": note.colour_index,
+                        "label": note.label,
+                        "is_leader": 0
+                        })
                 for note in team_info.leader_map_notes:
-                    map_notes.append([note.type,note.x,note.y,note.icon,note.colour_index,note.label,1])
+                    map_notes.append({
+                        "type": note.type,
+                        "x": note.x,
+                        "y": note.y,
+                        "icon": note.icon,
+                        "colour_index": note.colour_index,
+                        "label": note.label,
+                        "is_leader": 1
+                        })
                 socketio.emit('update_notes', map_notes)
                 socketio.emit('update_steam_members', steam_members)
                 await init_entities() # update list of entities (lazy - do this in the admin page when they are created?) - this wont even work? will try recreate existing ones
