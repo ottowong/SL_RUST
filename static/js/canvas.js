@@ -127,7 +127,6 @@ function updateMonuments(newMonuments) {
 }
 
 function updateNotes(newNotes) {
-    console.log(newNotes)
     // remove all pins
     for(var i = note_pins.length - 1; i >= 0; i--){
         map.removeLayer(note_pins[i])
@@ -232,14 +231,18 @@ function updateMarkers(socket_markers) {
             // currently removed
             break;
         case 3: // shop
-            // console.log(newMarker[5])
-            let shop_popup_text = ""
+            let shop_popup_text = `<b>${newMarker.name}</b><br>`
             for (shop_item of newMarker.sell_orders){
                 let item_data = findSectionById(shop_item.id.toString())
-                // console.log(item_data)
+                let currency_data = findSectionById(shop_item.currency_id.toString())
+                // shop_item.amount_in_stock
+                shop_popup_text = shop_popup_text + `<img width="25px" src="${item_data.image}"/>x${shop_item.quantity}`
+                shop_popup_text = shop_popup_text + " : "
+                shop_popup_text = shop_popup_text + `<img width="25px" src="${currency_data.image}"/> x${shop_item.cost_per_item}<br>`
             }
             icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a;", "black",true)
             current_pin.setIcon(icon)
+            current_pin.bindPopup(shop_popup_text)
             current_pin.options.interactive = true;
             break;
         case 4: // CH47
@@ -330,9 +333,8 @@ function findSectionById(idToFind) {
 }
 
 window.onload = function () {
+    // set list of all items
     $.getJSON('../static/json/items.json', function(data) {
-        // JSON result in `data` variable
-        console.log("DATA",data)
         all_items=data
     });
     map = L.map('map-canvas',{ 

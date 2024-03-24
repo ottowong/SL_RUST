@@ -307,7 +307,7 @@ async def Main():
                 "text": newtext,
                 "x": monument.x,
                 "y": monument.y
-                })
+            })
         return rust_map
     
     async def get_entity_info(id):
