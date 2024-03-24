@@ -44,3 +44,15 @@ svg text {
     font-weight: bold;
     text-align: center;
 }
+
+.leaflet-popup .leaflet-popup-content-wrapper{
+    background-color: var(--Sections_background_color);
+    color: var(--Default_text_color);
+    border: 1px solid var(--Border_color);
+    border-radius: 0;
+}
+
+.leaflet-popup .leaflet-popup-tip{
+    background-color: var(--Sections_background_color);
+    border: 1px solid var(--Border_color);
+}

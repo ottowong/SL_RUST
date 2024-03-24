@@ -242,7 +242,10 @@ function updateMarkers(socket_markers) {
             }
             icon = createCustomIcon(shopGreen,shopGreen,"&#xf07a;", "black",true)
             current_pin.setIcon(icon)
-            current_pin.bindPopup(shop_popup_text)
+            var shop_popup = L.popup({
+                className: 'shop-popup'
+            }).setContent(shop_popup_text);
+            current_pin.bindPopup(shop_popup)
             current_pin.options.interactive = true;
             break;
         case 4: // CH47
