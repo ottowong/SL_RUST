@@ -153,12 +153,12 @@ def codelock():
             return render_template('pin.html', error=error)
     return render_template('pin.html', error=None)
 
-@app.route('/')
+@app.route("/")
 def index():
-    if session.get('authenticated'):
+    if session.get("authenticated"):
         return render_template("index.html")
     else:
-        return redirect(url_for('codelock'))
+        return redirect(url_for("codelock"))
 
 @app.route("/add_device", methods=["POST"]) # use sockets for this instead
 def add_device():
@@ -480,6 +480,14 @@ async def Main():
         emit("monuments", monuments)
         emit("sent_switches", switches) # this should be sent more than once
         emit("update_server_info", server_info)
+
+    @socketio.on('authenticate')
+    def authenticate(pin):
+        if pin == correct_pin:
+            session['authenticated'] = True
+            emit('authentication_result', True)
+        else:
+            emit('authentication_result',False)
 
     @socketio.on('send_message')
     def handle_send_message(message):
