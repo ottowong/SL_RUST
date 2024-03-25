@@ -164,3 +164,4 @@ static/map.png
 static/profilepics/*
 !static/profilepics/.gitkeep
 *.db
+rustplus.py.config.json

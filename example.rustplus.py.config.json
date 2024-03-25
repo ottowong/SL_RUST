@@ -1,0 +1,21 @@
+{
+"expo_push_token": "ExponentPushToken[]",
+"fcm_credentials": {
+"fcm": {
+"pushSet": "",
+"token": ""
+},
+"gcm": {
+"androidId": "",
+"appId": "",
+"securityToken": "",
+"token": ""
+},
+"keys": {
+"private": "",
+"public": "",
+"secret": ""
+}
+},
+"rustplus_auth_token": ""
+}

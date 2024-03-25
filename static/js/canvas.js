@@ -31,19 +31,19 @@ const trainWhite = "#d4cac1"
 const trainBlack = "#282828"
 
 var cargoIcon = L.icon({
-    iconUrl: '../static/cargo.png',
+    iconUrl: '../static/img/cargo.png',
     iconSize:     [50, 50],
     iconAnchor:   [0, 0],
 });
 
 var heliIcon = L.icon({
-    iconUrl: '../static/patrol.png',
+    iconUrl: '../static/img/patrol.gif',
     iconSize:     [50, 50],
     iconAnchor:   [0, 0],
 });
 
 var chinookIcon = L.icon({
-    iconUrl: '../static/ch47.png',
+    iconUrl: '../static/img/ch47.gif',
     iconSize:     [50, 50],
     iconAnchor:   [0, 0],
 });

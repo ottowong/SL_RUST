@@ -1,8 +1,9 @@
 import traceback # for debugging
 
+import discord
 import os
 import asyncio
-from rustplus import RustSocket, EntityEvent, TeamEvent, ChatEvent, CommandOptions, Command
+from rustplus import RustSocket, EntityEvent, TeamEvent, ChatEvent, CommandOptions, Command, FCMListener, rust_utils
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_socketio import SocketIO, emit
@@ -15,6 +16,7 @@ import math
 import string
 import logging
 from datetime import timedelta
+import json
 
 database_name = "database.db"
 conn = sqlite3.connect(database_name)
@@ -32,6 +34,9 @@ steamId = int(os.environ.get("STEAMID"))
 playerToken = int(os.environ.get("PLAYERTOKEN"))
 SteamApiKey = os.environ.get("STEAMAPIKEY")
 correct_pin = os.environ.get("PIN")
+webhook_url = os.environ.get("DISCORDWEBHOOK")
+
+webhook = discord.SyncWebhook.from_url(webhook_url)
 
 options = CommandOptions(prefix="!")
 rust_socket = RustSocket(ip, port, steamId, playerToken, command_options=options)
@@ -67,6 +72,18 @@ server_info = {}
 app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
+
+
+with open("rustplus.py.config.json", "r") as input_file:
+    fcm_details = json.load(input_file)
+
+class FCM(FCMListener):
+    
+    def on_notification(self, obj, notification, data_message):
+        print("FCM:", notification)
+        # do something here
+        
+FCM(fcm_details).start()
 
 # log = logging.getLogger('werkzeug')
 # log.setLevel(logging.ERROR)
@@ -255,7 +272,7 @@ async def Main():
             else:
                 await turn_on_switch(id)
         except Exception as e:
-            socketio.emit('update_switch', [id, None])
+            socketio.emit('update_switch', {"id": id, "value": None})
             print("sent failed update", e)
             await update_switch(id, None)
     
@@ -448,24 +465,23 @@ async def Main():
                 print("failed to update server info :-(\n", e)
             await asyncio.sleep(30)  # Wait for an amount of time
 
-    async def switch_loop(): # checks all switches
-        print("starting switch loop...")
+    async def switch_loop():
+        print("Starting switch loop...")
         while True:
             switches = await get_switches()
-            for device in switches:
+            for device_id, device_name, device_status in switches:
                 try:
-                    device_info = await get_entity_info(device[0])
-                    if(not device_info):
-                        value = None
-                    else:
+                    device_info = await get_entity_info(device_id)
+                    if device_info is not None:
                         value = device_info.value
-                    if(device[2] != value):
-                        print("switch database mismatch! updating...")
-                        await update_switch(device[0], value)
-                        socketio.emit('update_switch', [device[0], value])
+                        if device_status != value:
+                            print("Switch database mismatch! Updating...")
+                            await update_switch(device_id, value)
+                            data = {"id": device_id, "value": value}
+                            socketio.emit('update_switch', data)
                 except Exception as e:
                     print(f"Request error occurred: {e}")
-                await asyncio.sleep(60) # check every 60s since this isnt very important
+                await asyncio.sleep(60)  # Check every 60 seconds since this isn't very important
             await asyncio.sleep(1)
 
     async def monitor_loop():
@@ -475,9 +491,9 @@ async def Main():
                 monitor_id = monitor[0]
                 monitor_name = monitor[1]
                 monitor_info = await get_monitor(monitor_id)
-                print(monitor_name)
-                print(monitor_info)
-                print()
+                # print(monitor_name)
+                # print(monitor_info)
+                # print()
                 if(monitor_info):
                     monitor_exists = False
                     for i in range(0,len(all_monitors)):
@@ -555,7 +571,10 @@ async def Main():
 
     async def alarm_event(event):
         value = "On" if event.value else "Off"
-        print(f"{event.entity_id} - {str(event.type)} has been turned {value}")
+        to_send = f"{event.entity_id} - {str(event.type)} has been turned {value}"
+        print(to_send)
+        e = discord.Embed(title="Title", description=to_send)
+        webhook.send(embed=e)
 
     async def monitor_event(event):
         if(event.type == 3):
