@@ -61,9 +61,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     socket.on('all_monitors', function(monitors) {
-        let all_monitors = monitors;
+        all_monitors = monitors;
         console.log("monitors",monitors)
-        let all_items = combineMonitors(all_monitors)
+        let all_items = combineMonitors()
 
         for (const itemId in all_items.items) {
             const item = all_items.items[itemId];

@@ -21,3 +21,8 @@
 .status-text-offline {
     color: red;
 }
+
+.inventory-item-is-blueprint{
+    background-image: url("/static/img/blueprint.png");
+    background-repeat: no-repeat;
+}

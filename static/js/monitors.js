@@ -1,6 +1,6 @@
 let all_monitors = [];
 
-function combineMonitors(all_monitors){
+function combineMonitors(){
     let all_inventory = {};
     let bp_inventory = {};
     for (let monitor of all_monitors) {
@@ -41,6 +41,9 @@ function add_inventory_item_to_overview(itemId, item, is_blueprint){
 
         item_div.id = itemId;
         item_div.classList.add('base-inventory-item');
+        if(is_blueprint){
+            item_div.classList.add('inventory-item-is-blueprint');
+        }
 
         let item_img = document.createElement('img');
         item_img.setAttribute('src', item_info.image);

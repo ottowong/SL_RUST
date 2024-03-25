@@ -397,7 +397,7 @@ async def Main():
             try:
                 team_info = await rust_socket.get_team_info()
                 for member in team_info.members:
-                    get_steam_member(member.steam_id, True) # for updating notes
+                    get_steam_member(member.steam_id, False) # for updating notes - FOR TESTING - change back to True later
                     steam_members[member.steam_id]["is_online"] = member.is_online
                     steam_members[member.steam_id]["is_alive"] = member.is_alive
                     steam_members[member.steam_id]["is_leader"] = (member.steam_id==team_info.leader_steam_id)
