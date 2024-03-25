@@ -82,25 +82,25 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // if some switch data is wrong, update it here.
-    socket.on('update_switch', function(info) {
-        let id = info[0]
-        console.log(info)
-        let element = document.getElementById(id);
+    socket.on('update_switch', function(switch_data) {
+        let switch_id = switch_data.id
+        let switch_value = switch_data.value
+        console.log(switch_data)
+        let element = document.getElementById(switch_id);
         if (element)
         {
-            let statusIndicator = element.querySelector(".status-indicator");
-            if(info[1] === undefined){
+            if(switch_value === undefined){
                 element.innerHTML = "No Signal";
                 element.style.color = "gray";
-            } else if(info[1] === true || info[1] === 1){
+            } else if(switch_value === true || switch_value === 1){
                 element.innerHTML = "Online";
                 element.style.color = "green";
-            } else if (info[1] === false || info[1] === 0) {
+            } else if (switch_value === false || switch_value === 0) {
                 element.innerHTML = "Offline";
                 element.style.color = "red";
             }
         } else {
-            console.log("Element with ID " + id + " not found.");
+            console.log("Element with ID " + switch_id + " not found.");
         }
     });
     socket.on('update_markers', function(markers) {

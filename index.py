@@ -77,9 +77,7 @@ def get_steam_member(steam_id, update=False):
     url = f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={SteamApiKey}&steamids={steam_id}'
     try:
         response = requests.get(url)
-        print("response",response)
         data = response.json()
-        print("data",data)
         if len(data['response']['players']) > 0:
             profile_pic = data['response']['players'][0]['avatar']
             state = data['response']['players'][0]['personastate']
@@ -218,6 +216,7 @@ def admin():
     conn.close()
     return render_template("admin.j2", devices=devices, len=len(devices))
 
+
 async def Main():
     print("Starting main loop")
     await rust_socket.connect()
@@ -266,7 +265,6 @@ async def Main():
 
             protection_time = ""
             td = monitor.protection_time
-            print(td)
             if(td >= timedelta()):
                 days = td.days
                 hours, remainder = divmod(td.seconds, 3600)
@@ -282,7 +280,6 @@ async def Main():
                 # Remove trailing comma and space if there is one
                 if protection_time.endswith(", "):
                     protection_time = protection_time[:-2]
-            print(monitor.has_protection)
             has_protection = monitor.has_protection
 
             items = []
@@ -549,7 +546,6 @@ async def Main():
             try:
                 cur.execute("SELECT id, status FROM tbl_switches WHERE name like ?", (switch,))
                 device = cur.fetchone()
-                print(device)
                 await toggle_switch(device[0])
                 successes += 1
             except Exception:
@@ -562,19 +558,25 @@ async def Main():
         print(f"{event.entity_id} - {str(event.type)} has been turned {value}")
 
     async def monitor_event(event):
-        print(event.type) # should be 3
-        print(event.entity_id)
-        print(event.capacity)
-        print(event.has_protection)
-        print(event.protection_expiry)
-        print(event.items)
+        if(event.type == 3):
+            data = {
+                "type": event.type,
+                "entity_id": event.entity_id,
+                "capacity": event.capacity,
+                "has_protection": event.has_protection,
+                "protection_expiry": event.protection_expiry,
+                "items": event.items
+            }
+        socketio.emit('update_monitor', data)
             
     async def switch_event(event):
-        type = event.type # should be 1 - do some validation?
-        switch_id = event.entity_id
-        value = event.value
-        await update_switch(switch_id, value)
-        socketio.emit('update_switch', [switch_id, value])
+        if(event.type == 1):
+            await update_switch(event.entity_id, event.value)
+            data = {
+                "id": event.entity_id,
+                "value": event.value
+            }
+            socketio.emit('update_switch', data)
 
     async def init_entities(): # get a list of all entities
         global switch_ids
@@ -654,8 +656,6 @@ async def Main():
     asyncio.create_task(switch_loop())
     asyncio.create_task(time_loop())
     asyncio.create_task(monitor_loop())
-
-    
 
     await rust_socket.hang()
 
