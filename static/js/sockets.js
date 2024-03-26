@@ -6,13 +6,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     socket.on('connect', function() {
         socket.send('Client connected!');
+        socket.emit('get_devices');
     });
     // create the list of switches
     socket.on('sent_switches', function(switches) {
         console.log("got switches")
         console.log(switches)
         
-        let parentDiv = document.getElementById('device_list');
+        let parentDiv = document.getElementById('switch_list');
         parentDiv.innerHTML = '';
     
         switches.forEach(device => {
@@ -62,14 +63,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     socket.on('all_monitors', function(monitors) {
         all_monitors = monitors;
-        console.log("monitors",monitors)
+        console.log("monitors",all_monitors[0])
+        
+        for (let i = 0; i < all_monitors.length; i++){
+            let monitor = all_monitors[i]
+            add_monitor_to_list(monitor)
+        }
+        
         let all_items = combineMonitors()
-
         for (const itemId in all_items.items) {
             const item = all_items.items[itemId];
             add_inventory_item_to_overview(itemId, item, false)
         }
-        
         for (const bpId in all_items.bps) {
             const bp = all_items.bps[bpId];
             add_inventory_item_to_overview(itemId, item, true)
@@ -251,6 +256,62 @@ document.getElementById('time-queue').innerHTML = displayText;
     socket.on('update_time', function(rust_time) {
         let server_time = document.getElementById('server-time');
         server_time.innerHTML = rust_time;
+    });
+
+
+    // device list/form stuff
+    socket.on('devices_list', function (devices) {
+        console.log("DEVICES LIST",devices)
+        displayDevices(devices);
+    });
+
+    socket.on('device_added', function (device) {
+        addDeviceToList(device);
+    });
+
+    socket.on('device_removed', function (device_id) {
+        removeDeviceFromList(device_id);
+    });
+
+
+
+    // Function to display devices
+    function displayDevices(devices) {
+        $('#deviceList').empty();
+        devices.forEach(function (device) {
+            addDeviceToList(device);
+        });
+    }
+
+    // Function to add device to the list
+    function addDeviceToList(device) {
+        $('#deviceList').append(`<li id="remove-form-${device.id}">${device.name} <button class="removeBtn" data-deviceid="${device.id}">Remove</button></li>`);
+    }
+
+    // Function to remove device from the list
+    function removeDeviceFromList(device_id) {
+        let to_remove = $(`#deviceList #remove-form-${device_id}`)
+        console.log("removing",to_remove)
+        to_remove.remove();
+    }
+
+    // Submit event for adding device
+    $('#addDeviceForm').submit(function (event) {
+        event.preventDefault();
+        var device_id = $('#device_id').val();
+        var device_name = $('#device_name').val();
+        var device_type = $('#device_type').val();
+        let device = { id: device_id, name: device_name, type: device_type }
+        console.log()
+        socket.emit('add_device', device);
+        this.reset();
+    });
+
+    // Click event for removing device
+    $(document).on('click', '.removeBtn', function () {
+        var device_id = $(this).data('deviceid');
+        console.log("Removing", device_id)
+        socket.emit('remove_device', device_id);
     });
     
     let chatInput = document.getElementById('chat_input');

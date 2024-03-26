@@ -1,4 +1,5 @@
 import traceback # for debugging
+from pprint import pprint
 
 import discord
 import os
@@ -115,6 +116,54 @@ def get_steam_member(steam_id, update=False):
     except Exception as e:
         print(f"An error occurred trying to get steam profile pic: {traceback.format_exc()}")
         return None
+    
+async def sql_get_devices():
+    conn = sqlite3.connect(database_name)
+    cur = conn.cursor()
+    cur.execute("""
+    SELECT id, name FROM tbl_switches
+    UNION ALL
+    SELECT id, name FROM tbl_monitors
+    UNION ALL
+    SELECT id, name FROM tbl_alarms;
+    """)
+    result = cur.fetchall()
+    devices = []
+    for item in result:
+        devices.append({
+            "id": item[0],
+            "name": item[1]
+        })
+    cur.close()
+    conn.close()
+    return devices
+
+async def sql_add_device(device):
+    print("DEVICE",device)
+    conn = sqlite3.connect(database_name)
+    cur = conn.cursor()
+    if(device["type"] == "1"):
+        cur.execute("INSERT INTO tbl_switches (id, name) VALUES (?, ?)", (device["id"], device["name"]))
+    elif(device["type"] == "2"):
+        cur.execute("INSERT INTO tbl_alarms (id, name) VALUES (?, ?)", (device["id"], device["name"]))
+    elif(device["type"] == "3"):
+        cur.execute("INSERT INTO tbl_monitors (id, name) VALUES (?, ?)", (device["id"], device["name"]))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return True # return something here for success / not
+
+async def sql_remove_device(device_id):
+    conn = sqlite3.connect(database_name)
+    cur = conn.cursor()
+    # this is probably fine since 2 devices shouldn't have the same id
+    cur.execute("DELETE FROM tbl_switches WHERE id=?", (device_id,))
+    cur.execute("DELETE FROM tbl_alarms WHERE id=?", (device_id,))
+    cur.execute("DELETE FROM tbl_monitors WHERE id=?", (device_id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return True # return something here for success / not
     
 async def get_switch(id):
     conn = sqlite3.connect(database_name)
@@ -497,6 +546,7 @@ async def Main():
                 # print(monitor_info)
                 # print()
                 if(monitor_info):
+                    monitor_info["name"] = monitor_name
                     monitor_exists = False
                     for i in range(0,len(all_monitors)):
                         if(all_monitors[i]["id"] == monitor_id):
@@ -504,9 +554,27 @@ async def Main():
                             all_monitors[i] = monitor_info
                     if(not monitor_exists):
                         all_monitors.append(monitor_info)
+                # print("MONITORS",all_monitors)
                 socketio.emit("all_monitors", all_monitors)
                 await asyncio.sleep(4)
             await asyncio.sleep(1)
+
+    @socketio.on('get_devices')
+    def handle_get_devices():
+        devices = asyncio.run(sql_get_devices())
+        print("devices",devices)
+        emit('devices_list', devices, broadcast=False)
+
+    @socketio.on('add_device')
+    def handle_add_device(device):
+        asyncio.run(sql_add_device(device))
+        emit('device_added', device, broadcast=True)
+
+    @socketio.on('remove_device')
+    def handle_remove_device(device_id):
+        # Process the device removal
+        asyncio.run(sql_remove_device(device_id))
+        emit('device_removed', device_id, broadcast=True)
 
     async def time_loop(): # get the server time every 10s or something.
         while True:

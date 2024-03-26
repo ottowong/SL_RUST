@@ -32,14 +32,33 @@ function combineMonitors(){
     }
 }
 
+function add_monitor_to_list(monitor){
+    let list_id = "monitor-list-" + monitor.id
+    let parentDiv = document.getElementById('all-monitors-list');
+    let existingMonitorDiv = document.getElementById(list_id);
+    if (!existingMonitorDiv) {
+        let monitor_div = document.createElement('div');
+        monitor_div.id = list_id;
+        monitor_div.classList.add('monitor-item');
+
+        let monitor_title = document.createElement('div');
+        monitor_title.classList.add('monitor-title');
+        monitor_title.innerHTML = monitor.name;
+        monitor_div.appendChild(monitor_title);
+
+        parentDiv.appendChild(monitor_div);
+    }
+}
+
 function add_inventory_item_to_overview(itemId, item, is_blueprint){
+    let overview_id = "overview-" + itemId
     let parentDiv = document.getElementById('base-inventory-list');
-    let existingItemDiv = document.getElementById(itemId);
+    let existingItemDiv = document.getElementById(overview_id);
     if (!existingItemDiv) {
         let item_info = findSectionById(itemId)
         let item_div = document.createElement('div');
 
-        item_div.id = itemId;
+        item_div.id = overview_id;
         item_div.classList.add('base-inventory-item');
         if(is_blueprint){
             item_div.classList.add('inventory-item-is-blueprint');
