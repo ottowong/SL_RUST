@@ -93,6 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     socket.on('update_monitor', function(monitor) {
         console.log("monitor",monitor.id)
+        console.log("all_monitors",all_monitors)
     });
 
     // if some switch data is wrong, update it here.
@@ -276,15 +277,27 @@ document.addEventListener('DOMContentLoaded', function() {
             if (devices.hasOwnProperty(section)) {
                 var sectionDevices = devices[section];
                 for (var i = 0; i < sectionDevices.length; i++) {
-                    var device = sectionDevices[i];   
-                    addDeviceToList(device, section);
+                    var device = sectionDevices[i];
+                    if(section == "switch"){
+                        addSwitchToList(device)
+                    }else if(section == "alarm"){
+                        addAlarmToList(device)
+                    }else if(section == "monitor"){
+                        addMonitorToList(device)
+                    }
                 }
             }
         }
     });
 
-    socket.on('device_added', function (device) {
-        addDeviceToList(device, device.type);
+    socket.on('switch_added', function (device) {
+        addSwitchToList(device);
+    });
+    socket.on('alarm_added', function (device) {
+        addAlarmToList(device);
+    });
+    socket.on('monitor_added', function (device) {
+        addMonitorToList(device);
     });
 
     socket.on('device_removed', function (device_id) {
@@ -293,12 +306,18 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Function to add device to the list
-    function addDeviceToList(device, section) {
-        console.log("try add device", device, section)
-        if(section == "switch"){
-            create_switch_div(device)
-        }
-        $(`#${section}List`).append(`<li class="device-${device.id}">${device.name} <button class="removeBtn" data-deviceid="${device.id}">Remove</button></li>`);
+    function addSwitchToList(device) {
+        console.log("try add device", device)
+        create_switch_div(device)
+        $(`#switchList`).append(`<li class="device-${device.id}">${device.name} <button class="removeBtn" data-deviceid="${device.id}">Remove</button></li>`);
+    }
+    function addAlarmToList(device) {
+        console.log("try add device", device)
+        $(`#alarmList`).append(`<li class="device-${device.id}">${device.name} <button class="removeBtn" data-deviceid="${device.id}">Remove</button></li>`);
+    }
+    function addMonitorToList(device) {
+        console.log("try add device", device)
+        $(`#monitorList`).append(`<li class="device-${device.id}">${device.name} <button class="removeBtn" data-deviceid="${device.id}">Remove</button></li>`);
     }
 
     // Function to remove device from the list
@@ -313,9 +332,9 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
         var device_id = $('#switch_id').val();
         var device_name = $('#switch_name').val();
-        let device = { id: device_id, name: device_name, type: 1 }
+        let device = { id: device_id, name: device_name}
         console.log(device)
-        socket.emit('add_device', device);
+        socket.emit('add_switch', device);
         this.reset();
     });
 
@@ -323,9 +342,9 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
         var device_id = $('#alarm_id').val();
         var device_name = $('#alarm_name').val();
-        let device = { id: device_id, name: device_name, type: 2 }
+        let device = { id: device_id, name: device_name}
         console.log(device)
-        socket.emit('add_device', device);
+        socket.emit('add_alarm', device);
         this.reset();
     });
 
@@ -333,9 +352,9 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
         var device_id = $('#monitor_id').val();
         var device_name = $('#monitor_name').val();
-        let device = { id: device_id, name: device_name, type: 3 }
+        let device = { id: device_id, name: device_name}
         console.log(device)
-        socket.emit('add_device', device);
+        socket.emit('add_monitor', device);
         this.reset();
     });
 

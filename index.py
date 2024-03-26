@@ -577,12 +577,20 @@ async def Main():
         print("devices",devices)
         emit('devices_list', devices, broadcast=False)
 
-    @socketio.on('add_device')
+    @socketio.on('add_switch')
     def handle_add_device(device):
         asyncio.run(sql_add_device(device))
-        device_types = {1: "switch", 2: "alarm", 3: "monitor"}
-        device["type"] = device_types.get(device["type"], "unknown") # bit hacky
-        emit('device_added', device, broadcast=True)
+        emit('switch_added', device, broadcast=True)
+
+    @socketio.on('add_alarm')
+    def handle_add_device(device):
+        asyncio.run(sql_add_device(device))
+        emit('alarm_added', device, broadcast=True)
+
+    @socketio.on('add_monitor')
+    def handle_add_device(device):
+        asyncio.run(sql_add_device(device))
+        emit('monitor_added', device, broadcast=True)
 
     @socketio.on('remove_device')
     def handle_remove_device(device_id):
