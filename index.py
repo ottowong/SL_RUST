@@ -182,7 +182,7 @@ async def get_switches():
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
     cur.execute("SELECT id, name, status FROM tbl_switches")
-    switches = cur.fetchall()
+    switches = [{"id": item[0], "name": item[1], "status": item[2]} for item in cur.fetchall()]
     cur.close()
     conn.close()
     return switches
@@ -521,7 +521,10 @@ async def Main():
         print("Starting switch loop...")
         while True:
             switches = await get_switches()
-            for device_id, device_name, device_status in switches:
+            for switch in switches:
+                device_id = switch["id"]
+                device_name = switch["name"]
+                device_status = switch["status"]
                 try:
                     device_info = await get_entity_info(device_id)
                     if device_info is not None:
@@ -681,7 +684,7 @@ async def Main():
         alarms = await get_alarms()
         monitors = await get_monitors()
         for switch in switches:
-            switch_ids.append(switch[0])
+            switch_ids.append(switch["id"])
         for alarm in alarms:
             alarm_ids.append(alarm[0])
         for monitor in monitors:
