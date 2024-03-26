@@ -117,17 +117,40 @@ def get_steam_member(steam_id, update=False):
         print(f"An error occurred trying to get steam profile pic: {traceback.format_exc()}")
         return None
 
-async def sql_add_device(device):
+async def sql_add_switch(device):
     try:
         print("DEVICE",device)
         conn = sqlite3.connect(database_name)
         cur = conn.cursor()
-        if(device["type"] == 1):
-            cur.execute("INSERT INTO tbl_switches (id, name) VALUES (?, ?)", (device["id"], device["name"]))
-        elif(device["type"] == 2):
-            cur.execute("INSERT INTO tbl_alarms (id, name) VALUES (?, ?)", (device["id"], device["name"]))
-        elif(device["type"] == 3):
-            cur.execute("INSERT INTO tbl_monitors (id, name) VALUES (?, ?)", (device["id"], device["name"]))
+        cur.execute("INSERT INTO tbl_switches (id, name) VALUES (?, ?)", (device["id"], device["name"]))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return True
+    except Exception as e:
+        print("Error:", e)
+        return False
+    
+async def sql_add_alarm(device):
+    try:
+        print("DEVICE",device)
+        conn = sqlite3.connect(database_name)
+        cur = conn.cursor()
+        cur.execute("INSERT INTO tbl_alarms (id, name) VALUES (?, ?)", (device["id"], device["name"]))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return True
+    except Exception as e:
+        print("Error:", e)
+        return False
+    
+async def sql_add_monitor(device):
+    try:
+        print("DEVICE",device)
+        conn = sqlite3.connect(database_name)
+        cur = conn.cursor()
+        cur.execute("INSERT INTO tbl_monitors (id, name) VALUES (?, ?)", (device["id"], device["name"]))
         conn.commit()
         cur.close()
         conn.close()
@@ -579,17 +602,23 @@ async def Main():
 
     @socketio.on('add_switch')
     def handle_add_device(device):
-        asyncio.run(sql_add_device(device))
+        asyncio.run(sql_add_switch(device))
         emit('switch_added', device, broadcast=True)
+        print(device)
+        print(device["id"])
+        data = asyncio.run(get_entity_info(int(device["id"])))
+        print("DATA",data)
+        asyncio.run(update_switch(device["id"], data.value))
+        socketio.emit('update_switch', {"id":device["id"],"value":data.value})
 
     @socketio.on('add_alarm')
     def handle_add_device(device):
-        asyncio.run(sql_add_device(device))
+        asyncio.run(sql_add_alarm(device))
         emit('alarm_added', device, broadcast=True)
 
     @socketio.on('add_monitor')
     def handle_add_device(device):
-        asyncio.run(sql_add_device(device))
+        asyncio.run(sql_add_monitor(device))
         emit('monitor_added', device, broadcast=True)
 
     @socketio.on('remove_device')
