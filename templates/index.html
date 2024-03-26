@@ -373,24 +373,45 @@
     </div>
     <div id="storage-info" class="Beyond-container">
         <div class="Beyond-body">
-            <div id="device-wrapper">
-                <ul id="deviceList">
-                    <!-- Devices will be added dynamically here -->
-                </ul>
-                <form id="addDeviceForm">
-                    <label for="device_id">Device ID:</label><br>
-                    <input type="text" id="device_id" name="device_id"><br>
-                    <label for="device_name">Device Name:</label><br>
-                    <input type="text" id="device_name" name="device_name"><br><br>
-                    <label for="device_type">Device Type:</label><br>
-                    <select id="device_type" name="device_type">
-                        <option value="1">Switch</option>
-                        <option value="2">Alarm</option>
-                        <option value="3">Storage Monitor</option>
-                    </select><br><br>
+            <div id="switch-form-wrapper">
+                <h1>Switches</h1>
+                <form id="addSwitchForm">
+                    <label for="switch_id">Device ID:</label><br>
+                    <input type="text" id="switch_id" name="switch_id"><br>
+                    <label for="switch_name">Device Name:</label><br>
+                    <input type="text" id="switch_name" name="switch_name"><br><br>
+                    <label for="switch_type">Device Type:</label><br><br>
                     <button type="submit">Add Device</button>
                 </form>
+                <ul id="switchList"></ul>
             </div>
+
+            <div id="alarm-form-wrapper">
+                <h1>Alarms</h1>
+                <form id="addAlarmForm">
+                    <label for="alarm_id">Device ID:</label><br>
+                    <input type="text" id="alarm_id" name="alarm_id"><br>
+                    <label for="alarm_name">Device Name:</label><br>
+                    <input type="text" id="alarm_name" name="alarm_name"><br><br>
+                    <label for="alarm_type">Device Type:</label><br><br>
+                    <button type="submit">Add Device</button>
+                </form>
+                <ul id="alarmList"></ul>
+            </div>
+
+            <div id="monitor-form-wrapper">
+                <h1>Storage</h1>
+                <form id="addMonitorForm">
+                    <label for="monitor_id">Device ID:</label><br>
+                    <input type="text" id="monitor_id" name="monitor_id"><br>
+                    <label for="monitor_name">Device Name:</label><br>
+                    <input type="text" id="monitor_name" name="monitor_name"><br><br>
+                    <label for="monitor_type">Device Type:</label><br><br>
+                    <button type="submit">Add Device</button>
+                </form>
+                <ul id="monitorList"></ul>
+            </div>
+
         </div>
     </div>
 

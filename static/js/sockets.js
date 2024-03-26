@@ -258,51 +258,71 @@ document.getElementById('time-queue').innerHTML = displayText;
         server_time.innerHTML = rust_time;
     });
 
-
     // device list/form stuff
     socket.on('devices_list', function (devices) {
-        console.log("DEVICES LIST",devices)
-        displayDevices(devices);
+        $('#switchList').empty();
+        $('#alarmList').empty();
+        $('#monitorList').empty();
+        for (var section in devices) {
+            if (devices.hasOwnProperty(section)) {
+                var sectionDevices = devices[section];
+                for (var i = 0; i < sectionDevices.length; i++) {
+                    var device = sectionDevices[i];   
+                    addDeviceToList(device, section);
+                }
+            }
+        }
     });
 
     socket.on('device_added', function (device) {
-        addDeviceToList(device);
+        addDeviceToList(device, device.type);
     });
 
     socket.on('device_removed', function (device_id) {
+        console.log("try remove device", device_id)
         removeDeviceFromList(device_id);
     });
 
-
-
-    // Function to display devices
-    function displayDevices(devices) {
-        $('#deviceList').empty();
-        devices.forEach(function (device) {
-            addDeviceToList(device);
-        });
-    }
-
     // Function to add device to the list
-    function addDeviceToList(device) {
-        $('#deviceList').append(`<li id="remove-form-${device.id}">${device.name} <button class="removeBtn" data-deviceid="${device.id}">Remove</button></li>`);
+    function addDeviceToList(device, section) {
+        console.log("try add device", device, section)
+        $(`#${section}List`).append(`<li id="remove-form-${device.id}">${device.name} <button class="removeBtn" data-deviceid="${device.id}">Remove</button></li>`);
     }
 
     // Function to remove device from the list
     function removeDeviceFromList(device_id) {
-        let to_remove = $(`#deviceList #remove-form-${device_id}`)
+        let to_remove = $(`#remove-form-${device_id}`)
         console.log("removing",to_remove)
         to_remove.remove();
     }
 
     // Submit event for adding device
-    $('#addDeviceForm').submit(function (event) {
+    $('#addSwitchForm').submit(function (event) {
         event.preventDefault();
-        var device_id = $('#device_id').val();
-        var device_name = $('#device_name').val();
-        var device_type = $('#device_type').val();
-        let device = { id: device_id, name: device_name, type: device_type }
-        console.log()
+        var device_id = $('#switch_id').val();
+        var device_name = $('#switch_name').val();
+        let device = { id: device_id, name: device_name, type: 1 }
+        console.log(device)
+        socket.emit('add_device', device);
+        this.reset();
+    });
+
+    $('#addAlarmForm').submit(function (event) {
+        event.preventDefault();
+        var device_id = $('#alarm_id').val();
+        var device_name = $('#alarm_name').val();
+        let device = { id: device_id, name: device_name, type: 2 }
+        console.log(device)
+        socket.emit('add_device', device);
+        this.reset();
+    });
+
+    $('#addMonitorForm').submit(function (event) {
+        event.preventDefault();
+        var device_id = $('#monitor_id').val();
+        var device_name = $('#monitor_name').val();
+        let device = { id: device_id, name: device_name, type: 3 }
+        console.log(device)
         socket.emit('add_device', device);
         this.reset();
     });

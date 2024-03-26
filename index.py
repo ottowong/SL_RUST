@@ -120,38 +120,39 @@ def get_steam_member(steam_id, update=False):
 async def sql_get_devices():
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
-    cur.execute("""
-    SELECT id, name FROM tbl_switches
-    UNION ALL
-    SELECT id, name FROM tbl_monitors
-    UNION ALL
-    SELECT id, name FROM tbl_alarms;
-    """)
-    result = cur.fetchall()
-    devices = []
-    for item in result:
-        devices.append({
-            "id": item[0],
-            "name": item[1]
-        })
+    cur.execute("SELECT id, name FROM tbl_switches")
+    switches = cur.fetchall()
+    cur.execute("SELECT id, name FROM tbl_monitors")
+    monitors = cur.fetchall()
+    cur.execute("SELECT id, name FROM tbl_alarms")
+    alarms = cur.fetchall()
     cur.close()
     conn.close()
+    devices = {
+        "switch": [{"id": item[0], "name": item[1]} for item in switches],
+        "alarm":   [{"id": item[0], "name": item[1]} for item in alarms],
+        "monitor": [{"id": item[0], "name": item[1]} for item in monitors]
+    }
     return devices
 
 async def sql_add_device(device):
-    print("DEVICE",device)
-    conn = sqlite3.connect(database_name)
-    cur = conn.cursor()
-    if(device["type"] == "1"):
-        cur.execute("INSERT INTO tbl_switches (id, name) VALUES (?, ?)", (device["id"], device["name"]))
-    elif(device["type"] == "2"):
-        cur.execute("INSERT INTO tbl_alarms (id, name) VALUES (?, ?)", (device["id"], device["name"]))
-    elif(device["type"] == "3"):
-        cur.execute("INSERT INTO tbl_monitors (id, name) VALUES (?, ?)", (device["id"], device["name"]))
-    conn.commit()
-    cur.close()
-    conn.close()
-    return True # return something here for success / not
+    try:
+        print("DEVICE",device)
+        conn = sqlite3.connect(database_name)
+        cur = conn.cursor()
+        if(device["type"] == 1):
+            cur.execute("INSERT INTO tbl_switches (id, name) VALUES (?, ?)", (device["id"], device["name"]))
+        elif(device["type"] == 2):
+            cur.execute("INSERT INTO tbl_alarms (id, name) VALUES (?, ?)", (device["id"], device["name"]))
+        elif(device["type"] == 3):
+            cur.execute("INSERT INTO tbl_monitors (id, name) VALUES (?, ?)", (device["id"], device["name"]))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return True
+    except Exception as e:
+        print("Error:", e)
+        return False
 
 async def sql_remove_device(device_id):
     conn = sqlite3.connect(database_name)
@@ -568,6 +569,8 @@ async def Main():
     @socketio.on('add_device')
     def handle_add_device(device):
         asyncio.run(sql_add_device(device))
+        device_types = {1: "switch", 2: "alarm", 3: "monitor"}
+        device["type"] = device_types.get(device["type"], "unknown") # bit hacky
         emit('device_added', device, broadcast=True)
 
     @socketio.on('remove_device')
