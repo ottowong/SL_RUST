@@ -546,19 +546,25 @@ async def Main():
                 monitor_id = monitor[0]
                 monitor_name = monitor[1]
                 monitor_info = await get_monitor(monitor_id)
-                # print(monitor_name)
-                # print(monitor_info)
-                # print()
                 if(monitor_info):
                     monitor_info["name"] = monitor_name
                     monitor_exists = False
-                    for i in range(0,len(all_monitors)):
-                        if(all_monitors[i]["id"] == monitor_id):
+                    for m in all_monitors:
+                        if(m["id"] == monitor_id):
                             monitor_exists = True
-                            all_monitors[i] = monitor_info
+                            m = monitor_info
                     if(not monitor_exists):
                         all_monitors.append(monitor_info)
-                # print("MONITORS",all_monitors)
+                        print("INFO",monitor_info)
+                else:
+                    all_monitors.append({
+                        "id": monitor_id,
+                        "items": [],
+                        "combined-items": [],
+                        "has_protection": False,
+                        "protection_time": "",
+                        "name": monitor_name
+                    })
                 socketio.emit("all_monitors", all_monitors)
                 await asyncio.sleep(4)
             await asyncio.sleep(1)
