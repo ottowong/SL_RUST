@@ -1,4 +1,16 @@
 let all_monitors = [];
+const explosives_list = [
+    "143803535", //F1 Grenade
+    "-1878475007", // Satchel Charge
+    "-1841918730", // High Velocity Rocket
+    "1638322904", // Incendiary Rocket
+    "1840822026", // Beancan Grenade
+    "-1321651331", // Explosive 5.56 Rifle Ammo
+    "1248356124", // Timed Explosive Charge
+    "-742865266", // Rocket
+    "349762871", // 40mm HE Grenade
+    "-1843426638", // MLRS Rocket
+]
 
 function combineMonitors(){
     let all_inventory = {};
@@ -63,6 +75,32 @@ function add_inventory_item_to_overview(itemId, item, is_blueprint){
         if(is_blueprint){
             item_div.classList.add('inventory-item-is-blueprint');
         }
+
+        let item_img = document.createElement('img');
+        item_img.setAttribute('src', item_info.image);
+        item_img.setAttribute('alt', 'Icon');
+        item_div.appendChild(item_img);
+
+        let item_count = document.createElement('div');
+        item_count.classList.add('base-inventory-item-count');
+        item_count.innerHTML = `x${item.quantity}`;
+        item_div.appendChild(item_count);
+
+        parentDiv.appendChild(item_div)
+    }
+}
+
+function add_inventory_item_to_explosives(itemId, item){
+    console.log("boom", itemId, item)
+    let boom_id = "boom-" + itemId
+    let parentDiv = document.getElementById('boom-list');
+    let existingItemDiv = document.getElementById(boom_id);
+    if (!existingItemDiv) {
+        let item_info = findSectionById(itemId)
+        let item_div = document.createElement('div');
+
+        item_div.id = boom_id;
+        item_div.classList.add('base-inventory-item');
 
         let item_img = document.createElement('img');
         item_img.setAttribute('src', item_info.image);

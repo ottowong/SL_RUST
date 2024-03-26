@@ -81,10 +81,13 @@ document.addEventListener('DOMContentLoaded', function() {
         for (const itemId in all_items.items) {
             const item = all_items.items[itemId];
             add_inventory_item_to_overview(itemId, item, false)
+            if (explosives_list.includes(itemId)) {
+                add_inventory_item_to_explosives(itemId, item)
+            }
         }
         for (const bpId in all_items.bps) {
             const bp = all_items.bps[bpId];
-            add_inventory_item_to_overview(itemId, item, true)
+            add_inventory_item_to_overview(itemId, bp, true)
         }
     });
 
