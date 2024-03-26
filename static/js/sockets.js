@@ -292,8 +292,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to add device to the list
     function addDeviceToList(device, section) {
         console.log("try add device", device, section)
-        if(section == "switch")
-        create_switch_div(device)
+        if(section == "switch"){
+            create_switch_div(device)
+        }
         $(`#${section}List`).append(`<li class="device-${device.id}">${device.name} <button class="removeBtn" data-deviceid="${device.id}">Remove</button></li>`);
     }
 
