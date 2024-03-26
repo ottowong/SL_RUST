@@ -116,24 +116,6 @@ def get_steam_member(steam_id, update=False):
     except Exception as e:
         print(f"An error occurred trying to get steam profile pic: {traceback.format_exc()}")
         return None
-    
-async def sql_get_devices():
-    conn = sqlite3.connect(database_name)
-    cur = conn.cursor()
-    cur.execute("SELECT id, name FROM tbl_switches")
-    switches = cur.fetchall()
-    cur.execute("SELECT id, name FROM tbl_monitors")
-    monitors = cur.fetchall()
-    cur.execute("SELECT id, name FROM tbl_alarms")
-    alarms = cur.fetchall()
-    cur.close()
-    conn.close()
-    devices = {
-        "switch": [{"id": item[0], "name": item[1]} for item in switches],
-        "alarm":   [{"id": item[0], "name": item[1]} for item in alarms],
-        "monitor": [{"id": item[0], "name": item[1]} for item in monitors]
-    }
-    return devices
 
 async def sql_add_device(device):
     try:
@@ -177,6 +159,24 @@ async def get_switch(id):
 
 async def send_message(message):
     await rust_socket.send_team_message("[SL]: " + message)
+
+async def sql_get_devices():
+    conn = sqlite3.connect(database_name)
+    cur = conn.cursor()
+    cur.execute("SELECT id, name, status FROM tbl_switches")
+    switches = cur.fetchall()
+    cur.execute("SELECT id, name FROM tbl_monitors")
+    monitors = cur.fetchall()
+    cur.execute("SELECT id, name FROM tbl_alarms")
+    alarms = cur.fetchall()
+    cur.close()
+    conn.close()
+    devices = {
+        "switch": [{"id": item[0], "name": item[1], "status": item[2]} for item in switches],
+        "alarm":   [{"id": item[0], "name": item[1]} for item in alarms],
+        "monitor": [{"id": item[0], "name": item[1]} for item in monitors]
+    }
+    return devices
 
 async def get_switches():
     conn = sqlite3.connect(database_name)

@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
         switches.forEach(device => {
             let listItemDiv = document.createElement('div');
             listItemDiv.classList.add('list-item');
+            listItemDiv.classList.add(`device-${device[0]}`);
     
             let iconDiv = document.createElement('div');
             iconDiv.classList.add('icon');
@@ -286,12 +287,12 @@ document.getElementById('time-queue').innerHTML = displayText;
     // Function to add device to the list
     function addDeviceToList(device, section) {
         console.log("try add device", device, section)
-        $(`#${section}List`).append(`<li id="remove-form-${device.id}">${device.name} <button class="removeBtn" data-deviceid="${device.id}">Remove</button></li>`);
+        $(`#${section}List`).append(`<li class="device-${device.id}">${device.name} <button class="removeBtn" data-deviceid="${device.id}">Remove</button></li>`);
     }
 
     // Function to remove device from the list
     function removeDeviceFromList(device_id) {
-        let to_remove = $(`#remove-form-${device_id}`)
+        let to_remove = $(`.device-${device_id}`)
         console.log("removing",to_remove)
         to_remove.remove();
     }
