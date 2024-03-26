@@ -16,24 +16,26 @@ function combineMonitors(){
     let all_inventory = {};
     let bp_inventory = {};
     for (let monitor of all_monitors) {
-        for (let item of monitor.combined_items) {
-            if (item.is_blueprint) {
-                if (item.id in bp_inventory) {
-                    bp_inventory[item.id].quantity += item.quantity;
+        if(monitor.combined_items){
+            for (let item of monitor.combined_items) {
+                if (item.is_blueprint) {
+                    if (item.id in bp_inventory) {
+                        bp_inventory[item.id].quantity += item.quantity;
+                    } else {
+                        bp_inventory[item.id] = {
+                            name: item.name,
+                            quantity: item.quantity
+                        };
+                    }
                 } else {
-                    bp_inventory[item.id] = {
-                        name: item.name,
-                        quantity: item.quantity
-                    };
-                }
-            } else {
-                if (item.id in all_inventory) {
-                    all_inventory[item.id].quantity += item.quantity;
-                } else {
-                    all_inventory[item.id] = {
-                        name: item.name,
-                        quantity: item.quantity
-                    };
+                    if (item.id in all_inventory) {
+                        all_inventory[item.id].quantity += item.quantity;
+                    } else {
+                        all_inventory[item.id] = {
+                            name: item.name,
+                            quantity: item.quantity
+                        };
+                    }
                 }
             }
         }
