@@ -74,19 +74,19 @@ app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
 
-try:
-    with open("rustplus.py.config.json", "r") as input_file:
-        fcm_details = json.load(input_file)
+# try:
+#     with open("rustplus.py.config.json", "r") as input_file:
+#         fcm_details = json.load(input_file)
 
-    class FCM(FCMListener):
+#     class FCM(FCMListener):
         
-        def on_notification(self, obj, notification, data_message):
-            print("FCM:", notification)
-            # do something here
+#         def on_notification(self, obj, notification, data_message):
+#             print("FCM:", notification)
+#             # do something here
             
-    FCM(fcm_details).start()
-except Exception:
-    print("failed to start FCM Listener")
+#     FCM(fcm_details).start()
+# except Exception:
+#     print("failed to start FCM Listener")
 
 # log = logging.getLogger('werkzeug')
 # log.setLevel(logging.ERROR)
