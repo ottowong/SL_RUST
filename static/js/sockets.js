@@ -70,27 +70,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     socket.on('all_monitors', function(monitors) {
         all_monitors = monitors;
-        console.log("monitors",all_monitors[0])
-        
-        let tcs = [];
-        let boxes = [];
 
         for (let i = 0; i < all_monitors.length; i++){
             let monitor = all_monitors[i]
-            // add_monitor_to_list(monitor)
-            if(monitor.has_protection){
-                tcs.push(monitor)
-            } else {
-                boxes.push(monitor)
-            }
+            add_box_to_list(monitor)
         }
 
-        for (let tc of tcs){
-            add_box_to_list(tc, true)
-        }
-        for (let box of boxes){
-            add_box_to_list(box, false)
-        }
         //#region overview tab
         let all_items = combineMonitors()
         for (const itemId in all_items.items) {
@@ -108,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     socket.on('update_monitor', function(monitor) { // TO DO
-        console.log("monitor",monitor.id)
+        console.log("monitor",monitor.entity_id)
         console.log("all_monitors",all_monitors)
     });
 

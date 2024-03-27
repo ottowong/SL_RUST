@@ -45,23 +45,26 @@ function combineMonitors(){
         bps: bp_inventory
     }
 }
-
-function add_box_to_list(monitor, is_tc){
-    let prefix = "monitor"
-    if(is_tc){
-        prefix = "tc"
+function add_box_to_list(monitor) {
+    let is_tc = monitor.has_protection;
+    let prefix = "monitor";
+    if (is_tc) {
+        prefix = "tc";
     }
-    let list_id = `${prefix}-list-` + monitor.id
+    let list_id = `${prefix}-list-${monitor.id}`;
     let parentDiv = document.getElementById(`all-${prefix}s-list`);
-    let existingMonitorDiv = document.getElementById(list_id);
-    if (!existingMonitorDiv) {
+    let monitor_wrapper_div = document.getElementById(`${prefix}-list-wrapper-${monitor.id}`);
+    if (!monitor_wrapper_div) {
+        monitor_wrapper_div = document.createElement('div');
+        monitor_wrapper_div.id = `${prefix}-list-wrapper-${monitor.id}`
+
         let monitor_div = document.createElement('div');
         monitor_div.id = list_id;
         monitor_div.classList.add(`${prefix}-list-item`);
 
-        let img_info = findSectionById("1149964039")
-        if(monitor.has_protection){ // if is TC (I think?)
-            img_info = findSectionById("-97956382")
+        let img_info = findSectionById("1149964039");
+        if (monitor.has_protection) { // if is TC (I think?)
+            img_info = findSectionById("-97956382");
         }
 
         let monitor_img = document.createElement('img');
@@ -79,21 +82,63 @@ function add_box_to_list(monitor, is_tc){
         upkeep_span.innerHTML = monitor.protection_time;
         monitor_div.appendChild(upkeep_span);
 
-        parentDiv.appendChild(monitor_div);
+        monitor_wrapper_div.appendChild(monitor_div);
 
-        // add items here - separate function probably
+        parentDiv.appendChild(monitor_wrapper_div);
 
+        if (!is_tc) { // only make an item div if it's not a tc
+            add_box_items_to_list(monitor, monitor_wrapper_div);
+        }
     } else {
-        let existingUpkeepSpan = existingMonitorDiv.querySelector('.monitor-list-item-upkeep');
+        let existingUpkeepSpan = monitor_wrapper_div.querySelector('.monitor-list-item-upkeep');
         if (existingUpkeepSpan) {
             existingUpkeepSpan.innerHTML = monitor.protection_time;
         }
-        // will have to update items too
+        if (!is_tc) { // only make an item div if it's not a tc
+            add_box_items_to_list(monitor, monitor_wrapper_div);
+        }
     }
 }
 
+function add_box_items_to_list(monitor, parentDiv) {
+    let items = monitor.items;
+    let item_wrapper_div = document.getElementById("monitor-items-" + monitor.id); // get existing div if exists
+    if (!item_wrapper_div) { // if not exists, create a new one.
+        item_wrapper_div = document.createElement("div");
+        item_wrapper_div.setAttribute("id", "monitor-items-" + monitor.id);
+        item_wrapper_div.classList.add("base-inventory-list");
+    } else {
+        item_wrapper_div.innerHTML = ""; // empty it
+    }
+    for (item of items) {
+        add_single_item_to_list(item, item_wrapper_div);
+    }
+    parentDiv.appendChild(item_wrapper_div);
+}
 
-function add_tc_to_list(tc){
+function add_single_item_to_list(item, item_wrapper_div){
+    console.log("item",item)
+
+    let item_info = findSectionById(item.id.toString())
+    let item_div = document.createElement('div');
+
+    // item_div.id = overview_id;
+    item_div.classList.add('base-inventory-item');
+    if(item.is_blueprint){
+        item_div.classList.add('inventory-item-is-blueprint');
+    }
+
+    let item_img = document.createElement('img');
+    item_img.setAttribute('src', item_info.image);
+    item_img.setAttribute('alt', 'Icon');
+    item_div.appendChild(item_img);
+
+    let item_count = document.createElement('div');
+    item_count.classList.add('base-inventory-item-count');
+    item_count.innerHTML = `x${item.quantity}`;
+    item_div.appendChild(item_count);
+
+    item_wrapper_div.appendChild(item_div)
 }
 
 function add_inventory_item_to_overview(itemId, item, is_blueprint){
@@ -125,7 +170,6 @@ function add_inventory_item_to_overview(itemId, item, is_blueprint){
 }
 
 function add_inventory_item_to_explosives(itemId, item){
-    console.log("boom", itemId, item)
     let boom_id = "boom-" + itemId
     let parentDiv = document.getElementById('boom-list');
     let existingItemDiv = document.getElementById(boom_id);
