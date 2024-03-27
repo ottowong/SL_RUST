@@ -307,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to add device to the list
     function addSwitchToList(device) {
-        console.log("try add device", device)
+        console.log("try add switch", device)
         create_switch_div(device)
         $(`#switchList`).append(`
         <div class="switch-board-list-item-container device-${device.id}">
@@ -321,11 +321,11 @@ document.addEventListener('DOMContentLoaded', function() {
         `);
     }
     function addAlarmToList(device) {
-        console.log("try add device", device)
+        console.log("try add alarm", device)
         $(`#alarmList`).append(`
         <div class="switch-board-list-item-container device-${device.id}">
             <div class="switch-board-list-item-header" onclick="toggleSwitchBoardContent(${device.id})">
-                <img src="../static/img/items/smart.switch.png"> ${device.name}
+                <img src="../static/img/items/smart.alarm.png"> ${device.name}
             </div>
             <div class="switch-board-list-item-content removeBtn" id="switch-board-list-item-content-${device.id}" style="display: none;" data-deviceid="${device.id}">
                     Remove
@@ -334,11 +334,11 @@ document.addEventListener('DOMContentLoaded', function() {
         `);
     }
     function addMonitorToList(device) {
-        console.log("try add device", device)
+        console.log("try add monitor", device)
         $(`#monitorList`).append(`
         <div class="switch-board-list-item-container device-${device.id}">
             <div class="switch-board-list-item-header" onclick="toggleSwitchBoardContent(${device.id})">
-                <img src="../static/img/items/smart.switch.png"> ${device.name}
+                <img src="../static/img/items/storage.monitor.png"> ${device.name}
             </div>
             <div class="switch-board-list-item-content removeBtn" id="switch-board-list-item-content-${device.id}" style="display: none;" data-deviceid="${device.id}">
                     Remove
