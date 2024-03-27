@@ -3,9 +3,9 @@
 
 <!-- ###################SADLADS################### -->
 
-    <!-- This website is a product of SADLADS.  -->
-            <!-- for use with RUST -->
-            <!-- SADLADS 2023 -->
+<!-- This website is a product of SADLADS.  -->
+<!-- for use with RUST -->
+<!-- SADLADS 2023 -->
 
 <!-- ###################SADLADS################### -->
 
@@ -29,7 +29,7 @@
 
     <script src="../static/js/libraries/jquery.min.js"></script>
     <script src="../static/js/libraries/socket.io.js"></script>
-    <link rel="stylesheet" href="../static/fontawesome/css/all.min.css"/>
+    <link rel="stylesheet" href="../static/fontawesome/css/all.min.css" />
     <script src='../static/js/libraries/Leaflet.fullscreen.min.js'></script>
     <link href='../static/css/libraries/leaflet.fullscreen.css' rel='stylesheet' />
     <link rel="icon" type="image/x-icon" href="../static/favicon.ico">
@@ -202,10 +202,14 @@
         <div class="container-right-main">
             <div class="container-right-main-wrapper">
                 <div class="containter-right-left-tabs">
-                    <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab1')">Tool Cupboards</button>
-                    <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab3')">Base Inventory</button>
-                    <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab4')">Switches</button>
-                    <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab2')" style="font-style: italic; color: var(--SL_Yellow);">Boom</button>
+                    <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab1')">Tool
+                        Cupboards</button>
+                    <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab3')">Base
+                        Inventory</button>
+                    <button class="containter-right-left-tabs-links"
+                        onclick="changeTab(event, 'tab4')">Switches</button>
+                    <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab2')"
+                        style="font-style: italic; color: var(--SL_Yellow);">Boom</button>
                 </div>
 
                 <!-- TCs -->
@@ -324,15 +328,15 @@
                         <!-- #endregion PLACEHOLDER -->
                     </div>
                 </div>
-                
+
                 <!-- Full Base inventory -->
                 <div id="tab3" class="tabcontent" style="display: flex;">
-                        <div class="section-header">
-                            <h1>Inventory overview</h1>
-                        </div>
-                        <div id="base-inventory-list" class="base-inventory-list">
-                            <!-- #region PLACEHOLDER -->
-                            <!-- <div class="base-inventory-item">
+                    <div class="section-header">
+                        <h1>Inventory overview</h1>
+                    </div>
+                    <div id="base-inventory-list" class="base-inventory-list">
+                        <!-- #region PLACEHOLDER -->
+                        <!-- <div class="base-inventory-item">
                                 <img src="../static/img/upkeep/metal-frags.webp" alt="Image 1">
                                 <div class="base-inventory-item-count">1</div>
                             </div>
@@ -344,9 +348,9 @@
                                 <img src="../static/img/upkeep/wood.webp" alt="Image 3">
                                 <div class="base-inventory-item-count">x300</div>
                             </div> -->
-                            <!-- #endregion PLACEHOLDER -->
-                        </div>
-        
+                        <!-- #endregion PLACEHOLDER -->
+                    </div>
+
                 </div>
 
                 <!-- Switches overview -->
@@ -371,11 +375,13 @@
         <!-- beyond -->
 
     </div>
-    <div id="storage-info" class="Beyond-container">
-        <div class="Beyond-body">
 
-            <div id="switch-form-wrapper">
-                <h1>Switches</h1>
+    <div class="container-switch-board ">
+        <div class="column-one">
+            <div class="section-header">
+                <h1>Add Switches</h1>
+            </div>
+            <div id="switch-form-wrapper" class="form-wrapper">
                 <form id="addSwitchForm">
                     <label for="switch_id">Device ID:</label><br>
                     <input type="text" id="switch_id" name="switch_id"><br>
@@ -385,9 +391,41 @@
                 </form>
                 <ul id="switchList"></ul>
             </div>
+            <div class="switch-board-list-item-container">
+                <div class="switch-board-list-item-header" onclick="toggleSwitchBoardContent(567)">
+                    <img src="../static/img/items/smart.switch.png"> Epic Switch
+                </div>
+                <div class="switch-board-list-item-content" id="switch-board-list-item-content-567" style="display: none;">
+                    <p>AAAAAA  1</p>
+                </div>
+            </div>
 
-            <div id="alarm-form-wrapper">
-                <h1>Alarms</h1>
+            <div class="switch-board-list-item-container">
+                <div class="switch-board-list-item-header" onclick="toggleSwitchBoardContent(731)">
+                    <img src="../static/img/items/smart.switch.png"> Epic Switch
+                </div>
+                <div class="switch-board-list-item-content" id="switch-board-list-item-content-731" style="display: none;">
+                    <p>AAAAAA  2</p>
+                </div>
+            </div>
+
+            <div class="switch-board-list-item-container">
+                <div class="switch-board-list-item-header" onclick="toggleSwitchBoardContent(143)">
+                    <img src="../static/img/items/smart.switch.png"> Epic Switch
+                </div>
+                <div class="switch-board-list-item-content" id="switch-board-list-item-content-143" style="display: none;">
+                    <p>AAAAAA  2</p>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="column-two">
+            <div class="section-header">
+                <h1>Link Alarms</h1>
+            </div>
+            <div id="alarm-form-wrapper" class="form-wrapper">
                 <form id="addAlarmForm">
                     <label for="alarm_id">Device ID:</label><br>
                     <input type="text" id="alarm_id" name="alarm_id"><br>
@@ -397,9 +435,39 @@
                 </form>
                 <ul id="alarmList"></ul>
             </div>
+            <div class="switch-board-list-item-container">
+                <div class="switch-board-list-item-header" onclick="toggleSwitchBoardContent(502)">
+                    <img src="../static/img/items/smart.alarm.png"> uh, upkeep alarm?
+                </div>
+                <div class="switch-board-list-item-content" id="switch-board-list-item-content-502" style="display: none;">
+                    <p>LOW UPKEEP</p>
+                </div>
+              </div>
+              
+              <div class="switch-board-list-item-container">
+                <div class="switch-board-list-item-header" onclick="toggleSwitchBoardContent(893)">
+                    <img src="../static/img/items/smart.alarm.png"> Death alarm?
+                </div>
+                <div class="switch-board-list-item-content" id="switch-board-list-item-content-893" style="display: none;">
+                    <p>F IN CHAT</p>
+                </div>
+              </div>
+              
+              <div class="switch-board-list-item-container">
+                <div class="switch-board-list-item-header" onclick="toggleSwitchBoardContent(999)">
+                    <img src="../static/img/items/smart.alarm.png"> What do alarms do!?
+                </div>
+                <div class="switch-board-list-item-content" id="switch-board-list-item-content-999" style="display: none;">
+                    <p>YIPPY 420 69 BLAZE</p>
+                </div>
+              </div>
 
-            <div id="monitor-form-wrapper">
-                <h1>Storage</h1>
+        </div>
+        <div class="column-three">
+            <div class="section-header">
+                <h1>Connect Storage</h1>
+            </div>
+            <div id="monitor-form-wrapper" class="form-wrapper">
                 <form id="addMonitorForm">
                     <label for="monitor_id">Device ID:</label><br>
                     <input type="text" id="monitor_id" name="monitor_id"><br>
@@ -409,6 +477,52 @@
                 </form>
                 <ul id="monitorList"></ul>
             </div>
+            <div class="switch-board-list-item-container">
+                <div class="switch-board-list-item-header" onclick="toggleSwitchBoardContent(1)">
+                    <img src="../static/img/TEST/ammo.png"> Ammo
+                </div>
+                <div class="switch-board-list-item-content" id="switch-board-list-item-content-1" style="display: none;">
+                    <p>Ammo low</p>
+                </div>
+              </div>
+              
+              <div class="switch-board-list-item-container">
+                <div class="switch-board-list-item-header" onclick="toggleSwitchBoardContent(2)">
+                    <img src="../static/img/TEST/drop.png"> Drop Box 1
+                </div>
+                <div class="switch-board-list-item-content" id="switch-board-list-item-content-2" style="display: none;">
+                    <p>SORTING IN PROGRESS BEEP BOOP</p>
+                </div>
+              </div>
+              <div class="switch-board-list-item-container">
+                <div class="switch-board-list-item-header" onclick="toggleSwitchBoardContent(4)">
+                    <img src="../static/img/TEST/drop.png"> Drop Box 2
+                </div>
+                <div class="switch-board-list-item-content" id="switch-board-list-item-content-4" style="display: none;">
+                    <p>SORTING IN PROGRESS BEEP BOOP</p>
+                </div>
+              </div>
+              
+              <div class="switch-board-list-item-container">
+                <div class="switch-board-list-item-header" onclick="toggleSwitchBoardContent(3)">
+                    <img src="../static/img/TEST/stone.png"> Stone
+                </div>
+                <div class="switch-board-list-item-content" id="switch-board-list-item-content-3" style="display: none;">
+                    <p>Bricked up</p>
+                </div>
+              </div>
+        </div>
+        <div class="beyond-body">
+            We have some space here to play with, any ideas?
+            GRAPH?
+            <img src="https://i.giphy.com/5wWf7GMbT1ZUGTDdTqM.webp">
+        </div>
+    </div>
+
+
+
+    <div id="storage-info" class="Beyond-container">
+        <div class="Beyond-body">
 
         </div>
     </div>
@@ -429,6 +543,17 @@
             document.getElementById(tabName).style.display = "flex";
             evt.currentTarget.className += " active";
         }
+
+
+        function toggleSwitchBoardContent(id) {
+            var content = document.getElementById("switch-board-list-item-content-" + id);
+            if (content.style.display === "none") {
+                content.style.display = "block";
+            } else {
+                content.style.display = "none";
+            }
+        }
+
     </script>
     <script src="../static/js/monitors.js"></script>
     <script src="../static/js/sockets.js"></script>
