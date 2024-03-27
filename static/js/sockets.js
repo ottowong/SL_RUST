@@ -315,9 +315,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <img src="../static/img/items/smart.switch.png"> ${device.name}
             </div>
             <div class="switch-board-list-item-content removeBtn" id="switch-board-list-item-content-${device.id}" style="display: none;" data-deviceid="${device.id}">
-                
                     Remove
-                
             </div>
         </div>
         `);
@@ -327,12 +325,10 @@ document.addEventListener('DOMContentLoaded', function() {
         $(`#alarmList`).append(`
         <div class="switch-board-list-item-container device-${device.id}">
             <div class="switch-board-list-item-header" onclick="toggleSwitchBoardContent(${device.id})">
-                <img src="../static/img/items/smart.alarm.png"> ${device.name}
+                <img src="../static/img/items/smart.switch.png"> ${device.name}
             </div>
-            <div class="switch-board-list-item-content" id="switch-board-list-item-content-${device.id}" style="display: none;">
-                <button class="removeBtn" data-deviceid="${device.id}">
+            <div class="switch-board-list-item-content removeBtn" id="switch-board-list-item-content-${device.id}" style="display: none;" data-deviceid="${device.id}">
                     Remove
-                </button>
             </div>
         </div>
         `);
@@ -340,15 +336,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function addMonitorToList(device) {
         console.log("try add device", device)
         $(`#monitorList`).append(`
-        <div class="switch-board-list-item-container">
-            <div class="switch-board-list-item-header device-${device.id}" onclick="toggleSwitchBoardContent(${device.id})">
-                <img src="../static/img/items/storage.monitor.png"> ${device.name}
+        <div class="switch-board-list-item-container device-${device.id}">
+            <div class="switch-board-list-item-header" onclick="toggleSwitchBoardContent(${device.id})">
+                <img src="../static/img/items/smart.switch.png"> ${device.name}
             </div>
-            <a class="switch-board-list-item-content" id="switch-board-list-item-content-${device.id}" style="display: none;">
-                <button class="removeBtn" data-deviceid="${device.id}">
+            <div class="switch-board-list-item-content removeBtn" id="switch-board-list-item-content-${device.id}" style="display: none;" data-deviceid="${device.id}">
                     Remove
-                </button>
-            </a>
+            </div>
         </div>
         `);
     }
