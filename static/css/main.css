@@ -249,7 +249,7 @@ img {
 
 
   .switch-board-list-item-container {
-    margin: 5px;
+    /* margin: 5px; */
     border-bottom: var(--Border-style);
   }
   .switch-board-list-item-header {
@@ -266,8 +266,9 @@ img {
 
   .switch-board-list-item-content {
     display: none;
-    padding: 10px;
-    transition: all 2s ease; 
+    padding-top: 10px;
+    padding-bottom: 10px;
+    /* transition: all 2s ease;  */
   }
 
 

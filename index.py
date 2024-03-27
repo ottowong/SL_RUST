@@ -117,6 +117,72 @@ def get_steam_member(steam_id, update=False):
         print(f"An error occurred trying to get steam profile pic: {traceback.format_exc()}")
         return None
 
+async def format_protection_time(td):
+    protection_time = "" # move this to own function
+    if(td >= timedelta()):
+        days = td.days
+        hours, remainder = divmod(td.seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        if days > 0:
+            protection_time += f"{days} Days, "
+        if hours > 0:
+            protection_time += f"{hours} Hours, "
+        if minutes > 0:
+            protection_time += f"{minutes} Minutes, "
+        if seconds > 0:
+            protection_time += f"{seconds} Seconds"
+        # Remove trailing comma and space if there is one
+        if protection_time.endswith(", "):
+            protection_time = protection_time[:-2]
+    return protection_time
+
+async def monitor_to_dict(monitor, id):
+    try:
+        protection_time = await format_protection_time(monitor.protection_time)
+        has_protection = monitor.has_protection
+
+        items = [] # move this to own function
+        temp_combined = {}
+        combined_items = []
+        for item in monitor.contents:
+            item_id = item.item_id
+            name = item.name
+            quantity = item.quantity
+            is_blueprint = item.is_blueprint
+            items.append({
+                "id": item_id, 
+                "name": name, 
+                "quantity": quantity, 
+                "is_blueprint": is_blueprint}
+            )
+            # make a total list
+            if(item_id in temp_combined):
+                temp_combined[item_id]['quantity'] += quantity
+            else:
+                temp_combined[item_id] = {
+                    'name': name, 
+                    'quantity': quantity, 
+                    'is_blueprint': is_blueprint
+                }
+        for item_id, details in temp_combined.items():
+            combined_items.append({
+                "id": item_id, 
+                "name": details['name'], 
+                "quantity": details['quantity'], 
+                "is_blueprint": details['is_blueprint']
+            })
+        monitor_dict = {
+            "id": id,
+            "items": items,
+            "combined_items": combined_items,
+            "has_protection": has_protection,
+            "protection_time": protection_time
+        }
+        return monitor_dict
+    except Exception as e:
+        print("error in monitor_to_dict:",e)
+        return None
+
 async def sql_add_switch(device):
     try:
         print("DEVICE",device)
@@ -354,63 +420,7 @@ async def Main():
     async def get_monitor(id):
         try:
             monitor = await rust_socket.get_contents(id, False)
-
-            protection_time = ""
-            td = monitor.protection_time
-            if(td >= timedelta()):
-                days = td.days
-                hours, remainder = divmod(td.seconds, 3600)
-                minutes, seconds = divmod(remainder, 60)
-                if days > 0:
-                    protection_time += f"{days} Days, "
-                if hours > 0:
-                    protection_time += f"{hours} Hours, "
-                if minutes > 0:
-                    protection_time += f"{minutes} Minutes, "
-                if seconds > 0:
-                    protection_time += f"{seconds} Seconds"
-                # Remove trailing comma and space if there is one
-                if protection_time.endswith(", "):
-                    protection_time = protection_time[:-2]
-            has_protection = monitor.has_protection
-
-            items = []
-            temp_combined = {}
-            combined_items = []
-            for item in monitor.contents:
-                item_id = item.item_id
-                name = item.name
-                quantity = item.quantity
-                is_blueprint = item.is_blueprint
-                items.append({
-                    "id": item_id, 
-                    "name": name, 
-                    "quantity": quantity, 
-                    "is_blueprint": is_blueprint}
-                )
-                # make a total list
-                if(item_id in temp_combined):
-                    temp_combined[item_id]['quantity'] += quantity
-                else:
-                    temp_combined[item_id] = {
-                        'name': name, 
-                        'quantity': quantity, 
-                        'is_blueprint': is_blueprint
-                    }
-            for item_id, details in temp_combined.items():
-                combined_items.append({
-                    "id": item_id, 
-                    "name": details['name'], 
-                    "quantity": details['quantity'], 
-                    "is_blueprint": details['is_blueprint']
-                })
-            monitor_dict = {
-                "id": id,
-                "items": items,
-                "combined_items": combined_items,
-                "has_protection": has_protection,
-                "protection_time": protection_time
-            }
+            monitor_dict = await monitor_to_dict(monitor, id)
             return monitor_dict
         except Exception as e:
             print("Monitor not found", e)
@@ -569,6 +579,7 @@ async def Main():
                 monitor_id = monitor[0]
                 monitor_name = monitor[1]
                 monitor_info = await get_monitor(monitor_id)
+                # print("monitor_info",monitor_info)
                 if(monitor_info):
                     monitor_info["name"] = monitor_name
                 else:
@@ -587,12 +598,9 @@ async def Main():
                         m = monitor_info
                 if(not monitor_exists):
                     all_monitors.append(monitor_info)
-                    print("INFO",monitor_info)
-                else:
-                    all_monitors.append
+                await asyncio.sleep(1)
                 socketio.emit("all_monitors", all_monitors)
-                await asyncio.sleep(4)
-            await asyncio.sleep(1)
+            await asyncio.sleep(4)
 
     @socketio.on('get_devices')
     def handle_get_devices():
@@ -699,7 +707,9 @@ async def Main():
             webhook.send(embed=e)
 
     async def monitor_event(event):
+        print("monitor event")
         if(event.type == 3):
+            data = await monitor_to_dict(event, event.entity_id) # remove
             data = {
                 "type": event.type,
                 "entity_id": event.entity_id,
@@ -708,7 +718,8 @@ async def Main():
                 "protection_expiry": event.protection_expiry,
                 "items": event.items
             }
-            socketio.emit('update_monitor', data)
+            print(data)
+            # socketio.emit('update_monitor', data)
             
     async def switch_event(event):
         if(event.type == 1):

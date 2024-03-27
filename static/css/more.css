@@ -26,3 +26,18 @@
     background-image: url("/static/img/blueprint.png");
     background-repeat: no-repeat;
 }
+
+.removeBtn{
+    width:100%;
+    height:100%;
+    cursor: pointer;
+    text-align: center;
+}
+
+.removeBtn:hover{
+    background-color: var(--Sections_background_color);
+}
+
+.switch-board-list-item-content {
+    background-color: var(--Body_background_color);
+}
