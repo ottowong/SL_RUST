@@ -60,8 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Check if the pressed key is a number key (from 0 to 9)
         if (event.key >= '0' && event.key <= '9') {
             addPin(parseInt(event.key));
-        } else if (event.key === 'C') {
-            // If C key is pressed, clear the form
+        } else if (event.key === 'c') {
+            // If c key is pressed, clear the form
             clearPin();
         }
     });
