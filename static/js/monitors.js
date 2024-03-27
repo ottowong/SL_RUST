@@ -77,8 +77,15 @@ function add_monitor_to_list(monitor){
         monitor_div.appendChild(upkeep_span);
 
         parentDiv.appendChild(monitor_div);
+
+        // add items here - separate function probably
+
     } else {
-        // update existingMonitorDiv
+        let existingUpkeepSpan = existingMonitorDiv.querySelector('.monitor-list-item-upkeep');
+        if (existingUpkeepSpan) {
+            existingUpkeepSpan.innerHTML = monitor.protection_time;
+        }
+        // will have to update items too
     }
 }
 
