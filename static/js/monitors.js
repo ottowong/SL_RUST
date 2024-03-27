@@ -117,7 +117,6 @@ function add_box_items_to_list(monitor, parentDiv) {
 }
 
 function add_single_item_to_list(item, item_wrapper_div){
-    console.log("item",item)
 
     let item_info = findSectionById(item.id.toString())
     let item_div = document.createElement('div');

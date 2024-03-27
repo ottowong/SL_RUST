@@ -716,13 +716,13 @@ async def Main():
             items = []
             for item in event.items:
                 items.append({
-                    "item_id": item.item_id,
+                    "id": item.item_id,
                     "quantity": item.quantity,
                     "item_is_blueprint": item.item_is_blueprint
                 })
             data = {
                 "type": event.type,
-                "entity_id": event.entity_id,
+                "id": event.entity_id,
                 "capacity": event.capacity,
                 "has_protection": event.has_protection,
                 "protection_expiry": event.protection_expiry,

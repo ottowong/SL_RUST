@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     socket.on('all_monitors', function(monitors) {
+        console.log("all_monitors",monitors)
         all_monitors = monitors;
 
         for (let i = 0; i < all_monitors.length; i++){
@@ -93,8 +94,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     socket.on('update_monitor', function(monitor) { // TO DO
-        console.log("monitor",monitor.entity_id)
-        console.log("all_monitors",all_monitors)
+        console.log("update_monitor",monitor)
+        add_box_to_list(monitor)
     });
 
     // if some switch data is wrong, update it here.
