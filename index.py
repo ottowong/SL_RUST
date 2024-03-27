@@ -572,9 +572,10 @@ async def Main():
                 await asyncio.sleep(60)  # Check every 60 seconds since this isn't very important
             await asyncio.sleep(1)
 
-    async def monitor_loop():
+    async def monitor_loop(): # this needs a tidy up - to remove global variable
         while True:
             monitors = await get_monitors()
+            formatted_monitors = []
             for monitor in monitors:
                 monitor_id = monitor[0]
                 monitor_name = monitor[1]
@@ -591,6 +592,9 @@ async def Main():
                         "protection_time": "",
                         "name": monitor_name
                     }
+                
+                formatted_monitors.append(monitor_info)
+
                 monitor_exists = False
                 for m in all_monitors:
                     if(m["id"] == monitor_id):
@@ -599,7 +603,7 @@ async def Main():
                 if(not monitor_exists):
                     all_monitors.append(monitor_info)
                 await asyncio.sleep(1)
-                socketio.emit("all_monitors", all_monitors)
+                socketio.emit("all_monitors", formatted_monitors)
             await asyncio.sleep(4)
 
     @socketio.on('get_devices')
@@ -709,17 +713,22 @@ async def Main():
     async def monitor_event(event):
         print("monitor event")
         if(event.type == 3):
-            data = await monitor_to_dict(event, event.entity_id) # remove
+            items = []
+            for item in event.items:
+                items.append({
+                    "item_id": item.item_id,
+                    "quantity": item.quantity,
+                    "item_is_blueprint": item.item_is_blueprint
+                })
             data = {
                 "type": event.type,
                 "entity_id": event.entity_id,
                 "capacity": event.capacity,
                 "has_protection": event.has_protection,
                 "protection_expiry": event.protection_expiry,
-                "items": event.items
+                "items": items
             }
-            print(data)
-            # socketio.emit('update_monitor', data)
+            socketio.emit('update_monitor', data)
             
     async def switch_event(event):
         if(event.type == 1):
