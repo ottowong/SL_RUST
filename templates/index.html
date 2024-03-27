@@ -116,24 +116,35 @@
             <div class="container-right-main-wrapper">
                 <div class="containter-right-left-tabs">
                     <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab1')">
-                        <!-- Tool Cupboards -->
-                        Storage Monitors
-                    </button>
-                    <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab3')">
-                        Base Inventory
-                    </button>
-                    <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab4')">
                         Switches
                     </button>
-                    <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab2')"
+                    <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab2')">
+                        Tool Cupboards
+                    </button>
+                    <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab3')">
+                        Storage
+                    </button>
+                    <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab4')">
+                        Base Inventory
+                    </button>
+                    <button class="containter-right-left-tabs-links" onclick="changeTab(event, 'tab5')"
                     style="font-style: italic; color: var(--SL_Yellow);">
                         Boom
                     </button>
                 </div>
 
-                <!-- TCs -->
+                <!-- Switches overview -->
                 <div id="tab1" class="tabcontent">
-                    <div id="all-monitors-list"  class="monitor-list"></div>
+                    <div id="switch_list" class="alarms-overview-wrapper">
+                        <div class="section-header">
+                            <h1>Switches overview</h1>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TCs -->
+                <div id="tab2" class="tabcontent">
+                    <div id="all-tcs-list"  class="tc-list"></div>
                     <!-- #region PLACEHOLDER -->
                     <!-- <div class="TC-Header">
                         <h1>Main tool cupboard</h1>
@@ -183,8 +194,37 @@
                     <!-- #endregion PLACEHOLDER -->
                 </div>
 
+                <!-- Storage -->
+                <div id="tab3" class="tabcontent">
+                    <div id="all-monitors-list"  class="monitor-list"></div>
+                </div>
+
+                <!-- Full Base inventory -->
+                <div id="tab4" class="tabcontent" style="display: flex;">
+                    <div class="section-header">
+                        <h1>Inventory overview</h1>
+                    </div>
+                    <div id="base-inventory-list" class="base-inventory-list">
+                        <!-- #region PLACEHOLDER -->
+                        <!-- <div class="base-inventory-item">
+                                <img src="../static/img/upkeep/metal-frags.webp" alt="Image 1">
+                                <div class="base-inventory-item-count">1</div>
+                            </div>
+                            <div class="base-inventory-item">
+                                <img src="../static/img/upkeep/stone.webp" alt="Image 2">
+                                <div class="base-inventory-item-count">x10,000</div>
+                            </div>
+                            <div class="base-inventory-item">
+                                <img src="../static/img/upkeep/wood.webp" alt="Image 3">
+                                <div class="base-inventory-item-count">x300</div>
+                            </div> -->
+                        <!-- #endregion PLACEHOLDER -->
+                    </div>
+
+                </div>
+
                 <!-- Boom Calulator -->
-                <div id="tab2" class="tabcontent">
+                <div id="tab5" class="tabcontent">
                     <div id="boom-list" class="Boom-stock">
                         <!-- #region PLACEHOLDER -->
                         <!-- <div class="image-container">
@@ -247,39 +287,7 @@
                     </div>
                 </div>
 
-                <!-- Full Base inventory -->
-                <div id="tab3" class="tabcontent" style="display: flex;">
-                    <div class="section-header">
-                        <h1>Inventory overview</h1>
-                    </div>
-                    <div id="base-inventory-list" class="base-inventory-list">
-                        <!-- #region PLACEHOLDER -->
-                        <!-- <div class="base-inventory-item">
-                                <img src="../static/img/upkeep/metal-frags.webp" alt="Image 1">
-                                <div class="base-inventory-item-count">1</div>
-                            </div>
-                            <div class="base-inventory-item">
-                                <img src="../static/img/upkeep/stone.webp" alt="Image 2">
-                                <div class="base-inventory-item-count">x10,000</div>
-                            </div>
-                            <div class="base-inventory-item">
-                                <img src="../static/img/upkeep/wood.webp" alt="Image 3">
-                                <div class="base-inventory-item-count">x300</div>
-                            </div> -->
-                        <!-- #endregion PLACEHOLDER -->
-                    </div>
-
-                </div>
-
-                <!-- Switches overview -->
-                <div id="tab4" class="tabcontent">
-                    <div id="switch_list" class="alarms-overview-wrapper">
-                        <div class="section-header">
-                            <h1>Switches overview</h1>
-                        </div>
-                    </div>
-
-                </div>
+                
 
             </div>
         </div>

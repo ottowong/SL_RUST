@@ -1,5 +1,4 @@
 let all_monitors = [];
-let all_tcs = [];
 const explosives_list = [
     "143803535", //F1 Grenade
     "-1878475007", // Satchel Charge
@@ -47,14 +46,18 @@ function combineMonitors(){
     }
 }
 
-function add_monitor_to_list(monitor){
-    let list_id = "monitor-list-" + monitor.id
-    let parentDiv = document.getElementById('all-monitors-list');
+function add_box_to_list(monitor, is_tc){
+    let prefix = "monitor"
+    if(is_tc){
+        prefix = "tc"
+    }
+    let list_id = `${prefix}-list-` + monitor.id
+    let parentDiv = document.getElementById(`all-${prefix}s-list`);
     let existingMonitorDiv = document.getElementById(list_id);
     if (!existingMonitorDiv) {
         let monitor_div = document.createElement('div');
         monitor_div.id = list_id;
-        monitor_div.classList.add('monitor-list-item');
+        monitor_div.classList.add(`${prefix}-list-item`);
 
         let img_info = findSectionById("1149964039")
         if(monitor.has_protection){ // if is TC (I think?)
@@ -67,12 +70,12 @@ function add_monitor_to_list(monitor){
         monitor_div.appendChild(monitor_img);
 
         let monitor_title = document.createElement('div');
-        monitor_title.classList.add('monitor-list-item-title');
+        monitor_title.classList.add(`${prefix}-list-item-title`);
         monitor_title.innerHTML = monitor.name;
         monitor_div.appendChild(monitor_title);
 
         let upkeep_span = document.createElement('span');
-        upkeep_span.classList.add('monitor-list-item-upkeep');
+        upkeep_span.classList.add(`${prefix}-list-item-upkeep`);
         upkeep_span.innerHTML = monitor.protection_time;
         monitor_div.appendChild(upkeep_span);
 
@@ -88,6 +91,7 @@ function add_monitor_to_list(monitor){
         // will have to update items too
     }
 }
+
 
 function add_tc_to_list(tc){
 }

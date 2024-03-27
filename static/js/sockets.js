@@ -73,20 +73,24 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("monitors",all_monitors[0])
         
         let tcs = [];
+        let boxes = [];
 
         for (let i = 0; i < all_monitors.length; i++){
             let monitor = all_monitors[i]
-            add_monitor_to_list(monitor)
+            // add_monitor_to_list(monitor)
             if(monitor.has_protection){
                 tcs.push(monitor)
+            } else {
+                boxes.push(monitor)
             }
         }
 
-        all_tcs = tcs;
-        for (let tc of all_tcs){
-            console.log(tc.protection_time)
+        for (let tc of tcs){
+            add_box_to_list(tc, true)
         }
-
+        for (let box of boxes){
+            add_box_to_list(box, false)
+        }
         //#region overview tab
         let all_items = combineMonitors()
         for (const itemId in all_items.items) {
