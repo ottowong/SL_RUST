@@ -691,11 +691,12 @@ async def Main():
         conn.close()
 
     async def alarm_event(event):
-        value = "On" if event.value else "Off"
-        to_send = f"{event.entity_id} - {str(event.type)} has been turned {value}"
-        print(to_send)
-        e = discord.Embed(title="Title", description=to_send)
-        webhook.send(embed=e)
+        if(event.type == 2):
+            value = "On" if event.value else "Off"
+            to_send = f"{event.entity_id} - {str(event.type)} has been turned {value}"
+            print(to_send)
+            e = discord.Embed(title="Title", description=to_send)
+            webhook.send(embed=e)
 
     async def monitor_event(event):
         if(event.type == 3):
@@ -707,7 +708,7 @@ async def Main():
                 "protection_expiry": event.protection_expiry,
                 "items": event.items
             }
-        socketio.emit('update_monitor', data)
+            socketio.emit('update_monitor', data)
             
     async def switch_event(event):
         if(event.type == 1):
