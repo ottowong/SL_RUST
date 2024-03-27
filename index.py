@@ -603,8 +603,8 @@ async def Main():
                 if(not monitor_exists):
                     all_monitors.append(monitor_info)
                 await asyncio.sleep(1)
-                socketio.emit("all_monitors", formatted_monitors)
             await asyncio.sleep(4)
+            socketio.emit("all_monitors", formatted_monitors)
 
     @socketio.on('get_devices')
     def handle_get_devices():
