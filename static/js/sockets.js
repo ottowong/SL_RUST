@@ -72,11 +72,22 @@ document.addEventListener('DOMContentLoaded', function() {
         all_monitors = monitors;
         console.log("monitors",all_monitors[0])
         
+        let tcs = [];
+
         for (let i = 0; i < all_monitors.length; i++){
             let monitor = all_monitors[i]
             add_monitor_to_list(monitor)
+            if(monitor.has_protection){
+                tcs.push(monitor)
+            }
         }
-        
+
+        all_tcs = tcs;
+        for (let tc of all_tcs){
+            console.log(tc.protection_time)
+        }
+
+        //#region overview tab
         let all_items = combineMonitors()
         for (const itemId in all_items.items) {
             const item = all_items.items[itemId];
@@ -89,9 +100,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const bp = all_items.bps[bpId];
             add_inventory_item_to_overview(itemId, bp, true)
         }
+        //#endregion overview tab
     });
 
-    socket.on('update_monitor', function(monitor) {
+    socket.on('update_monitor', function(monitor) { // TO DO
         console.log("monitor",monitor.id)
         console.log("all_monitors",all_monitors)
     });

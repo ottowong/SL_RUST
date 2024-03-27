@@ -41,3 +41,36 @@
 .switch-board-list-item-content {
     background-color: var(--Body_background_color);
 }
+
+
+
+
+.monitor-list {
+    overflow-y: auto;
+    flex-grow: 1;
+    max-width: 100%;
+}
+
+.monitor-list ul {
+    padding: 0;
+    margin: 0;
+}
+
+.monitor-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px;
+    border-bottom: var(--Border-style);
+    padding: 0 20px 0 0;
+}
+.monitor-list-item-title {
+    text-align: center;
+    flex-grow: 1;
+    font-size: var(--font_size_section_sub_header);
+}
+.monitor-list-item-upkeep {
+    font-weight: bold;
+    color: var(--SL_Green);
+    font-size: var(--font_size_section_sub_header);
+}

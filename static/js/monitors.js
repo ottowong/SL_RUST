@@ -1,4 +1,5 @@
 let all_monitors = [];
+let all_tcs = [];
 const explosives_list = [
     "143803535", //F1 Grenade
     "-1878475007", // Satchel Charge
@@ -53,15 +54,35 @@ function add_monitor_to_list(monitor){
     if (!existingMonitorDiv) {
         let monitor_div = document.createElement('div');
         monitor_div.id = list_id;
-        monitor_div.classList.add('monitor-item');
+        monitor_div.classList.add('monitor-list-item');
+
+        let img_info = findSectionById("1149964039")
+        if(monitor.has_protection){ // if is TC (I think?)
+            img_info = findSectionById("-97956382")
+        }
+
+        let monitor_img = document.createElement('img');
+        monitor_img.setAttribute('src', img_info.image);
+        monitor_img.setAttribute('alt', 'Icon');
+        monitor_div.appendChild(monitor_img);
 
         let monitor_title = document.createElement('div');
-        monitor_title.classList.add('monitor-title');
+        monitor_title.classList.add('monitor-list-item-title');
         monitor_title.innerHTML = monitor.name;
         monitor_div.appendChild(monitor_title);
 
+        let upkeep_span = document.createElement('span');
+        upkeep_span.classList.add('monitor-list-item-upkeep');
+        upkeep_span.innerHTML = monitor.protection_time;
+        monitor_div.appendChild(upkeep_span);
+
         parentDiv.appendChild(monitor_div);
+    } else {
+        // update existingMonitorDiv
     }
+}
+
+function add_tc_to_list(tc){
 }
 
 function add_inventory_item_to_overview(itemId, item, is_blueprint){

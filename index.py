@@ -124,13 +124,13 @@ async def format_protection_time(td):
         hours, remainder = divmod(td.seconds, 3600)
         minutes, seconds = divmod(remainder, 60)
         if days > 0:
-            protection_time += f"{days} Days, "
+            protection_time += f"{days}d "
         if hours > 0:
-            protection_time += f"{hours} Hours, "
+            protection_time += f"{hours}h "
         if minutes > 0:
-            protection_time += f"{minutes} Minutes, "
+            protection_time += f"{minutes}m "
         if seconds > 0:
-            protection_time += f"{seconds} Seconds"
+            protection_time += f"{seconds}s"
         # Remove trailing comma and space if there is one
         if protection_time.endswith(", "):
             protection_time = protection_time[:-2]
