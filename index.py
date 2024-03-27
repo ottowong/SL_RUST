@@ -118,22 +118,25 @@ def get_steam_member(steam_id, update=False):
         return None
 
 async def format_protection_time(td):
-    protection_time = "" # move this to own function
-    if(td >= timedelta()):
-        days = td.days
-        hours, remainder = divmod(td.seconds, 3600)
-        minutes, seconds = divmod(remainder, 60)
-        if days > 0:
-            protection_time += f"{days}d "
-        if hours > 0:
-            protection_time += f"{hours}h "
-        if minutes > 0:
-            protection_time += f"{minutes}m "
-        if seconds > 0:
-            protection_time += f"{seconds}s"
-        # Remove trailing comma and space if there is one
-        if protection_time.endswith(", "):
-            protection_time = protection_time[:-2]
+    protection_time = ""
+    try:
+        if(td >= timedelta()):
+            days = td.days
+            hours, remainder = divmod(td.seconds, 3600)
+            minutes, seconds = divmod(remainder, 60)
+            if days > 0:
+                protection_time += f"{days}d "
+            if hours > 0:
+                protection_time += f"{hours}h "
+            if minutes > 0:
+                protection_time += f"{minutes}m "
+            if seconds > 0:
+                protection_time += f"{seconds}s"
+            # Remove trailing comma and space if there is one
+            if protection_time.endswith(", "):
+                protection_time = protection_time[:-2]
+    except Exception:
+        pass
     return protection_time
 
 async def monitor_to_dict(monitor, id):
@@ -720,12 +723,13 @@ async def Main():
                     "quantity": item.quantity,
                     "item_is_blueprint": item.item_is_blueprint
                 })
+            prot_time = await format_protection_time(event.protection_expiry)
             data = {
                 "type": event.type,
                 "id": event.entity_id,
                 "capacity": event.capacity,
                 "has_protection": event.has_protection,
-                "protection_expiry": event.protection_expiry,
+                "protection_time": prot_time,
                 "items": items
             }
             socketio.emit('update_monitor', data)
