@@ -56,6 +56,33 @@ function handleMonitorClick(id) {
 }
 function handleTcClick(monitor) {
     console.log('TC clicked:', monitor);
+    var tcName = monitor.name;
+    var stoneAmount = 0;
+    var metalAmount = 0;
+    var hqmAmount = 0;
+    var woodAmount = 0;
+    var upkeepTime = monitor.protection_time;
+
+    for (let item of monitor.combined_items){
+        if (item.id.toString() == "-2099697608"){ // stone
+            stoneAmount = item.quantity
+        } else if (item.id.toString() == "69511070"){ // metal fragments
+            metalAmount = item.quantity
+        } else if (item.id.toString() == "317398316"){ // hqm
+            metalAmount = item.quantity
+        } else if (item.id.toString() == "-151838493"){ // wood
+            metalAmount = item.quantity
+        }
+    }
+
+    // Update the HTML content using JavaScript
+    document.getElementById("tc-name").innerHTML = tcName;
+    document.getElementById("stone-amount").innerHTML = "x" + stoneAmount;
+    document.getElementById("metal-amount").innerHTML = "x" + metalAmount;
+    document.getElementById("hqm-amount").innerHTML = "x" + hqmAmount;
+    document.getElementById("wood-amount").innerHTML = "x" + woodAmount;
+    document.getElementById("upkeep-time").innerHTML = "Protected for " + upkeepTime;
+    document.getElementById("current-tc-id").innerHTML = monitor.id;
 }
 
 function add_box_to_list(monitor) {
@@ -88,7 +115,7 @@ function add_box_to_list(monitor) {
         monitor_div.appendChild(monitor_img);
         if (is_tc) {
             monitor_div.addEventListener('click', () => {
-                handleTcClick(monitor.id);
+                handleTcClick(monitor);
             });
         } else {
             monitor_div.addEventListener('click', () => {

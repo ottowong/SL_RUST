@@ -656,8 +656,9 @@ async def Main():
         print('Received message: ' + message)
         switches = asyncio.run(get_switches())
         emit("monuments", monuments)
-        emit("sent_switches", switches) # this should be sent more than once
+        emit("sent_switches", switches)
         emit("update_server_info", server_info)
+        # send monitors from global var
 
     @socketio.on('authenticate')
     def authenticate(pin):

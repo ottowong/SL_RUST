@@ -148,17 +148,18 @@
                         <h1>Tool Cupboards</h1>
                     </div>
                     <div id="all-tcs-list"  class="tc-list">
+                        <div id="current-tc-id" style="display:none;"></div>
                         <div class="tc-header">
                             <h1>
                                 <!-- TC Name -->
-                                Pair with a Storage Monitor on a TC
+                                <span id="tc-name"></span>
                             </h1>
                             <div class="tc-sum-wrapper">
                                 <div id="tc-stone-display" class="tc-header-image-container">
                                     <img src="../static/img/items/stones.png" alt="Stone">
                                     <div class="tc-header-upkeep-count">
                                         <p>
-                                            <!-- x450 -->
+                                            <span id="stone-amount"></span>
                                         </p>
                                     </div>
                                 </div>
@@ -166,16 +167,16 @@
                                     <img src="../static/img/items/metal.fragments.png" alt="Frags">
                                     <div class="tc-header-upkeep-count">
                                         <p>
-                                            <!-- x54,000 -->
+                                            <span id="metal-amount"></span>
                                         </p>
                                     </div>
                                 </div>
-    
+                        
                                 <div id="tc-hqm-display" class="tc-header-image-container">
                                     <img src="../static/img/items/metal.refined.png" alt="HQM">
                                     <div class="tc-header-upkeep-count">
                                         <p>
-                                            <!-- x500 -->
+                                            <span id="hqm-amount"></span>
                                         </p>
                                     </div>
                                 </div>
@@ -183,13 +184,14 @@
                                     <img src="../static/img/items/wood.png" alt="Wood">
                                     <div class="tc-header-upkeep-count">
                                         <p>
-                                            <!-- x500 -->
+                                            <span id="wood-amount"></span>
                                         </p>
                                     </div>
                                 </div>
                             </div>
                             <h2>
-                                <!-- Protected for 10d 14h 35m 19s -->
+                                <!-- Protected for x days x hours x minutes x seconds -->
+                                <span id="upkeep-time"></span>
                             </h2>
                         </div>
                     </div>
