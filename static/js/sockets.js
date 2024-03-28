@@ -305,14 +305,17 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.on('switch_removed', function (device_id) {
         console.log("try remove switch", device_id)
         removeDeviceFromList(device_id);
+        removeSwitchFromList(device_id);
     });
     socket.on('alarm_removed', function (device_id) {
         console.log("try remove alarm", device_id)
         removeDeviceFromList(device_id);
+        removeAlarmFromList(device_id);
     });
     socket.on('monitor_removed', function (device_id) {
         console.log("try remove monitor", device_id)
         removeDeviceFromList(device_id);
+        removeMonitorFromList(device_id);
     });
 
     // Function to add device to the list
@@ -359,6 +362,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to remove device from the list
     function removeDeviceFromList(device_id) {
+        let to_remove = $(`.device-${device_id}`)
+        console.log("removing",to_remove)
+        to_remove.remove();
+    }
+    function removeSwitchFromList(device_id) {
+        let to_remove = $(`.device-${device_id}`)
+        console.log("removing",to_remove)
+        to_remove.remove();
+    }
+    function removeAlarmFromList(device_id) {
+        let to_remove = $(`.device-${device_id}`)
+        console.log("removing",to_remove)
+        to_remove.remove();
+    }
+    function removeMonitorFromList(device_id) {
         let to_remove = $(`.device-${device_id}`)
         console.log("removing",to_remove)
         to_remove.remove();
