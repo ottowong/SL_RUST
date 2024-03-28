@@ -210,6 +210,7 @@ async def sql_get_chat_history():
         cur = conn.cursor()
         cur.execute("SELECT name, message FROM tbl_chat ORDER BY time DESC LIMIT 50")
         messages = cur.fetchall()
+        messages = messages[::-1]
         conn.commit()
         cur.close()
         conn.close()
