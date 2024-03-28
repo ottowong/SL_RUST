@@ -77,9 +77,17 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("all_monitors",monitors)
         all_monitors = monitors;
 
+        let all_tcs = [];
+
         for (let i = 0; i < all_monitors.length; i++){
             let monitor = all_monitors[i]
             add_box_to_list(monitor)
+            if(monitor.has_protection){
+                all_tcs.push(monitor)
+            }
+        }
+        for (let tc of all_tcs){
+            add_tc_to_list(tc)
         }
 
         //#region overview tab
@@ -101,6 +109,9 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.on('update_monitor', function(monitor) { // TO DO
         console.log("update_monitor",monitor)
         add_box_to_list(monitor)
+        if(monitor.has_protection){
+            add_tc_to_list(monitor)
+        }
     });
 
     // if some switch data is wrong, update it here.

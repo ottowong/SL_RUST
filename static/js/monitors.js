@@ -69,9 +69,9 @@ function handleTcClick(monitor) {
         } else if (item.id.toString() == "69511070"){ // metal fragments
             metalAmount = item.quantity
         } else if (item.id.toString() == "317398316"){ // hqm
-            metalAmount = item.quantity
+            hqmAmount = item.quantity
         } else if (item.id.toString() == "-151838493"){ // wood
-            metalAmount = item.quantity
+            woodAmount = item.quantity
         }
     }
 
@@ -85,12 +85,76 @@ function handleTcClick(monitor) {
     document.getElementById("current-tc-id").innerHTML = monitor.id;
 }
 
-function add_box_to_list(monitor) {
-    let is_tc = monitor.has_protection;
-    let prefix = "monitor";
-    if (is_tc) {
-        prefix = "tc";
+function add_tc_to_list(monitor) {
+    let mainTcPopulated = document.getElementById("current-tc-id")
+    if(mainTcPopulated.innerHTML == ""){ // first time a TC comes in, make it the main one
+        handleTcClick(monitor)
     }
+    let is_tc = monitor.has_protection;
+    let prefix = "tc";
+    let list_id = `${prefix}-list-${monitor.id}`;
+    let parentDiv = document.getElementById(`all-${prefix}s-list`);
+    let monitor_wrapper_div = document.getElementById(`${prefix}-list-wrapper-${monitor.id}`);
+    if (!monitor_wrapper_div) {
+        monitor_wrapper_div = document.createElement('div');
+        monitor_wrapper_div.id = `${prefix}-list-wrapper-${monitor.id}`
+        monitor_wrapper_div.classList.add(`device-${monitor.id}`)
+        monitor_wrapper_div.classList.add("storage-list-individual-wrapper")
+
+        let monitor_div = document.createElement('div');
+        monitor_div.id = list_id;
+        monitor_div.classList.add(`${prefix}-list-item`);
+
+        let img_info = findSectionById("1149964039");
+        if (monitor.has_protection) { // if is TC (I think?)
+            img_info = findSectionById("-97956382");
+        }
+
+        let monitor_img = document.createElement('img');
+        monitor_img.setAttribute('src', img_info.image);
+        monitor_img.setAttribute('alt', 'Icon');
+        monitor_div.appendChild(monitor_img);
+        if (is_tc) {
+            monitor_div.addEventListener('click', () => {
+                handleTcClick(monitor);
+            });
+        } else {
+            monitor_div.addEventListener('click', () => {
+                handleMonitorClick(monitor.id);
+            });
+        }
+
+        let monitor_title = document.createElement('div');
+        monitor_title.classList.add(`${prefix}-list-item-title`);
+        monitor_title.innerHTML = monitor.name;
+        monitor_div.appendChild(monitor_title);
+
+        let upkeep_span = document.createElement('span');
+        upkeep_span.classList.add(`${prefix}-list-item-upkeep`);
+        upkeep_span.innerHTML = monitor.protection_time;
+        monitor_div.appendChild(upkeep_span);
+
+        monitor_wrapper_div.appendChild(monitor_div);
+
+        parentDiv.appendChild(monitor_wrapper_div);
+
+        if (!is_tc) { // only make an item div if it's not a tc
+            add_box_items_to_list(monitor, monitor_wrapper_div);
+        }
+    } else {
+        let existingUpkeepSpan = monitor_wrapper_div.querySelector('.monitor-list-item-upkeep');
+        if (existingUpkeepSpan) {
+            existingUpkeepSpan.innerHTML = monitor.protection_time;
+        }
+        if (!is_tc) { // only make an item div if it's not a tc
+            add_box_items_to_list(monitor, monitor_wrapper_div);
+        }
+    }
+}
+
+function add_box_to_list(monitor) {
+    let is_tc = false;
+    let prefix = "monitor";
     let list_id = `${prefix}-list-${monitor.id}`;
     let parentDiv = document.getElementById(`all-${prefix}s-list`);
     let monitor_wrapper_div = document.getElementById(`${prefix}-list-wrapper-${monitor.id}`);
@@ -158,6 +222,7 @@ function add_box_items_to_list(monitor, parentDiv) {
         item_wrapper_div = document.createElement("div");
         item_wrapper_div.setAttribute("id", "monitor-items-" + monitor.id);
         item_wrapper_div.classList.add("base-inventory-list");
+        item_wrapper_div.style.display = "none";
     } else {
         item_wrapper_div.innerHTML = ""; // empty it
     }
