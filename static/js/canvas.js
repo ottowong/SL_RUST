@@ -293,6 +293,7 @@ function updateMarkers(socket_markers) {
 function createPlayerIcon(isalive, isonline, steamid){
     let onlineColour;
     let dead = ""
+    let className = "player-pin"
     if(isonline){
         onlineColour= "green"
     } else {
@@ -300,6 +301,7 @@ function createPlayerIcon(isalive, isonline, steamid){
     }
     if(!isalive){
         dead = `<circle cx="13" cy="13" r="11" fill="red" fill-opacity="0.3"/>`
+        className = ""
     }
     return L.divIcon({
         html: `
@@ -313,7 +315,7 @@ function createPlayerIcon(isalive, isonline, steamid){
             <image href="../static/profilepics/${steamid}.jpg" x="2" y="2" width="22" height="22" clip-path="url(#circleClip)" />
             ${dead}
         </svg>`,
-        className: "player-pin",
+        className: className,
         iconSize: [26, 26],
         iconAnchor: [0, 0],
     });
