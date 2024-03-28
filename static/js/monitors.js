@@ -57,6 +57,7 @@ function add_box_to_list(monitor) {
     if (!monitor_wrapper_div) {
         monitor_wrapper_div = document.createElement('div');
         monitor_wrapper_div.id = `${prefix}-list-wrapper-${monitor.id}`
+        monitor_wrapper_div.classList.add(`device-${monitor.id}`)
 
         let monitor_div = document.createElement('div');
         monitor_div.id = list_id;
