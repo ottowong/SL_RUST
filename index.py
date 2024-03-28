@@ -25,6 +25,8 @@ cur = conn.cursor()
 cur.execute("CREATE TABLE IF NOT EXISTS tbl_switches (id INTEGER PRIMARY KEY, name TEXT, status INTEGER)")
 cur.execute("CREATE TABLE IF NOT EXISTS tbl_alarms   (id INTEGER PRIMARY KEY, name TEXT)")
 cur.execute("CREATE TABLE IF NOT EXISTS tbl_monitors (id INTEGER PRIMARY KEY, name TEXT)")
+cur.execute("CREATE TABLE IF NOT EXISTS tbl_chat (time TEXT, name TEXT, message TEXT)")
+cur.execute("CREATE TABLE IF NOT EXISTS tbl_alarm_log (alarm_id INTEGER, time TEXT)")
 cur.close()
 conn.close()
 
