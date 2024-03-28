@@ -187,7 +187,10 @@ function updateMarkers(socket_markers) {
                 if(pin.options.rust_type == 1 && pin.options.steam_id == current_marker.steam.steam_id) { 
                     // Player tracking
                     if (pin.options.steam_id == player_to_track){
-                        map.panTo(new L.LatLng(temp_y, temp_x));
+                        var panOptions = {
+                            duration: 1,  // Duration of the animation in seconds
+                        };
+                        map.panTo(new L.LatLng(temp_y, temp_x), panOptions);
                     }
                     pin.setLatLng([temp_y, temp_x])
                     let icon = createPlayerIcon(current_marker.steam.is_alive, current_marker.steam.is_online, current_marker.steam.steam_id)
