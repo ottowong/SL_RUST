@@ -302,8 +302,16 @@ document.addEventListener('DOMContentLoaded', function() {
         addMonitorToList(device);
     });
 
-    socket.on('device_removed', function (device_id) {
-        console.log("try remove device", device_id)
+    socket.on('switch_removed', function (device_id) {
+        console.log("try remove switch", device_id)
+        removeDeviceFromList(device_id);
+    });
+    socket.on('alarm_removed', function (device_id) {
+        console.log("try remove alarm", device_id)
+        removeDeviceFromList(device_id);
+    });
+    socket.on('monitor_removed', function (device_id) {
+        console.log("try remove monitor", device_id)
         removeDeviceFromList(device_id);
     });
 
