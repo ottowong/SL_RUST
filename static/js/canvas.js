@@ -190,6 +190,8 @@ function updateMarkers(socket_markers) {
                         map.panTo(new L.LatLng(temp_y, temp_x));
                     }
                     pin.setLatLng([temp_y, temp_x])
+                    let icon = createPlayerIcon(current_marker.steam.is_alive, current_marker.steam.is_online, current_marker.steam.steam_id)
+                    pin.setIcon(icon)
                     socket_markers.splice(j,1)
                 }
             }
