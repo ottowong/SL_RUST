@@ -38,6 +38,8 @@ playerToken = int(os.environ.get("PLAYERTOKEN"))
 SteamApiKey = os.environ.get("STEAMAPIKEY")
 correct_pin = os.environ.get("PIN")
 webhook_url = os.environ.get("DISCORDWEBHOOK")
+map_width = int(os.environ.get("MAPWIDTH"))
+map_height = int(os.environ.get("MAPHEIGHT"))
 
 webhook = discord.SyncWebhook.from_url(webhook_url)
 
@@ -57,6 +59,8 @@ switch_ids = []
 
 all_monitors = []
 monuments = []
+
+
 
 server_name=""
 server_url=""
@@ -353,7 +357,7 @@ def codelock():
 @app.route("/")
 def index():
     if session.get("authenticated"):
-        return render_template("index.html")
+        return render_template("index.j2",jHeight=map_height, jWidth=map_width)
     else:
         return redirect(url_for("codelock"))
 
@@ -465,6 +469,12 @@ async def Main():
     async def get_map(add_icons=False,add_events=False, add_vending_machines=False):
         rust_map = await rust_socket.get_map(add_icons=add_icons, add_events=add_events, add_vending_machines=add_vending_machines)
         map_data = await rust_socket.get_raw_map_data()
+        print("MARGIN",map_data.margin, map_data.width, map_data.height)
+        # this gives the wrong numbers for some reason lmao
+        # global map_width
+        # global map_height
+        # map_width = map_data.width
+        # map_height = map_data.height
         monuments.clear()
         for monument in map_data.monuments:
             newtext = monument.token.replace("_"," ").replace("display name","").replace("monument name","").replace("monument","")

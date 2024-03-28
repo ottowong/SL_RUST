@@ -1,7 +1,3 @@
-// set these dynamically if possible, otherwise in .env
-const mapHeight = 4250
-const mapWidth = 4250
-
 const pixelHeight = 2000
 const pixelWidth = 2000
 let boundPadding = 3000
