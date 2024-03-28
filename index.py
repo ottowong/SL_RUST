@@ -595,7 +595,7 @@ async def Main():
                         "protection_time": "",
                         "name": monitor_name
                     }
-                
+                socketio.emit("update_monitor", monitor_info)
                 formatted_monitors.append(monitor_info)
 
                 monitor_exists = False
@@ -607,7 +607,7 @@ async def Main():
                     all_monitors.append(monitor_info)
                 await asyncio.sleep(1)
             await asyncio.sleep(4)
-            socketio.emit("all_monitors", formatted_monitors)
+            # socketio.emit("all_monitors", formatted_monitors)
 
     @socketio.on('get_devices')
     def handle_get_devices():
