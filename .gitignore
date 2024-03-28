@@ -165,3 +165,4 @@ static/profilepics/*
 !static/profilepics/.gitkeep
 *.db
 rustplus.py.config.json
+otto.rustplus.py.config.json
