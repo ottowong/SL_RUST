@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
         for (var steamId in steam_members) {
             if(document.getElementById(steamId)){
-                break;
+                continue;
             }
             var member = steam_members[steamId];
             if(member["is_leader"]){
