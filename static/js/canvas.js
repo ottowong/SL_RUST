@@ -310,7 +310,7 @@ function createPlayerIcon(isalive, isonline, steamid){
             <image href="../static/profilepics/${steamid}.jpg" x="2" y="2" width="22" height="22" clip-path="url(#circleClip)" />
             ${dead}
         </svg>`,
-        className: "",
+        className: "player-pin",
         iconSize: [26, 26],
         iconAnchor: [0, 0],
     });

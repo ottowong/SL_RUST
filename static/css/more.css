@@ -88,7 +88,7 @@
     border-bottom: var(--Border-style);
 }
 
-.leaflet-marker-pane > * {
+.leaflet-marker-pane > .player-pin {
     -webkit-transition: transform 1s linear;
     -moz-transition: transform 1s linear;
     -o-transition: transform 1s linear;
