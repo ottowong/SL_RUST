@@ -316,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="switch-board-list-item-header" onclick="toggleSwitchBoardContent(${device.id})">
                 <img src="../static/img/items/smart.switch.png"> ${device.name}
             </div>
-            <div class="switch-board-list-item-content removeBtn" id="switch-board-list-item-content-${device.id}" style="display: none;" data-deviceid="${device.id}">
+            <div class="switch-board-list-item-content removeSwitchBtn" id="switch-board-list-item-content-${device.id}" style="display: none;" data-deviceid="${device.id}">
                     Remove
             </div>
         </div>
@@ -329,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="switch-board-list-item-header" onclick="toggleSwitchBoardContent(${device.id})">
                 <img src="../static/img/items/smart.alarm.png"> ${device.name}
             </div>
-            <div class="switch-board-list-item-content removeBtn" id="switch-board-list-item-content-${device.id}" style="display: none;" data-deviceid="${device.id}">
+            <div class="switch-board-list-item-content removeAlarmBtn" id="switch-board-list-item-content-${device.id}" style="display: none;" data-deviceid="${device.id}">
                     Remove
             </div>
         </div>
@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="switch-board-list-item-header" onclick="toggleSwitchBoardContent(${device.id})">
                 <img src="../static/img/items/storage.monitor.png"> ${device.name}
             </div>
-            <div class="switch-board-list-item-content removeBtn" id="switch-board-list-item-content-${device.id}" style="display: none;" data-deviceid="${device.id}">
+            <div class="switch-board-list-item-content removeMonitorBtn" id="switch-board-list-item-content-${device.id}" style="display: none;" data-deviceid="${device.id}">
                     Remove
             </div>
         </div>
@@ -388,10 +388,22 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Click event for removing device
-    $(document).on('click', '.removeBtn', function () {
+    $(document).on('click', '.removeSwitchBtn', function () {
         var device_id = $(this).data('deviceid');
         console.log("Removing", device_id)
-        socket.emit('remove_device', device_id);
+        socket.emit('remove_switch', device_id);
+    });
+
+    $(document).on('click', '.removeAlarmBtn', function () {
+        var device_id = $(this).data('deviceid');
+        console.log("Removing", device_id)
+        socket.emit('remove_alarm', device_id);
+    });
+
+    $(document).on('click', '.removeMonitorBtn', function () {
+        var device_id = $(this).data('deviceid');
+        console.log("Removing", device_id)
+        socket.emit('remove_monitor', device_id);
     });
     
     let chatInput = document.getElementById('chat_input');

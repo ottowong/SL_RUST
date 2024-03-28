@@ -228,12 +228,27 @@ async def sql_add_monitor(device):
         print("Error:", e)
         return False
 
-async def sql_remove_device(device_id):
+async def sql_remove_switch(device_id):
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
-    # this is probably fine since 2 devices shouldn't have the same id
     cur.execute("DELETE FROM tbl_switches WHERE id=?", (device_id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return True # return something here for success / not
+
+async def sql_remove_alarm(device_id):
+    conn = sqlite3.connect(database_name)
+    cur = conn.cursor()
     cur.execute("DELETE FROM tbl_alarms WHERE id=?", (device_id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return True # return something here for success / not
+
+async def sql_remove_monitor(device_id):
+    conn = sqlite3.connect(database_name)
+    cur = conn.cursor()
     cur.execute("DELETE FROM tbl_monitors WHERE id=?", (device_id,))
     conn.commit()
     cur.close()
@@ -636,11 +651,23 @@ async def Main():
         asyncio.run(sql_add_monitor(device))
         emit('monitor_added', device, broadcast=True)
 
-    @socketio.on('remove_device')
+    @socketio.on('remove_switch')
     def handle_remove_device(device_id):
         # Process the device removal
-        asyncio.run(sql_remove_device(device_id))
-        emit('device_removed', device_id, broadcast=True)
+        asyncio.run(sql_remove_switch(device_id))
+        emit('switch_removed', device_id, broadcast=True)
+
+    @socketio.on('remove_alarm')
+    def handle_remove_device(device_id):
+        # Process the device removal
+        asyncio.run(sql_remove_alarm(device_id))
+        emit('alarm_removed', device_id, broadcast=True)
+    
+    @socketio.on('remove_monitor')
+    def handle_remove_device(device_id):
+        # Process the device removal
+        asyncio.run(sql_remove_monitor(device_id))
+        emit('monitor_removed', device_id, broadcast=True)
 
     async def time_loop(): # get the server time every 10s or something.
         while True:
