@@ -176,6 +176,25 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('player-count').innerHTML = playerStr
     });
 
+    socket.on('all_messages', function(messages) {
+        for (let message of messages){
+            let chatMessages = $('#messages');
+            let messageCount = chatMessages.children().length;
+            let isScrolledToBottom = chatMessages.scrollTop() + chatMessages.innerHeight() >= chatMessages[0].scrollHeight;
+            
+            chatMessages.append('<div class="chat-message-containter"><span class="chat-username">' + message[0] + ':</span><span class="chat-message"> ' + message[1] + '</span></div>');
+            if (messageCount > 50) {
+                chatMessages.children().first().remove();
+            }
+
+            // Scroll to the bottom if already scrolled to the bottom before adding a new message
+            if (isScrolledToBottom) {
+                chatMessages.scrollTop(chatMessages[0].scrollHeight);
+            }
+        }
+        
+    });
+
     socket.on('chat_message', function(message) {
         let chatMessages = $('#messages');
         let messageCount = chatMessages.children().length;

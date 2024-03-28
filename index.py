@@ -16,7 +16,7 @@ import requests
 import math
 import string
 import logging
-from datetime import timedelta
+from datetime import timedelta, datetime
 import json
 
 database_name = "database.db"
@@ -187,6 +187,36 @@ async def monitor_to_dict(monitor, id):
     except Exception as e:
         print("error in monitor_to_dict:",e)
         return None
+
+async def sql_log_chat(chat):
+    try:
+        chat_time = str(datetime.now())
+        chat_name = chat.message.name
+        chat_message = chat.message.message
+        conn = sqlite3.connect(database_name)
+        cur = conn.cursor()
+        cur.execute("INSERT INTO tbl_chat (time, name, message) VALUES (?, ?, ?)", (chat_time, chat_name, chat_message))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return True
+    except Exception as e:
+        print("Error:", e)
+        return False
+    
+async def sql_get_chat_history():
+    try:
+        conn = sqlite3.connect(database_name)
+        cur = conn.cursor()
+        cur.execute("SELECT name, message FROM tbl_chat ORDER BY time DESC LIMIT 50")
+        messages = cur.fetchall()
+        conn.commit()
+        cur.close()
+        conn.close()
+        return messages
+    except Exception as e:
+        print("Error:", e)
+        return False
 
 async def sql_add_switch(device):
     try:
@@ -655,9 +685,11 @@ async def Main():
     def handle_message(message):
         print('Received message: ' + message)
         switches = asyncio.run(get_switches())
+        messages = asyncio.run(sql_get_chat_history())
         emit("monuments", monuments)
         emit("sent_switches", switches)
         emit("update_server_info", server_info)
+        emit("all_messages", messages)
         # send monitors from global var
 
     @socketio.on('authenticate')
@@ -687,6 +719,7 @@ async def Main():
     async def chat(event : ChatEvent):
         print(f"{event.message.name}: {event.message.message}")
         socketio.emit('chat_message', [event.message.name, event.message.message])
+        await sql_log_chat(event)
         message_log.append([event.message.name, event.message.message])
         if (len(message_log)  > 50):
             message_log.pop(0)
