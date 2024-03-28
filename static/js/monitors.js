@@ -45,6 +45,19 @@ function combineMonitors(){
         bps: bp_inventory
     }
 }
+
+function handleMonitorClick(id) {
+    let monitorItems = document.getElementById(`monitor-items-${id}`);
+    if (monitorItems.style.display === "none") {
+        monitorItems.style.display = "flex";
+    } else {
+        monitorItems.style.display = "none";
+    }
+}
+function handleTcClick(monitor) {
+    console.log('TC clicked:', monitor);
+}
+
 function add_box_to_list(monitor) {
     let is_tc = monitor.has_protection;
     let prefix = "monitor";
@@ -73,6 +86,15 @@ function add_box_to_list(monitor) {
         monitor_img.setAttribute('src', img_info.image);
         monitor_img.setAttribute('alt', 'Icon');
         monitor_div.appendChild(monitor_img);
+        if (is_tc) {
+            monitor_div.addEventListener('click', () => {
+                handleTcClick(monitor.id);
+            });
+        } else {
+            monitor_div.addEventListener('click', () => {
+                handleMonitorClick(monitor.id);
+            });
+        }
 
         let monitor_title = document.createElement('div');
         monitor_title.classList.add(`${prefix}-list-item-title`);
