@@ -25,47 +25,52 @@ document.addEventListener('DOMContentLoaded', function() {
         let parentDiv = document.getElementById('switch_list');
         console.log(device)
         let listItemDiv = document.createElement('div');
-        listItemDiv.classList.add('list-item');
-        listItemDiv.classList.add(`device-${device.id}`);
 
-        let iconDiv = document.createElement('div');
-        iconDiv.classList.add('icon');
-        let iconImg = document.createElement('img');
-        iconImg.setAttribute('src', '/static/img/items/smart.switch.png');
-        iconImg.setAttribute('alt', 'Icon');
+        let checkIfExists = document.getElementById(`switch-${device.id}`);
+        if(!checkIfExists){
+            listItemDiv.classList.add('list-item');
+            listItemDiv.classList.add(`device-${device.id}`);
+            listItemDiv.id = `switch-${device.id}`
+            let iconDiv = document.createElement('div');
+            iconDiv.classList.add('icon');
+            let iconImg = document.createElement('img');
+            iconImg.setAttribute('src', '/static/img/items/smart.switch.png');
+            iconImg.setAttribute('alt', 'Icon');
 
-        iconDiv.appendChild(iconImg);
+            iconDiv.appendChild(iconImg);
 
-        let nameDiv = document.createElement('div');
-        nameDiv.classList.add('name');
-        nameDiv.textContent = device.name;
+            let nameDiv = document.createElement('div');
+            nameDiv.classList.add('name');
+            nameDiv.textContent = device.name;
 
-        let statusDiv = document.createElement('div');
-        statusDiv.classList.add('status');
-        statusDiv.setAttribute('id', device.id);
-        statusDiv.setAttribute('data-device-id', device.id);
+            let statusDiv = document.createElement('div');
+            statusDiv.classList.add('status');
+            statusDiv.setAttribute('id', device.id);
+            statusDiv.setAttribute('data-device-id', device.id);
 
-        if (device.status === 1) {
-            statusDiv.textContent = 'Online';
-            statusDiv.style.color = 'green';
-        } else if (device.status === 0) {
-            statusDiv.textContent = 'Offline';
-            statusDiv.style.color = 'red';
-        } else {
-            statusDiv.textContent = 'Undefined';
-            statusDiv.style.color = 'gray';
+            if (device.status === 1) {
+                statusDiv.textContent = 'Online';
+                statusDiv.style.color = 'green';
+            } else if (device.status === 0) {
+                statusDiv.textContent = 'Offline';
+                statusDiv.style.color = 'red';
+            } else {
+                statusDiv.textContent = 'Undefined';
+                statusDiv.style.color = 'gray';
+            }
+
+            statusDiv.addEventListener('click', function() {
+                let deviceId = $(this).data('device-id');
+                toggle(deviceId);
+            });
+
+            listItemDiv.appendChild(iconDiv);
+            listItemDiv.appendChild(nameDiv);
+            listItemDiv.appendChild(statusDiv);
+
+            parentDiv.appendChild(listItemDiv);
         }
-
-        statusDiv.addEventListener('click', function() {
-            let deviceId = $(this).data('device-id');
-            toggle(deviceId);
-        });
-
-        listItemDiv.appendChild(iconDiv);
-        listItemDiv.appendChild(nameDiv);
-        listItemDiv.appendChild(statusDiv);
-
-        parentDiv.appendChild(listItemDiv);
+        
     }
 
     socket.on('all_monitors', function(monitors) {
