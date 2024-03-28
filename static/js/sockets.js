@@ -202,7 +202,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     socket.on('chat_message', function(message) {
         add_chat_message(message)
-        }
     });
 
     socket.on('update_steam_members', function(steam_members) {
