@@ -95,3 +95,7 @@
     -ms-transition: transform 1s linear;
     transition: transform 1s linear;
 }
+
+.content-main-footer{
+    z-index: 999;
+}
