@@ -753,6 +753,7 @@ async def Main():
         conn.close()
 
     async def alarm_event(event):
+        print("alarm event")
         if(event.type == 2):
             value = "On" if event.value else "Off"
             to_send = f"{event.entity_id} - {str(event.type)} has been turned {value}"
@@ -782,6 +783,7 @@ async def Main():
             socketio.emit('update_monitor', data)
             
     async def switch_event(event):
+        print("Switch Event", event.type, event.entity_id, event.value)
         if(event.type == 1):
             await update_switch(event.entity_id, event.value)
             data = {
