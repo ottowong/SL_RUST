@@ -666,8 +666,8 @@ async def Main():
         print(device["id"])
         data = asyncio.run(get_entity_info(int(device["id"])))
         print("DATA",data)
-        asyncio.run(update_switch(device["id"], data.value))
-        socketio.emit('update_switch', {"id":device["id"],"value":data.value})
+        asyncio.run(update_switch(device["id"], data["value"]))
+        socketio.emit('update_switch', {"id":device["id"],"value":data["value"]})
 
     @socketio.on('add_alarm')
     def handle_add_device(device):
