@@ -233,10 +233,11 @@ function updateMarkers(socket_markers) {
         case 3: // shop
             let shop_popup_text = `<b>${newMarker.name}</b><br>`
             for (shop_item of newMarker.sell_orders){
-                let item_image;
                 let item_data = findSectionById(shop_item.id.toString())
                 let currency_data = findSectionById(shop_item.currency_id.toString())
                 // shop_item.amount_in_stock
+                let item_image;
+                let currency_image;
 
                 let item_bp = "";
                 let currency_bp = "";
@@ -250,14 +251,19 @@ function updateMarkers(socket_markers) {
                 try {
                     item_image = item_data.image;
                 } catch (error) {
-                    console.error(`Error retrieving item image for ID: ${shop_item.id.toString()}:`, error);
-                    // Provide a default image URL if item_data.image is null
+                    console.log(`Error retrieving item image for ID: ${shop_item.id.toString()}:`, error);
                     item_image = "../static/img/not_found.png";
+                }
+                try {
+                    currency_image = item_data.image;
+                } catch (error) {
+                    console.log(`Error retrieving item image for ID: ${shop_item.id.toString()}:`, error);
+                    currency_image = "../static/img/not_found.png";
                 }
                 shop_popup_text = shop_popup_text + `<img style="position:relative;" width="25px" src="${item_image}"/>x${shop_item.quantity}`
                 shop_popup_text = shop_popup_text + " : "
                 shop_popup_text = shop_popup_text + currency_bp
-                shop_popup_text = shop_popup_text + `<img style="position:relative;" width="25px" src="${currency_data.image}"/> x${shop_item.cost_per_item}<br>`
+                shop_popup_text = shop_popup_text + `<img style="position:relative;" width="25px" src="${currency_image}"/> x${shop_item.cost_per_item}<br>`
             }
             if(newMarker.sell_orders.length == 0){
                 icon = createCustomIcon(shopOrange,shopOrange,"&#xf07a;", "black",true)
