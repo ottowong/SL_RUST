@@ -1,3 +1,4 @@
+import os
 import traceback # for debugging
 from pprint import pprint
 
@@ -361,60 +362,6 @@ def index():
     else:
         return redirect(url_for("codelock"))
 
-@app.route("/add_device", methods=["POST"]) # use sockets for this instead
-def add_device():
-    device_id = request.form["device_id"]
-    device_name = request.form["device_name"]
-    device_type = request.form["device_type"]
-
-    conn = sqlite3.connect(database_name)
-    cur = conn.cursor()
-    print(device_type)
-    if(device_type == "1"):
-        table = "tbl_switches"
-        cur.execute("INSERT INTO tbl_switches (id, name) VALUES (?, ?)", (device_id, device_name))
-    elif(device_type == "2"):
-        cur.execute("INSERT INTO tbl_alarms (id, name) VALUES (?, ?)", (device_id, device_name))
-    elif(device_type == "3"):
-        cur.execute("INSERT INTO tbl_monitors (id, name) VALUES (?, ?)", (device_id, device_name))
-    else:
-        return redirect("/admin")
-    conn.commit()
-    cur.close()
-    conn.close()
-    return redirect("/admin")
-
-@app.route("/remove_device", methods=["POST"])
-def remove_device():
-    device_id = request.form["device_id"]
-    conn = sqlite3.connect(database_name)
-    cur = conn.cursor()
-    # this is probably fine since 2 devices shouldn't have the same id
-    cur.execute("DELETE FROM tbl_switches WHERE id=?", (device_id,))
-    cur.execute("DELETE FROM tbl_alarms WHERE id=?", (device_id,))
-    cur.execute("DELETE FROM tbl_monitors WHERE id=?", (device_id,))
-    conn.commit()
-    cur.close()
-    conn.close()
-    return redirect("/admin")
-
-@app.route("/admin")
-def admin():
-    conn = sqlite3.connect(database_name)
-    cur = conn.cursor()
-    cur.execute("""
-    SELECT id, name FROM tbl_switches
-    UNION ALL
-    SELECT id, name FROM tbl_monitors
-    UNION ALL
-    SELECT id, name FROM tbl_alarms;
-    """)
-    devices = cur.fetchall()
-    cur.close()
-    conn.close()
-    return render_template("admin.j2", devices=devices, len=len(devices))
-
-
 async def Main():
     print("Starting main loop")
     await rust_socket.connect()
@@ -719,6 +666,11 @@ async def Main():
     def handle_request_turn_on(id):
         print("toggling device", id)
         asyncio.run(toggle_switch(id))
+
+    @socketio.on('kill_server')
+    def handle_kill_server():
+        print("goodbye...")
+        os._exit(0)
 
     #region events
 

@@ -20,6 +20,13 @@ document.addEventListener('DOMContentLoaded', function() {
     //     });
     // });
 
+    $(document).on('click', '.restartBtn', function () {
+        if (confirm("Are you sure you want to restart?")) {
+            socket.emit('kill_server');
+        }
+    });
+
+
     function create_switch_div(device){
         // check if already exists
         let parentDiv = document.getElementById('switch_list');
