@@ -233,6 +233,7 @@ function updateMarkers(socket_markers) {
         case 3: // shop
             let shop_popup_text = `<b>${newMarker.name}</b><br>`
             for (shop_item of newMarker.sell_orders){
+                let item_image;
                 let item_data = findSectionById(shop_item.id.toString())
                 let currency_data = findSectionById(shop_item.currency_id.toString())
                 // shop_item.amount_in_stock
@@ -246,7 +247,14 @@ function updateMarkers(socket_markers) {
                     currency_bp = `<img style="position:absolute;" width="25px" src="../static/img/blueprint.png"/>`
                 }
                 shop_popup_text = shop_popup_text + item_bp
-                shop_popup_text = shop_popup_text + `<img style="position:relative;" width="25px" src="${item_data.image}"/>x${shop_item.quantity}`
+                try {
+                    item_image = item_data.image;
+                } catch (error) {
+                    console.error(`Error retrieving item image for ID: ${shop_item.id.toString()}:`, error);
+                    // Provide a default image URL if item_data.image is null
+                    item_image = "../static/img/not_found.png";
+                }
+                shop_popup_text = shop_popup_text + `<img style="position:relative;" width="25px" src="${item_image}"/>x${shop_item.quantity}`
                 shop_popup_text = shop_popup_text + " : "
                 shop_popup_text = shop_popup_text + currency_bp
                 shop_popup_text = shop_popup_text + `<img style="position:relative;" width="25px" src="${currency_data.image}"/> x${shop_item.cost_per_item}<br>`
