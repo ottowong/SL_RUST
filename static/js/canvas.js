@@ -255,9 +255,9 @@ function updateMarkers(socket_markers) {
                     item_image = "../static/img/not_found.png";
                 }
                 try {
-                    currency_image = item_data.image;
+                    currency_image = currency_data.image;
                 } catch (error) {
-                    console.log(`Error retrieving item image for ID: ${shop_item.id.toString()}:`, error);
+                    console.log(`Error retrieving item image for ID: ${currency_data.id.toString()}:`, error);
                     currency_image = "../static/img/not_found.png";
                 }
                 shop_popup_text = shop_popup_text + `<img style="position:relative;" width="25px" src="${item_image}"/>x${shop_item.quantity}`
