@@ -680,12 +680,33 @@ async def Main():
 
     @rust_socket.chat_event
     async def chat(event : ChatEvent):
-        print(f"{event.message.name}: {event.message.message}")
-        socketio.emit('chat_message', [event.message.name, event.message.message])
+        sender = event.message.name
+        message = event.message.message
+        print(f"{sender}: {message}")
+        socketio.emit('chat_message', [sender, message])
         await sql_log_chat(event)
-        message_log.append([event.message.name, event.message.message])
+        message_log.append([sender, message])
         if (len(message_log)  > 50):
             message_log.pop(0)
+        if(message.startswith("!")): # since we want to use the 2nd arg as the command, gotta do it here :-(
+            args = message.lower().split()
+            switch = args[0]
+            if(args[1] == "on" or args[1] == "open" or args[1] == "opened"):
+                print("on")
+                try:
+                    cur.execute("SELECT id, status FROM tbl_switches WHERE name like ?", (switch,))
+                    device = cur.fetchone()
+                    await turn_on_switch(device[0])
+                except Exception:
+                    print("failed")
+            if(args[1] == "off" or args[1] == "close" or args[1] == "closed"):
+                print("off")
+                try:
+                    cur.execute("SELECT id, status FROM tbl_switches WHERE name like ?", (switch,))
+                    device = cur.fetchone()
+                    await turn_off_switch(device[0])
+                except Exception:
+                    print("failed")
 
     @rust_socket.command
     async def toggle(command : Command):
