@@ -688,7 +688,7 @@ async def Main():
         message_log.append([sender, message])
         if (len(message_log)  > 50):
             message_log.pop(0)
-        if(message.startswith(command_prefix))): # since we want to use the 2nd arg as the command, gotta do it here :-(
+        if(message.startswith(command_prefix)): # since we want to use the 2nd arg as the command, gotta do it here :-(
             args = message.lower().split()
             switch = args[0].strip(command_prefix)
             if(args[1] == "on" or args[1] == "open" or args[1] == "opened"):
