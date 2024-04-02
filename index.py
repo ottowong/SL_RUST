@@ -41,10 +41,10 @@ correct_pin = os.environ.get("PIN")
 webhook_url = os.environ.get("DISCORDWEBHOOK")
 map_width = int(os.environ.get("MAPWIDTH"))
 map_height = int(os.environ.get("MAPHEIGHT"))
-
+command_prefix = os.environ.get("COMMANDPREFIX")
 webhook = discord.SyncWebhook.from_url(webhook_url)
 
-options = CommandOptions(prefix="!")
+options = CommandOptions(prefix=command_prefix)
 rust_socket = RustSocket(ip, port, steamId, playerToken, command_options=options)
 
 RUST_SECONDS_PER_MINUTE = 5
@@ -688,11 +688,11 @@ async def Main():
         message_log.append([sender, message])
         if (len(message_log)  > 50):
             message_log.pop(0)
-        if(message.startswith("!")): # since we want to use the 2nd arg as the command, gotta do it here :-(
+        if(message.startswith(command_prefix))): # since we want to use the 2nd arg as the command, gotta do it here :-(
             args = message.lower().split()
-            switch = args[0]
+            switch = args[0].strip(command_prefix)
             if(args[1] == "on" or args[1] == "open" or args[1] == "opened"):
-                print("on")
+                print(switch,"on")
                 try:
                     conn = sqlite3.connect(database_name)
                     cur = conn.cursor()
@@ -704,7 +704,7 @@ async def Main():
                 except Exception as e:
                     print("failed",e)
             if(args[1] == "off" or args[1] == "close" or args[1] == "closed"):
-                print("off")
+                print(switch,"off")
                 try:
                     conn = sqlite3.connect(database_name)
                     cur = conn.cursor()
