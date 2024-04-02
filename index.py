@@ -694,19 +694,27 @@ async def Main():
             if(args[1] == "on" or args[1] == "open" or args[1] == "opened"):
                 print("on")
                 try:
+                    conn = sqlite3.connect(database_name)
+                    cur = conn.cursor()
                     cur.execute("SELECT id, status FROM tbl_switches WHERE name like ?", (switch,))
                     device = cur.fetchone()
                     await turn_on_switch(device[0])
-                except Exception:
-                    print("failed")
+                    cur.close()
+                    conn.close()
+                except Exception as e:
+                    print("failed",e)
             if(args[1] == "off" or args[1] == "close" or args[1] == "closed"):
                 print("off")
                 try:
+                    conn = sqlite3.connect(database_name)
+                    cur = conn.cursor()
                     cur.execute("SELECT id, status FROM tbl_switches WHERE name like ?", (switch,))
                     device = cur.fetchone()
                     await turn_off_switch(device[0])
-                except Exception:
-                    print("failed")
+                    cur.close()
+                    conn.close()
+                except Exception as e:
+                    print("failed",e)
 
     @rust_socket.command
     async def toggle(command : Command):
