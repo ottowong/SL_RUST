@@ -860,4 +860,4 @@ def main_thread():
 if __name__ == '__main__':
     main_thread = threading.Thread(target=main_thread)
     main_thread.start()
-    socketio.run(app, debug=False, port=18057, use_reloader=False)
+    socketio.run(app, debug=False, port=18057, use_reloader=False, allow_unsafe_werkzeug=True)
